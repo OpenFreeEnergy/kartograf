@@ -1,0 +1,24 @@
+name: wally
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - pip
+
+  - pytest
+  - pytest-xdist
+  - pytest-cov
+  - coverage
+
+  - gufe==0.5
+  - typing-extensions
+
+  - numpy
+  - scipy
+  - networkx
+
+  - rdkit
+
+  # docs
+  - myst-parser
+  - sphinx-click
