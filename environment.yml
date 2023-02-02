@@ -1,4 +1,4 @@
-name: wally
+name: kartograph
 channels:
   - conda-forge
 dependencies:
@@ -6,8 +6,8 @@ dependencies:
   - pip
 
   - pytest
-  - pytest-xdist
   - pytest-cov
+  - pytest-xdist
   - coverage
 
   - gufe==0.5

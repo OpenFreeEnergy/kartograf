@@ -1,5 +1,5 @@
 # This code is part of OpenFE and is licensed under the MIT license.
-# For details, see https://github.com/OpenFreeEnergy/wally
+# For details, see https://github.com/OpenFreeEnergy/kartograph
 
 import copy
 import numpy as np
@@ -26,13 +26,13 @@ log.setLevel(logging.WARNING)
 # TODO: full Cycle Mapping option
 # TODO: Hydrogens Only on Hydrogens?
 # TODO: Connnected Set bug
-# TODO: OpenFE Package  (Wally depends on Gufe->Wally->OpenFE) - dependency in OpenFE / place import in __init__
+# TODO: OpenFE Package  (Kartograph depends on Gufe->kartograph->OpenFE) - dependency in OpenFE / place import in __init__
 # TODO: @Richard Checks up and downs in saturated rings
 # TODO: PLB examples check it out / HIF2A
 
 
 # Enums:
-class wally_mapping_algorithm(Enum):
+class mapping_algorithm(Enum):
     linear_sum_assignment = "LSA"
     minimal_spanning_tree = "MST"
 
@@ -42,11 +42,11 @@ vector_eucledean_dist = calculate_edge_weight = lambda x, y: np.sqrt(np.sum(np.s
 
 
 # Implementation of Mapper:
-class wally_atom_mapper(AtomMapper):
+class geometric_atom_mapper(AtomMapper):
     atom_max_distance: float
     atom_ring_matches_ring: bool
     atom_map_hydrogens: bool
-    wally_mapping_algorithm: wally_mapping_algorithm
+    mapping_algorithm: mapping_algorithm
 
     def __init__(
         self,
@@ -54,7 +54,7 @@ class wally_atom_mapper(AtomMapper):
         atom_ring_matches_ring: Optional[bool] = False,
         atom_max_distance: Optional[float] = 0.95,
         atom_map_hydrogens: Optional[bool] = False,
-        _mapping_algorithm: Optional[wally_mapping_algorithm] = wally_mapping_algorithm.linear_sum_assignment,
+        _mapping_algorithm: Optional[mapping_algorithm] = mapping_algorithm.linear_sum_assignment,
     ):
         """
         This mapper is a homebrew, that utilises rdkit in order
@@ -76,9 +76,9 @@ class wally_atom_mapper(AtomMapper):
         self.atom_map_hydrogens = atom_map_hydrogens
 
         if _mapping_algorithm == _mapping_algorithm.linear_sum_assignment:
-            self.wally_mapping_algorithm = self._linearSumAlgorithm_map
+            self.mapping_algorithm = self._linearSumAlgorithm_map
         elif _mapping_algorithm == _mapping_algorithm.minimal_spanning_tree:
-            self.wally_mapping_algorithm = self._minimalSpanningTree_map
+            self.mapping_algorithm = self._minimalSpanningTree_map
         else:
             raise ValueError(
                 "Mapping algorithm not implemented or unknown (options: MST or LSA). got key: "
@@ -375,7 +375,7 @@ class wally_atom_mapper(AtomMapper):
 
         # solve atom mappings
         log.info("Calculate Mapping")
-        mapping = self.wally_mapping_algorithm(
+        mapping = self.mapping_algorithm(
             distance_matrix=masked_dmatrix, max_dist=self.mask_dist_val
         )
         log.debug("Raw Mapping: " + str(mapping))

@@ -1,0 +1,63 @@
+name: "CI"
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+jobs:
+  tests:
+    runs-on: ${{ matrix.OS }}-latest
+    name: "tests"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu', 'macos']
+        python-version:
+          - 3.9
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+            auto-update-conda: true
+            use-mamba: true
+            python-version: ${{ matrix.python-version }}
+            miniforge-variant: Mambaforge
+            environment-file: environment.yml
+            activate-environment: kartograph
+
+      - name: "Install"
+        run: pip install --no-deps -e .
+
+      - name: "Test imports"
+        run: |
+          # if we add more to this, consider changing to for + env vars
+          python -Ic "import kartograph"
+      - name: "Environment Information"
+        run: |
+          mamba info -a
+          mamba list
+      - name: "Run tests"
+        run: |
+          pytest -n 2 -v --cov=kartograph --cov-report=xml
+      - name: codecov
+        if: ${{ github.repository == 'OpenFreeEnergy/kartograph' }}
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          env_vars: OS,PYTHON
+          fail_ci_if_error: True
+          verbose: True

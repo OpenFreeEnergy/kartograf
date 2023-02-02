@@ -1,0 +1,26 @@
+[build-system]
+requires=['setuptools>=61.0']
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pdbinf"
+version = "0.0.1"
+authors=[
+    {name="Benjamin Ries", email="benjamin-ries@outlook.com"},
+    {name="Irfan Alibay", email=""},
+    {name="David Swenson", email=""},
+    {name="Mike Henry", email=""},
+    {name="Richard J Gowers", email="richardjgowers@gmail.com"},
+]
+dependencies = [
+  'rdkit',
+  ",
+]
+description="Load PDB files into rdkit with nonstandard residues"
+readme="README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
