@@ -5,7 +5,10 @@ import copy
 import numpy as np
 import networkx as nx
 from enum import Enum
+
 from collections import OrderedDict
+from collections.abc import Iterator
+
 
 from rdkit import Chem
 
@@ -465,6 +468,9 @@ class geometric_atom_mapper(AtomMapper):
 
         return mapping
 
+    def suggest_mappings(self, A: SmallMoleculeComponent,
+                            B: SmallMoleculeComponent) -> Iterator[AtomMapping]:
+        yield self.get_geom_Mapping(molA=A, molB=B)
 
 
 
@@ -572,3 +578,5 @@ def get_geom_Mapping(
         k % mol1_length: v % mol1_length for k, v in gMap.items()
     }  # cleanup step due to graph build up.
     return AtomMapping(molA, molB, map_dict)
+
+

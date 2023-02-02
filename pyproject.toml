@@ -14,7 +14,6 @@ authors=[
 ]
 dependencies = [
   'rdkit',
-  ",
 ]
 description="Load PDB files into rdkit with nonstandard residues"
 readme="README.md"
