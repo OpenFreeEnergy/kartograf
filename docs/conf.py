@@ -10,14 +10,14 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+sys.path.insert(0, os.path.abspath('../src'))
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'gufe'
+project = 'kartograf'
 copyright = '2022, The OpenFE Development Team'
 author = 'The OpenFE Development Team'
 
@@ -41,7 +41,7 @@ templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 
-#autodoc_mock_imports = ['lomap', 'networkx', 'openff', 'openff.toolkit', 'openeye', 'rdkit', 'pytest',
+#autodoc_mock_imports = ['lomap', 'networkx', 'openff', 'openff.toolkit', 'rdkit', 'pytest',
 #                        'typing_extensions',
 #                        'click', 'plugcli']
 
