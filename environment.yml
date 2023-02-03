@@ -21,4 +21,5 @@ dependencies:
 
   # docs
   - myst-parser
+  - pydata_sphinx_theme
   - sphinx-click
