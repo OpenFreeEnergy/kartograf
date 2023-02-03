@@ -5,5 +5,8 @@ Networks Construction
 Networkers
 =======================================
 
-.. autoclass:: src.kartograf.networks.mst_networker
+.. autoclass:: kartograf.networks.mst_networker
+	       :members:
+
+.. autoclass:: kartograf.networks.radial_networker
 	       :members:

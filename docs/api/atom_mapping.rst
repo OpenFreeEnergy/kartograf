@@ -9,6 +9,4 @@ Atom Mapping
 	       
 Atom Mapping Scoring
 ========================
-	       
-.. autoclass:: kartograf.atom_mapping.geom_scorer
-	       :members:
+
