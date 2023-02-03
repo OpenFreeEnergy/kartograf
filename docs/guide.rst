@@ -1,5 +1,5 @@
 Guide to Kartograf
-=============
+=====================
 
 
 .. toctree::

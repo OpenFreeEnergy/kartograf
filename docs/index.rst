@@ -1,5 +1,5 @@
 Welcome to kartograf's documentation!
-================================
+=========================================
 
 .. toctree::
    :maxdepth: 2
@@ -10,7 +10,7 @@ Welcome to kartograf's documentation!
 
 
 Indices and tables
-==================
+=====================
 
 * :ref:`genindex`
 * :ref:`search`
