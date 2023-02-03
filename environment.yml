@@ -4,24 +4,21 @@ channels:
 dependencies:
   - python
   - pip
-
+  #Test
   - pytest
   - pytest-cov
   - pytest-xdist
   - coverage
   - mypy
-
+  #Typing
   - gufe==0.5
   - typing-extensions
-
-  - pydantic
-
+  # Sci
   - numpy
   - scipy
   - networkx
-
+  # Chem
   - rdkit
-
   # docs
   - myst-parser
-  - sphinx-click
+  - pydata-sphinx-theme
