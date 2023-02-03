@@ -4,11 +4,11 @@ Atom Mappings
 Atom Mapping
 ====================
 
-.. autoclass:: kartograf.atom_mapping.geom_mapper
+.. autoclass:: src.kartograf.atom_mapping.geom_mapper
 	       :members:
 	       
 Atom Mapping Scoring
 ========================
 	       
-.. autoclass:: kartograf.atom_mapping.geom_scorer
+.. autoclass:: src.kartograf.atom_mapping.geom_scorer
 	       :members:
