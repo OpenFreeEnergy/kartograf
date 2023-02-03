@@ -36,7 +36,7 @@ jobs:
             python-version: ${{ matrix.python-version }}
             miniforge-variant: Mambaforge
             environment-file: environment.yml
-            activate-environment: True
+            activate-environment: kartograf
 
       - name: "Install"
         run: pip install --no-deps -e .
@@ -44,16 +44,16 @@ jobs:
       - name: "Test imports"
         run: |
           # if we add more to this, consider changing to for + env vars
-          python -Ic "import "
+          python -Ic "import kartograf"
       - name: "Environment Information"
         run: |
           mamba info -a
           mamba list
       - name: "Run tests"
         run: |
-          pytest -n 2 -v --cov= --cov-report=xml
+          pytest -n 2 -v --cov=kartograf --cov-report=xml
       - name: codecov
-        if: ${{ github.repository == 'OpenFreeEnergy/' }}
+        if: ${{ github.repository == 'OpenFreeEnergy/kartograf' }}
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
