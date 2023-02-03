@@ -13,8 +13,9 @@ dependencies = [
   'rdkit',
   'scipy',
   'numpy',
+  'networkx',
 ]
-description="This is an package for a setting up free energy calculation."
+description="Kartograph is an package for a setting up free energy calculation."
 readme="README.md"
 requires-python = ">=3.9"
 classifiers = [
