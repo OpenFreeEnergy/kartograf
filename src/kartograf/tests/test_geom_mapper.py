@@ -1,3 +1,6 @@
+# This code is part of OpenFE and is licensed under the MIT license.
+# For details, see https://github.com/OpenFreeEnergy/kartograf
+
 import pytest
 
 from rdkit import Chem
@@ -7,7 +10,7 @@ from tqdm import tqdm
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from kartograph.atom_mapping.geom_mapper import geometric_atom_mapper
+from kartograf.atom_mapping.geom_mapper import geometric_atom_mapper
 from gufe import SmallMoleculeComponent
 
 

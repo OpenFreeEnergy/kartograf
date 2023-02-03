@@ -1,5 +1,5 @@
 # This code is part of OpenFE and is licensed under the MIT license.
-# For details, see https://github.com/OpenFreeEnergy/kartograph
+# For details, see https://github.com/OpenFreeEnergy/kartograf
 
 import copy
 import numpy as np
@@ -29,7 +29,7 @@ log.setLevel(logging.WARNING)
 # TODO: full Cycle Mapping option
 # TODO: Hydrogens Only on Hydrogens?
 # TODO: Connnected Set bug
-# TODO: OpenFE Package  (Kartograph depends on Gufe->kartograph->OpenFE) - dependency in OpenFE / place import in __init__
+# TODO: OpenFE Package  (kartograf depends on Gufe->kartograf->OpenFE) - dependency in OpenFE / place import in __init__
 # TODO: @Richard Checks up and downs in saturated rings
 # TODO: PLB examples check it out / HIF2A
 

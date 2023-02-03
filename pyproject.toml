@@ -3,8 +3,8 @@ requires=['setuptools>=61.0']
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "kartograph"
-version = "0.0.1"
+name = "kartograf"
+version = "0.0.2"
 authors=[
     {name="Benjamin Ries", email="benjamin-ries@outlook.com"},
     {name="David Swenson", email="dwhswenson@gmail.com"},
@@ -18,7 +18,7 @@ dependencies = [
   'numpy',
   'networkx',
 ]
-description="Kartograph is an package for a setting up free energy calculation."
+description="Kartograf is an package for a setting up free energy calculation."
 readme="README.md"
 requires-python = ">=3.9"
 classifiers = [
@@ -28,4 +28,4 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/OpenFreeEnergy/kartograph"
+"Homepage" = "https://github.com/OpenFreeEnergy/kartograf"
