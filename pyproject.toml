@@ -3,19 +3,18 @@ requires=['setuptools>=61.0']
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pdbinf"
+name = "kartograph"
 version = "0.0.1"
 authors=[
     {name="Benjamin Ries", email="benjamin-ries@outlook.com"},
-    {name="Irfan Alibay", email=""},
-    {name="David Swenson", email=""},
-    {name="Mike Henry", email=""},
     {name="Richard J Gowers", email="richardjgowers@gmail.com"},
 ]
 dependencies = [
   'rdkit',
+  'scipy',
+  'numpy',
 ]
-description="Load PDB files into rdkit with nonstandard residues"
+description="This is an package for a setting up free energy calculation."
 readme="README.md"
 requires-python = ">=3.9"
 classifiers = [
@@ -23,3 +22,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+
+[project.urls]
+"Homepage" = "https://github.com/OpenFreeEnergy/kartograph"
