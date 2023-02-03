@@ -20,5 +20,4 @@ dependencies:
   - rdkit
   # docs
   - myst-parser
-  - pydata_sphinx_theme
-  - sphinx-click
+  - pydata-sphinx-theme
