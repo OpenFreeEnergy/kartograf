@@ -19,6 +19,7 @@ dependencies:
   - networkx
   # Chem
   - rdkit
+  - openfe #to be removed! - need network type
   # docs
   - myst-parser
   - pydata-sphinx-theme
