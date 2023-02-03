@@ -1,8 +1,7 @@
 # This code is part of OpenFE and is licensed under the MIT license.
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
-import math
-from typing import Iterable, Callable, List
+from typing import Iterable, Callable
 import itertools
 
 import networkx as nx
@@ -14,7 +13,7 @@ from gufe import SmallMoleculeComponent
 from openfe.setup import Network    # only temproary
 
    
-def build_network(self, ligands: Iterable[SmallMoleculeComponent],
+def generate_minimal_spanning_graph(self, ligands: Iterable[SmallMoleculeComponent],
                         mappers: Iterable[AtomMapper],
                         scorer: Callable[[AtomMapping], float]):
     """Plan a Network which connects all ligands with minimal cost

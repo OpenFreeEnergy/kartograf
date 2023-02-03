@@ -2,7 +2,7 @@
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
 import math
-from typing import Iterable
+from typing import Iterable, Callable
 import itertools
 
 from gufe import AtomMapper, AtomMapping
@@ -12,7 +12,8 @@ from openfe.setup import Network    # only temproary
 
 def generate_radial_network(ligands: Iterable[SmallMoleculeComponent],
                             central_ligand: SmallMoleculeComponent,
-                            mappers: Iterable[AtomMapper], scorer=None):
+                            mappers: Iterable[AtomMapper], 
+                            scorer: Callable[[AtomMapping], float]=None):
     """Generate a radial network with all ligands connected to a central node
 
     Also known as hub and spoke or star-map, this plans a Network where
