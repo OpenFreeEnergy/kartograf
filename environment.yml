@@ -1,4 +1,4 @@
-name: kartograph
+name: 
 channels:
   - conda-forge
 dependencies:
