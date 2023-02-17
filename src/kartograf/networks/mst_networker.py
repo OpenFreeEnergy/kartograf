@@ -1,19 +1,18 @@
 # This code is part of OpenFE and is licensed under the MIT license.
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
-from typing import Iterable, Callable
 import itertools
-
 import networkx as nx
 
+from typing import Iterable, Callable
 
 from gufe import AtomMapper, AtomMapping
 from gufe import SmallMoleculeComponent
 
-from openfe.setup import Network    # only temproary
+from openfe.setup.ligand_network import LigandNetwork    # only temproary
 
    
-def generate_minimal_spanning_graph(self, ligands: Iterable[SmallMoleculeComponent],
+def generate_minimal_spanning_graph(ligands: Iterable[SmallMoleculeComponent],
                         mappers: Iterable[AtomMapper],
                         scorer: Callable[[AtomMapping], float]):
     """Plan a Network which connects all ligands with minimal cost
@@ -39,7 +38,7 @@ def generate_minimal_spanning_graph(self, ligands: Iterable[SmallMoleculeCompone
     )
     mappings = [mapping.with_annotations({'score': scorer(mapping)})
                 for mapping in mapping_generator]
-    network = Network(mappings, nodes=nodes)
+    network = LigandNetwork(mappings, nodes=nodes)
 
     # Next analyze that network to create minimal spanning network. Because
     # we carry the original (directed) AtomMapping, we don't lose
@@ -47,7 +46,7 @@ def generate_minimal_spanning_graph(self, ligands: Iterable[SmallMoleculeCompone
     min_edges = nx.minimum_spanning_edges(nx.MultiGraph(network.graph),
                                         weight='score')
     min_mappings = [edge_data['object'] for _, _, _, edge_data in min_edges]
-    min_network = Network(min_mappings)
+    min_network = LigandNetwork(min_mappings)
     missing_nodes = set(nodes) - set(min_network.nodes)
     if missing_nodes:
         raise RuntimeError("Unable to create edges to some nodes: "

@@ -9,7 +9,6 @@ from enum import Enum
 from collections import OrderedDict
 from collections.abc import Iterator
 
-
 from rdkit import Chem
 
 from scipy.sparse import csr_matrix
@@ -19,19 +18,12 @@ from scipy.sparse.csgraph import connected_components
 from typing import Callable, Dict, Iterable, List, Optional, Set, Tuple, Union
 
 from gufe import SmallMoleculeComponent
+from gufe import LigandAtomMapping
 from gufe import AtomMapping, AtomMapper
 
 import logging
+
 log = logging.getLogger(__name__)
-log.setLevel(logging.WARNING)
-
-
-# TODO: full Cycle Mapping option
-# TODO: Hydrogens Only on Hydrogens?
-# TODO: Connnected Set bug
-# TODO: OpenFE Package  (kartograf depends on Gufe->kartograf->OpenFE) - dependency in OpenFE / place import in __init__
-# TODO: @Richard Checks up and downs in saturated rings
-# TODO: PLB examples check it out / HIF2A
 
 
 # Enums:
@@ -41,7 +33,9 @@ class mapping_algorithm(Enum):
 
 
 # Helper:
-vector_eucledean_dist = calculate_edge_weight = lambda x, y: np.sqrt(np.sum(np.square(y - x), axis=1))
+vector_eucledean_dist = calculate_edge_weight = lambda x, y: np.sqrt(
+    np.sum(np.square(y - x), axis=1)
+)
 
 
 # Implementation of Mapper:
@@ -56,7 +50,7 @@ class geometric_atom_mapper(AtomMapper):
         *,
         atom_ring_matches_ring: Optional[bool] = False,
         atom_max_distance: Optional[float] = 0.95,
-        atom_map_hydrogens: Optional[bool] = False,
+        atom_map_hydrogens: Optional[bool] = True,
         _mapping_algorithm: Optional[mapping_algorithm] = mapping_algorithm.linear_sum_assignment,
     ):
         """
@@ -90,17 +84,17 @@ class geometric_atom_mapper(AtomMapper):
 
     def _from_dict():
         pass
-    
+
     def _to_dict():
         pass
-    
+
     def _defaults():
         pass
-    
 
     """
        Privat - Set Operations
     """
+
     @staticmethod
     def _get_connected_atom_subsets(mol: Chem.Mol, to_be_searched: List[int]) -> List[Set[int]]:
         # Get bonded atoms sets
@@ -262,7 +256,9 @@ class geometric_atom_mapper(AtomMapper):
 
         return masked_atomMapping, pos
 
-    def _minimalSpanningTree_map(self, distance_matrix: np.array, max_dist: float) -> Dict[int, int]:
+    def _minimalSpanningTree_map(
+        self, distance_matrix: np.array, max_dist: float
+    ) -> Dict[int, int]:
         """
         This function is a numpy graph based implementation to build up an Atom Mapping purely on 3D criteria.
 
@@ -298,9 +294,7 @@ class geometric_atom_mapper(AtomMapper):
         row_ind, col_ind = linear_sum_assignment(distance_matrix)
         raw_mapping = list(zip(map(int, row_ind), map(int, col_ind)))
         # filter for mask value
-        mapping = dict(
-            filter(lambda x: distance_matrix[x] < max_dist, raw_mapping)
-        )
+        mapping = dict(filter(lambda x: distance_matrix[x] < max_dist, raw_mapping))
 
         return mapping
 
@@ -312,8 +306,33 @@ class geometric_atom_mapper(AtomMapper):
         masked_atoms_molA=[],
         masked_atoms_molB=[],
         pre_mapped_atoms={},
-        map_hydrogens: bool = False,
-    ) -> AtomMapping:
+        map_hydrogens: bool = True
+        ) -> AtomMapping:
+        """
+            find a mapping between two molecules based on 3D coordinates.
+
+        Parameters
+        ----------
+        molA : Chem.Mol
+            rdkit Molecule A
+        molB : Chem.Mol
+            rdkit Molecule B
+        max_d : float, optional
+            maximal allowed distance for atoms to be mapped, by default 0.95
+        masked_atoms_molA : list, optional
+            remove categorical atoms by index of MolA from the mapping, by default []
+        masked_atoms_molB : list, optional
+            remove categorical atoms by index of MolB from the mapping, by default []
+        pre_mapped_atoms : dict, optional
+            pre_mapped atoms, that need to be part of the mapping, by default {}
+        map_hydrogens : bool, optional
+            if True map hydrogens as well, will hapen after heavy atom mapping, by default True
+
+        Returns
+        -------
+        AtomMapping
+            _description_
+        """        
 
         molA_pos = molA.GetConformer().GetPositions()
         molB_pos = molB.GetConformer().GetPositions()
@@ -405,10 +424,10 @@ class geometric_atom_mapper(AtomMapper):
 
         return mapping
 
-
     """
         Mapping functions
     """
+
     def get_mapping(
         self,
         molA: Chem.Mol,
@@ -423,11 +442,15 @@ class geometric_atom_mapper(AtomMapper):
 
         Parameters
         ----------
-        mol1, mol2 : rdkit.Chem.Mol
+        molA, molB : rdkit.Chem.Mol
             two rdkit molecules that should be mapped onto each other
-        mcs_seed : str, optional
-            smart string containing the MCS of the mols,
-            optionally provide a starting point to improve performance over
+        masked_atoms_molA : list, optional
+            remove categorical atoms by index of MolA from the mapping, by default []
+        masked_atoms_molB : list, optional
+            remove categorical atoms by index of MolB from the mapping, by default []
+        pre_mapped_atoms : dict, optional
+            pre_mapped atoms, that need to be part of the mapping, by default {}
+
         """
         molA = Chem.Mol(molA)
         molB = Chem.Mol(molB)
@@ -468,11 +491,10 @@ class geometric_atom_mapper(AtomMapper):
 
         return mapping
 
-    def suggest_mappings(self, A: SmallMoleculeComponent,
-                            B: SmallMoleculeComponent) -> Iterator[AtomMapping]:
-        yield self.get_geom_Mapping(molA=A, molB=B)
-
-
+    def suggest_mappings(
+        self, A: SmallMoleculeComponent, B: SmallMoleculeComponent
+    ) -> Iterator[AtomMapping]:
+        yield LigandAtomMapping(A, B, self.get_mapping(molA=A.to_rdkit(), molB=B.to_rdkit()))
 
 
 ############# Old IMPLEMENTATION IDEA for pure 3D mapping - To Be deleted
@@ -578,5 +600,3 @@ def get_geom_Mapping(
         k % mol1_length: v % mol1_length for k, v in gMap.items()
     }  # cleanup step due to graph build up.
     return AtomMapping(molA, molB, map_dict)
-
-

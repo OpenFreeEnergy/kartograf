@@ -1,39 +1,61 @@
+from copy import deepcopy
+
+from rdkit import Chem
 from rdkit.Chem import rdFMCS
 from rdkit.Chem import AllChem
-from rdkit.Chem import Draw
 
 from gufe import SmallMoleculeComponent
 
+import logging
 
-def align_molB_to_molA_sceletons(molA:SmallMoleculeComponent, 
-                                 molB:SmallMoleculeComponent,
-                                 verbose:bool = False,
-                        ) -> SmallMoleculeComponent:
-    mol1b = molA._rdkit
-    mol2b = molB._rdkit
-        
+log = logging.getLogger(__name__)
+
+
+def align_mol_sceletons(
+    mol: SmallMoleculeComponent,
+    ref_mol: SmallMoleculeComponent,
+) -> SmallMoleculeComponent:
+    """
+        Aligns very simply molecule to the reference molecule, based on the shared MCS.
+
+    Parameters
+    ----------
+    mol : SmallMoleculeComponent
+        molecule to be aligned to molA (will be moved)
+    ref_mol : SmallMoleculeComponent
+        molecule with the reference_positions.
+
+    Returns
+    -------
+    SmallMoleculeComponent
+        return an aligned copy of molB
+    """
+    mol = deepcopy(mol)
+
+    mol1b = ref_mol._rdkit
+    mol2b = mol._rdkit
+
     p = rdFMCS.MCSParameters()
     p.AtomTyper = rdFMCS.AtomCompare.CompareAny
 
-
-    res = rdFMCS.FindMCS([mol1b, mol2b],p)
+    res = rdFMCS.FindMCS([mol1b, mol2b], p)
 
     # convert match to mapping'
     q = Chem.MolFromSmarts(res.smartsString)
-    if(verbose): print(q)
+    logging.debug(q)
 
     m1_idx = mol1b.GetSubstructMatch(q)
     m2_idx = mol2b.GetSubstructMatch(q)
-    if(verbose): print(m1_idx, m2_idx)
+    logging.debug(m1_idx, m2_idx)
 
-    idx_mappings = list(zip(m2_idx,m1_idx))
+    idx_mappings = list(zip(m2_idx, m1_idx))
 
     rms = AllChem.AlignMol(
-        prbMol=mol2b, refMol=mol1b, atomMap=idx_mappings,
+        prbMol=mol2b,
+        refMol=mol1b,
+        atomMap=idx_mappings,
     )
-    if(verbose): print(rms)
+    logging.debug(rms)
 
-    molB._rdkit = mol2b
-    return molB
-
-
+    mol._rdkit = mol2b
+    return mol

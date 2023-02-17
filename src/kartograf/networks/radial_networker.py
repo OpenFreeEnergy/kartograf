@@ -8,7 +8,8 @@ import itertools
 from gufe import AtomMapper, AtomMapping
 from gufe import SmallMoleculeComponent
 
-from openfe.setup import Network    # only temproary
+from openfe.setup import LigandNetwork    # only temproary
+
 
 def generate_radial_network(ligands: Iterable[SmallMoleculeComponent],
                             central_ligand: SmallMoleculeComponent,
@@ -72,4 +73,4 @@ def generate_radial_network(ligands: Iterable[SmallMoleculeComponent],
             raise ValueError(f"No mapping found for {ligand}")
         edges.append(best_mapping)
 
-    return Network(edges)
+    return LigandNetwork(edges)
