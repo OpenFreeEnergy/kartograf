@@ -12,7 +12,7 @@ from gufe import SmallMoleculeComponent
 from openfe.setup.ligand_network import LigandNetwork    # only temproary
 
    
-def generate_minimal_spanning_graph(ligands: Iterable[SmallMoleculeComponent],
+def generate_minimal_spanning_network(ligands: Iterable[SmallMoleculeComponent],
                         mappers: Iterable[AtomMapper],
                         scorer: Callable[[AtomMapping], float]):
     """Plan a Network which connects all ligands with minimal cost
