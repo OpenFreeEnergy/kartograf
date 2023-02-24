@@ -53,7 +53,7 @@ jobs:
         run: |
           pytest -n 2 -v --cov=kartograf --cov-report=xml
       - name: codecov
-        if: ${{ github.repository == 'OpenFreeEnergy/kartograf' }}
+        if: ${{ github.repository == 'OpenFreeEnergy/kartograf' && github.event != 'schedule'}}
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
