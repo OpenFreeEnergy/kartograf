@@ -5,6 +5,7 @@ import math
 import numpy as np
 from rdkit import Chem
 from scipy.spatial import ConvexHull
+from scipy import constants as const
 
 from gufe import LigandAtomMapping
 from gufe.mapping import AtomMapping
@@ -44,9 +45,31 @@ def mappings_rmsd(mapping: LigandAtomMapping)->float:
     
     diffs = np.array(diffs)
     rmsd_map_diff = np.round(np.sqrt(np.sum(diffs**2)),3)
+    
     return rmsd_map_diff
 
+def norm_mapping_rmsd(mapping, k_hook=10**3, T=298)->float:
+    """estimate likelihood of this shift by calculating the probability of the rmsd of the mapping with a harmonic oscillator
 
+    Parameters
+    ----------
+    mapping : _type_
+        _description_
+    k_hook : float, optional
+        hook constant of the harmonic oscillator
+    T : float, optional
+        Temperature
+    Returns
+    -------
+    float
+        likelihood of the shift
+    """
+    rmsd = mappings_rmsd(mapping)
+    beta = 1000/(const.k*const.Avogadro*T)
+    V = (1/2) * k_hook * rmsd**2
+    p =  np.exp(-beta*V)
+    return p
+    
 def mapping_mapped_nonMapped_AtomRMS(mapping: AtomMapping):
     raise NotImplementedError()
 
@@ -138,7 +161,7 @@ def number_of_mapped_atoms(mapping: LigandAtomMapping)->float:
     return len(molA_to_molB)/larger_nAtoms
 
 
-def default_geometric_score(mapping: LigandAtomMapping)->float:
+def default_kartograf_score(mapping: LigandAtomMapping)->float:
     """
         Under Development
 

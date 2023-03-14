@@ -39,7 +39,7 @@ vector_eucledean_dist = calculate_edge_weight = lambda x, y: np.sqrt(
 
 
 # Implementation of Mapper:
-class geometric_atom_mapper(AtomMapper):
+class kartograf_atom_mapper(AtomMapper):
     atom_max_distance: float
     atom_ring_matches_ring: bool
     atom_map_hydrogens: bool

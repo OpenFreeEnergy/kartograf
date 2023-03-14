@@ -10,7 +10,7 @@ from tqdm import tqdm
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from kartograf.atom_mapping.geom_mapper import geometric_atom_mapper
+from kartograf import kartograf_atom_mapper
 from gufe import SmallMoleculeComponent
 
 
@@ -35,7 +35,7 @@ def test_stereo_mapping(stereo_chem_problem):
     Currently a smoke test
     """
     expected_solution = {}
-    geom_mapper = geometric_atom_mapper(atom_max_distance=0.95, atom_map_hydrogens=True) # mapping_algorithm.minimal_spanning_tree
+    geom_mapper = kartograf_atom_mapper(atom_max_distance=0.95, atom_map_hydrogens=True) # mapping_algorithm.minimal_spanning_tree
     geom_mapping = geom_mapper.suggest_mappings(SmallMoleculeComponent(stereo_chem_problem[0]) , SmallMoleculeComponent(stereo_chem_problem[1]))
 
         
