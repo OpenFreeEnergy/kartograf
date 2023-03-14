@@ -16,6 +16,7 @@ def align_mol_sceletons(
     ref_mol: SmallMoleculeComponent,
 ) -> SmallMoleculeComponent:
     """
+        WORK IN PROGRESS!
         Aligns very simply molecule to the reference molecule, based on the shared MCS.
 
     Parameters

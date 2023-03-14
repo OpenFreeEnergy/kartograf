@@ -11,14 +11,15 @@ from gufe import LigandAtomMapping
 from gufe.mapping import AtomMapping
 
 import logging
+
 log = logging.getLogger(__name__)
 
-#simple metrics
+# simple metrics
 eukli = lambda x, y: np.sqrt(np.sum(np.square(y - x)))
 rms_func = lambda x: np.sqrt(np.mean(np.square(x)))
 
 
-def mappings_rmsd(mapping: LigandAtomMapping)->float:
+def mappings_rmsd(mapping: LigandAtomMapping) -> float:
     """this function calculates the rmsd between the mapped atoms of the two molecules
 
     Parameters
@@ -39,16 +40,17 @@ def mappings_rmsd(mapping: LigandAtomMapping)->float:
     molPosB = molB.GetConformer().GetPositions()
 
     diffs = []
-    for i,j in molA_to_molB.items():
+    for i, j in molA_to_molB.items():
         diff = molPosB[j] - molPosA[i]
         diffs.append(diff)
-    
+
     diffs = np.array(diffs)
-    rmsd_map_diff = np.round(np.sqrt(np.sum(diffs**2)),3)
-    
+    rmsd_map_diff = np.round(np.sqrt(np.sum(diffs**2)), 3)
+
     return rmsd_map_diff
 
-def norm_mapping_rmsd(mapping, k_hook=10**3, T=298)->float:
+
+def norm_mapping_rmsd(mapping, k_hook=10**3, T=298) -> float:
     """estimate likelihood of this shift by calculating the probability of the rmsd of the mapping with a harmonic oscillator
 
     Parameters
@@ -65,24 +67,21 @@ def norm_mapping_rmsd(mapping, k_hook=10**3, T=298)->float:
         likelihood of the shift
     """
     rmsd = mappings_rmsd(mapping)
-    beta = 1000/(const.k*const.Avogadro*T)
-    V = (1/2) * k_hook * rmsd**2
-    p =  np.exp(-beta*V)
+    beta = 1000 / (const.k * const.Avogadro * T)
+    V = (1 / 2) * k_hook * rmsd**2
+    p = np.exp(-beta * V)
     return p
-    
-def mapping_mapped_nonMapped_AtomRMS(mapping: AtomMapping):
-    raise NotImplementedError()
 
 
 def mapping_area_ratio(mapping: LigandAtomMapping):
     molA = mapping.componentA.to_rdkit()
     molB = mapping.componentB.to_rdkit()
     molA_to_molB = mapping.componentA_to_componentB
-    
+
     mapping_molA = sorted(list(molA_to_molB.keys()))
     mapping_molB = sorted(list(molA_to_molB.values()))
 
-    if(len(mapping_molA)<4):
+    if len(mapping_molA) < 4:
         raise ValueError("Mapping is too small to calculate convex hull")
 
     complete_molA = ConvexHull(molA.GetConformer().GetPositions()).area
@@ -90,13 +89,13 @@ def mapping_area_ratio(mapping: LigandAtomMapping):
     complete_molB = ConvexHull(molB.GetConformer().GetPositions()).area
     map_molB = ConvexHull(molB.GetConformer().GetPositions()[mapping_molB]).area
 
-    ratios = np.array([map_molA/complete_molA, map_molB/complete_molB])
+    ratios = np.array([map_molA / complete_molA, map_molB / complete_molB])
     avg_map = np.mean(ratios)
-    
-    return 1-avg_map
+
+    return 1 - avg_map
 
 
-def mapping_volume_ratio(mapping: LigandAtomMapping)->float:
+def mapping_volume_ratio(mapping: LigandAtomMapping) -> float:
     """this function calculates the ratio of the volume of the convex hull of the mapped atoms to the volume of the convex hull of the complete molecule
 
     Parameters
@@ -117,11 +116,11 @@ def mapping_volume_ratio(mapping: LigandAtomMapping)->float:
     molA = mapping.componentA.to_rdkit()
     molB = mapping.componentB.to_rdkit()
     molA_to_molB = mapping.componentA_to_componentB
-    
+
     mapping_molA = sorted(list(molA_to_molB.keys()))
     mapping_molB = sorted(list(molA_to_molB.values()))
 
-    if(len(mapping_molA)<4):
+    if len(mapping_molA) < 4:
         return np.inf
         raise ValueError("Mapping is too small to calculate convex hull")
 
@@ -130,13 +129,13 @@ def mapping_volume_ratio(mapping: LigandAtomMapping)->float:
     complete_molB = ConvexHull(molB.GetConformer().GetPositions()).volume
     map_molB = ConvexHull(molB.GetConformer().GetPositions()[mapping_molB]).volume
 
-    ratios = np.array([map_molA/complete_molA, map_molB/complete_molB])
+    ratios = np.array([map_molA / complete_molA, map_molB / complete_molB])
     avg_map = np.mean(ratios)
-    
-    return 1-avg_map
+
+    return 1 - avg_map
 
 
-def number_of_mapped_atoms(mapping: LigandAtomMapping)->float:
+def number_of_mapped_atoms_ratio(mapping: LigandAtomMapping) -> float:
     """calculate the number of mapped atoms/number of atoms in the larger molecule
 
     Parameters
@@ -152,16 +151,16 @@ def number_of_mapped_atoms(mapping: LigandAtomMapping)->float:
     molA = mapping.componentA.to_rdkit()
     molB = mapping.componentB.to_rdkit()
     molA_to_molB = mapping.componentA_to_componentB
-    
-    larger_nAtoms = len(molA.GetAtoms()) 
-    
-    if( len(molB.GetAtoms()) > larger_nAtoms):
+
+    larger_nAtoms = len(molA.GetAtoms())
+
+    if len(molB.GetAtoms()) > larger_nAtoms:
         larger_nAtoms = len(molB.GetAtoms())
-        
-    return len(molA_to_molB)/larger_nAtoms
+
+    return len(molA_to_molB) / larger_nAtoms
 
 
-def default_kartograf_score(mapping: LigandAtomMapping)->float:
+def default_kartograf_score(mapping: LigandAtomMapping) -> float:
     """
         Under Development
 
