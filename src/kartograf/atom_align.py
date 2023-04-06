@@ -36,12 +36,13 @@ def align_mol_sceletons(
     mol1b = ref_mol._rdkit
     mol2b = mol._rdkit
 
+    # MCS
     p = rdFMCS.MCSParameters()
     p.AtomTyper = rdFMCS.AtomCompare.CompareAny
 
     res = rdFMCS.FindMCS([mol1b, mol2b], p)
 
-    # convert match to mapping'
+    # convert match to mapping
     q = Chem.MolFromSmarts(res.smartsString)
     logging.debug(q)
 

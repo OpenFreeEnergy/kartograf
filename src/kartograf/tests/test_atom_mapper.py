@@ -2,39 +2,101 @@
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
 import pytest
+from kartograf import KartografAtomMapper
+from kartograf.atom_mapper import filter_atoms_h_only_h_mapped
 
-from rdkit import Chem
+from .conf import naphtalene_benzene, stereco_chem_molecules
 
-from kartograf import kartograf_atom_mapper
-from gufe import SmallMoleculeComponent
+def check_mapping_vs_expected(mapping, expected_mapping):
+    assert len(expected_mapping) == len(mapping.componentA_to_componentB)
 
+    diff = []
+    for exp_k, exp_v in expected_mapping.items():
+        if exp_k not in mapping.componentA_to_componentB:
+            diff.append((exp_k, exp_v, None, "missing mapping for atom"))
+        elif exp_v != mapping.componentA_to_componentB[exp_k]:
+            diff.append(
+                (exp_k, exp_v, mapping.componentA_to_componentB[exp_k], "-", "differently mapped atoms"))
 
-@pytest.fixture(scope="session")
-def stereo_chem_problem():
-    smiles = [
-        "C[C@H](F)Br",
-        "C[C@@H](F)Br",
-    ]
-
-    mols = [Chem.MolFromSmiles(s) for s in smiles]
-    mols = [Chem.AddHs(m, addCoords=True) for m in mols]
-    [Chem.rdDistGeom.EmbedMultipleConfs(m, 1) for m in mols]
-    Chem.rdMolAlign.AlignMol(mols[0], mols[1])
-
-    return mols
+    if (len(diff) > 0):
+        print("Differences: expected key, expected value, actual value")
+        print("\n".join(map(lambda x: "\t".join(map(str, x)), diff)))
+        raise ValueError("mapping did not match expected mapping!")
 
 
-def test_stereo_mapping(stereo_chem_problem):
+def test_mapping_naphtalene_benzene(naphtalene_benzene):
     """
-    Currently a smoke test
+        Test mapping of naphtalene to benzene.
     """
-    expected_solution = {}
-    geom_mapper = kartograf_atom_mapper(
+    expected_mapping = {6: 11, 9: 6, 10: 7, 11: 8, 12: 9, 13: 10, 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5}
+    geom_mapper = KartografAtomMapper(
+        atom_max_distance=0.95, atom_map_hydrogens=True,
+        map_hydrogens_on_hydrogens_only=False
+    )
+
+    geom_mapping = next(
+        geom_mapper.suggest_mappings(
+            naphtalene_benzene[0],
+            naphtalene_benzene[1],
+        )
+    )
+
+    check_mapping_vs_expected(geom_mapping, expected_mapping)
+
+def test_mapping_naphtalene_benzene_noHs(naphtalene_benzene):
+    """
+        Test mapping of naphtalene to benzene without H-atoms.
+    """
+    expected_mapping = {10: 7, 11: 8, 12: 9, 13: 10, 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5}
+    geom_mapper = KartografAtomMapper(
+        atom_max_distance=0.95, atom_map_hydrogens=True,
+        map_hydrogens_on_hydrogens_only=True
+    )
+
+    geom_mapping = next(
+        geom_mapper.suggest_mappings(
+            naphtalene_benzene[0],
+            naphtalene_benzene[1],
+        )
+    )
+
+    check_mapping_vs_expected(geom_mapping, expected_mapping)
+
+
+def test_mapping_naphtalene_benzene_noHs_add_filter(naphtalene_benzene):
+    """
+        Test mapping of naphtalene to benzene without H-atoms added as additional filter.
+    """
+    expected_mapping = {10: 7, 11: 8, 12: 9, 13: 10, 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5}
+    geom_mapper = KartografAtomMapper(
+        atom_max_distance=0.95, atom_map_hydrogens=True,
+        map_hydrogens_on_hydrogens_only=False,
+        _additional_mapping_filter_functions=[filter_atoms_h_only_h_mapped]
+    )
+
+    geom_mapping = next(
+        geom_mapper.suggest_mappings(
+            naphtalene_benzene[0],
+            naphtalene_benzene[1],
+        )
+    )
+
+    check_mapping_vs_expected(geom_mapping, expected_mapping)
+
+
+def test_stereo_mapping(stereco_chem_molecules):
+    """
+        Test weird Stereochemistry mapping.
+    """
+    expected_mapping = {2: 7, 4: 4, 5: 5, 6: 6, 7: 2, 0: 0, 1: 1, 3: 3}
+    geom_mapper = KartografAtomMapper(
         atom_max_distance=0.95, atom_map_hydrogens=True
     )  # mapping_algorithm.minimal_spanning_tree
     geom_mapping = next(
         geom_mapper.suggest_mappings(
-            SmallMoleculeComponent(stereo_chem_problem[0]),
-            SmallMoleculeComponent(stereo_chem_problem[1]),
+            stereco_chem_molecules[0],
+            stereco_chem_molecules[1],
         )
     )
+
+    check_mapping_vs_expected(geom_mapping, expected_mapping)

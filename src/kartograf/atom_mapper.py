@@ -58,7 +58,7 @@ def filter_atoms_h_only_h_mapped(molA:Chem.Mol, molB:Chem.Mol, mapping:Dict[int,
 
 
 # Implementation of Mapper:
-class kartograf_atom_mapper(AtomMapper):
+class KartografAtomMapper(AtomMapper):
     atom_max_distance: float
     atom_ring_matches_ring: bool
     atom_map_hydrogens: bool

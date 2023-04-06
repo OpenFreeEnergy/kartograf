@@ -3,31 +3,14 @@
 
 import pytest
 
-from rdkit import Chem
-
 from kartograf.atom_align import align_mol_sceletons
-from gufe import SmallMoleculeComponent
 
+from .conf import stereco_chem_molecules
 
-@pytest.fixture(scope="session")
-def stereo_chem_problem():
-    smiles = [
-        "C[C@H](F)Br",
-        "C[C@@H](F)Br",
-    ]
-
-    mols = [Chem.MolFromSmiles(s) for s in smiles]
-    mols = [Chem.AddHs(m, addCoords=True) for m in mols]
-    [Chem.rdDistGeom.EmbedMultipleConfs(m, 1) for m in mols]
-    mols = [SmallMoleculeComponent(m) for m in mols]
-
-    return mols
-
-
-def test_stereo_align(stereo_chem_problem):
+def test_stereo_align(stereco_chem_molecules):
     """
     Currently a smoke test
     """
-    molA, molB = stereo_chem_problem
+    molA, molB = stereco_chem_molecules
     aligned_molA = align_mol_sceletons(molA, molB)
     
