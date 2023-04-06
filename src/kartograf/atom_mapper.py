@@ -26,6 +26,7 @@ import logging
 log = logging.getLogger(__name__)
 
 
+
 # Enums:
 class mapping_algorithm(Enum):
     linear_sum_assignment = "LSA"
@@ -37,6 +38,24 @@ vector_eucledean_dist = calculate_edge_weight = lambda x, y: np.sqrt(
     np.sum(np.square(y - x), axis=1)
 )
 
+# filter functions:
+def filter_atoms_h_only_h_mapped(molA:Chem.Mol, molB:Chem.Mol, mapping:Dict[int, int])->Dict[int, int]:
+    
+    filtered_mapping = {}
+    for atomA_idx, atomB_idx in mapping.items():
+        atomA = molA.GetAtomWithIdx(atomA_idx)
+        atomB = molB.GetAtomWithIdx(atomB_idx)
+        
+        if (atomA.GetAtomicNum() == atomB.GetAtomicNum() == 1) or (atomA.GetAtomicNum() == atomB.GetAtomicNum() != 1):
+            filtered_mapping[atomA_idx] = atomB_idx
+            log.debug("keep mapping for atomIDs ("+str(atomA_idx)+", "+str(atomB_idx)+"): ", atomA.GetAtomicNum(), atomB.GetAtomicNum())
+
+        else:
+            log.debug("no mapping for atomIDs ("+str(atomA_idx)+", "+str(atomB_idx)+"): ", atomA.GetAtomicNum(), atomB.GetAtomicNum())
+        
+    return filtered_mapping
+
+
 
 # Implementation of Mapper:
 class kartograf_atom_mapper(AtomMapper):
@@ -45,19 +64,22 @@ class kartograf_atom_mapper(AtomMapper):
     atom_map_hydrogens: bool
     mapping_algorithm: mapping_algorithm
 
+    _filter_funcs: Iterable[Callable[Tuple[Chem.Mol, Chem.Mol, Dict[int, int]], Dict[int, int]]]
     def __init__(
         self,
         *,
         atom_ring_matches_ring: Optional[bool] = False,
         atom_max_distance: Optional[float] = 0.95,
         atom_map_hydrogens: Optional[bool] = True,
+        map_hydrogens_on_hydrogens_only: Optional[bool] = False,
+        _additional_mapping_filter_functions: Optional[Iterable[Callable[Tuple[Chem.Mol, Chem.Mol, Dict[int, int]], Dict[int, int]]]] = None,
         _mapping_algorithm: Optional[
             mapping_algorithm
         ] = mapping_algorithm.linear_sum_assignment,
     ):
         """
         This mapper is a homebrew, that utilises rdkit in order
-        to generate a mapping.
+        to generate an atom-mapping based on the coordinates of two molecules.
 
         Parameters
         ----------
@@ -66,6 +88,8 @@ class kartograf_atom_mapper(AtomMapper):
         atom_max_distance : float, optional
             geometric criteria for two atoms, how far their distance
             can be maximal (in Angstrom). Default 0.95
+        map_hydrogens_on_hydrogens_only : bool, optional
+            map hydrogens only on hydrogens. Default False
         mapping_algorithm : str, optional
             default="LSA"
 
@@ -74,6 +98,12 @@ class kartograf_atom_mapper(AtomMapper):
         self.atom_ring_matches_ring = atom_ring_matches_ring
         self.atom_map_hydrogens = atom_map_hydrogens
 
+        self._filter_funcs = []
+        if map_hydrogens_on_hydrogens_only:
+            self._filter_funcs.append(filter_atoms_h_only_h_mapped)
+        if(_additional_mapping_filter_functions is not None):
+            self._filter_funcs.extend(_additional_mapping_filter_functions)
+                    
         if _mapping_algorithm == _mapping_algorithm.linear_sum_assignment:
             self.mapping_algorithm = self._linearSumAlgorithm_map
         elif _mapping_algorithm == _mapping_algorithm.minimal_spanning_tree:
@@ -322,6 +352,14 @@ class kartograf_atom_mapper(AtomMapper):
 
         return mapping
 
+
+    def _additional_filter_rules(self, molA:Chem.Mol, molB:Chem.Mol, mapping:Dict[int,int]) -> Dict[int,int]:
+        filtered_mapping = copy.deepcopy(mapping)
+        for filter_rule in self._filter_funcs:
+            filtered_mapping = filter_rule(molA, molB, filtered_mapping)
+        return filtered_mapping
+    
+    
     def calculate_mapping(
         self,
         molA: Chem.Mol,
@@ -331,6 +369,7 @@ class kartograf_atom_mapper(AtomMapper):
         masked_atoms_molB=[],
         pre_mapped_atoms={},
         map_hydrogens: bool = True,
+        _additional_filter_rule: Callable[Tuple[Chem.Mol, Chem.Mol, Dict[int, int]], Dict[int, int]] = None,
     ) -> AtomMapping:
         """
             find a mapping between two molecules based on 3D coordinates.
@@ -437,6 +476,10 @@ class kartograf_atom_mapper(AtomMapper):
             molA_masked_atomMapping[k]: molB_masked_atomMapping[v]
             for k, v in mapping.items()
         }
+
+        # filter mapping for rules:
+        if(self._filter_funcs is not None):
+            mapping = self._additional_filter_rules(molA, molB, mapping)
 
         if len(pre_mapped_atoms) > 0:
             mapping.update(pre_mapped_atoms)
