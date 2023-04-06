@@ -369,7 +369,6 @@ class kartograf_atom_mapper(AtomMapper):
         masked_atoms_molB=[],
         pre_mapped_atoms={},
         map_hydrogens: bool = True,
-        _additional_filter_rule: Callable[Tuple[Chem.Mol, Chem.Mol, Dict[int, int]], Dict[int, int]] = None,
     ) -> AtomMapping:
         """
             find a mapping between two molecules based on 3D coordinates.
