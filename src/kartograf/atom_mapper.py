@@ -101,7 +101,7 @@ class kartograf_atom_mapper(AtomMapper):
         self._filter_funcs = []
         if map_hydrogens_on_hydrogens_only:
             self._filter_funcs.append(filter_atoms_h_only_h_mapped)
-        if(_additional_mapping_filter_functions is not None):
+        if _additional_mapping_filter_functions is not None :
             self._filter_funcs.extend(_additional_mapping_filter_functions)
                     
         if _mapping_algorithm == _mapping_algorithm.linear_sum_assignment:
