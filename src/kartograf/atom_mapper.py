@@ -26,7 +26,6 @@ import logging
 log = logging.getLogger(__name__)
 
 
-
 # Enums:
 class mapping_algorithm(Enum):
     linear_sum_assignment = "LSA"
@@ -39,22 +38,41 @@ vector_eucledean_dist = calculate_edge_weight = lambda x, y: np.sqrt(
 )
 
 # filter functions:
-def filter_atoms_h_only_h_mapped(molA:Chem.Mol, molB:Chem.Mol, mapping:Dict[int, int])->Dict[int, int]:
-    
+def filter_atoms_h_only_h_mapped(
+    molA: Chem.Mol, molB: Chem.Mol, mapping: Dict[int, int]
+) -> Dict[int, int]:
+
     filtered_mapping = {}
     for atomA_idx, atomB_idx in mapping.items():
         atomA = molA.GetAtomWithIdx(atomA_idx)
         atomB = molB.GetAtomWithIdx(atomB_idx)
-        
-        if (atomA.GetAtomicNum() == atomB.GetAtomicNum() == 1) or (atomA.GetAtomicNum() == atomB.GetAtomicNum() != 1):
+
+        if (atomA.GetAtomicNum() == atomB.GetAtomicNum() == 1) or (
+            atomA.GetAtomicNum() == atomB.GetAtomicNum() != 1
+        ):
             filtered_mapping[atomA_idx] = atomB_idx
-            log.debug("keep mapping for atomIDs ("+str(atomA_idx)+", "+str(atomB_idx)+"): ", atomA.GetAtomicNum(), atomB.GetAtomicNum())
+            log.debug(
+                "keep mapping for atomIDs ("
+                + str(atomA_idx)
+                + ", "
+                + str(atomB_idx)
+                + "): ",
+                atomA.GetAtomicNum(),
+                atomB.GetAtomicNum(),
+            )
 
         else:
-            log.debug("no mapping for atomIDs ("+str(atomA_idx)+", "+str(atomB_idx)+"): ", atomA.GetAtomicNum(), atomB.GetAtomicNum())
-        
-    return filtered_mapping
+            log.debug(
+                "no mapping for atomIDs ("
+                + str(atomA_idx)
+                + ", "
+                + str(atomB_idx)
+                + "): ",
+                atomA.GetAtomicNum(),
+                atomB.GetAtomicNum(),
+            )
 
+    return filtered_mapping
 
 
 # Implementation of Mapper:
@@ -64,7 +82,10 @@ class KartografAtomMapper(AtomMapper):
     atom_map_hydrogens: bool
     mapping_algorithm: mapping_algorithm
 
-    _filter_funcs: Iterable[Callable[Tuple[Chem.Mol, Chem.Mol, Dict[int, int]], Dict[int, int]]]
+    _filter_funcs: Iterable[
+        Callable[Tuple[Chem.Mol, Chem.Mol, Dict[int, int]], Dict[int, int]]
+    ]
+
     def __init__(
         self,
         *,
@@ -72,7 +93,11 @@ class KartografAtomMapper(AtomMapper):
         atom_max_distance: Optional[float] = 0.95,
         atom_map_hydrogens: Optional[bool] = True,
         map_hydrogens_on_hydrogens_only: Optional[bool] = False,
-        _additional_mapping_filter_functions: Optional[Iterable[Callable[Tuple[Chem.Mol, Chem.Mol, Dict[int, int]], Dict[int, int]]]] = None,
+        _additional_mapping_filter_functions: Optional[
+            Iterable[
+                Callable[Tuple[Chem.Mol, Chem.Mol, Dict[int, int]], Dict[int, int]]
+            ]
+        ] = None,
         _mapping_algorithm: Optional[
             mapping_algorithm
         ] = mapping_algorithm.linear_sum_assignment,
@@ -101,9 +126,9 @@ class KartografAtomMapper(AtomMapper):
         self._filter_funcs = []
         if map_hydrogens_on_hydrogens_only:
             self._filter_funcs.append(filter_atoms_h_only_h_mapped)
-        if _additional_mapping_filter_functions is not None :
+        if _additional_mapping_filter_functions is not None:
             self._filter_funcs.extend(_additional_mapping_filter_functions)
-                    
+
         if _mapping_algorithm == _mapping_algorithm.linear_sum_assignment:
             self.mapping_algorithm = self._linearSumAlgorithm_map
         elif _mapping_algorithm == _mapping_algorithm.minimal_spanning_tree:
@@ -352,14 +377,14 @@ class KartografAtomMapper(AtomMapper):
 
         return mapping
 
-
-    def _additional_filter_rules(self, molA:Chem.Mol, molB:Chem.Mol, mapping:Dict[int,int]) -> Dict[int,int]:
+    def _additional_filter_rules(
+        self, molA: Chem.Mol, molB: Chem.Mol, mapping: Dict[int, int]
+    ) -> Dict[int, int]:
         filtered_mapping = copy.deepcopy(mapping)
         for filter_rule in self._filter_funcs:
             filtered_mapping = filter_rule(molA, molB, filtered_mapping)
         return filtered_mapping
-    
-    
+
     def calculate_mapping(
         self,
         molA: Chem.Mol,
@@ -477,7 +502,7 @@ class KartografAtomMapper(AtomMapper):
         }
 
         # filter mapping for rules:
-        if(self._filter_funcs is not None):
+        if self._filter_funcs is not None:
             mapping = self._additional_filter_rules(molA, molB, mapping)
 
         if len(pre_mapped_atoms) > 0:
