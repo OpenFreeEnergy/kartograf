@@ -47,7 +47,7 @@ def mappings_rmsd(mapping: LigandAtomMapping) -> float:
     diffs = np.array(diffs)
     rmsd_map_diff = np.round(np.sqrt(np.sum(diffs**2)), 3)
 
-    return rmsd_map_diff
+    return np.round(rmsd_map_diff,2)
 
 
 def norm_mapping_rmsd(mapping, k_hook=10**3, T=298) -> float:
@@ -70,7 +70,7 @@ def norm_mapping_rmsd(mapping, k_hook=10**3, T=298) -> float:
     beta = 1000 / (const.k * const.Avogadro * T)
     V = (1 / 2) * k_hook * rmsd**2
     p = np.exp(-beta * V)
-    return p
+    return np.round(p,5)
 
 
 def mapping_area_ratio(mapping: LigandAtomMapping):
@@ -92,7 +92,7 @@ def mapping_area_ratio(mapping: LigandAtomMapping):
     ratios = np.array([map_molA / complete_molA, map_molB / complete_molB])
     avg_map = np.mean(ratios)
 
-    return 1 - avg_map
+    return np.round(1 - avg_map,2)
 
 
 def mapping_volume_ratio(mapping: LigandAtomMapping) -> float:
@@ -131,8 +131,8 @@ def mapping_volume_ratio(mapping: LigandAtomMapping) -> float:
 
     ratios = np.array([map_molA / complete_molA, map_molB / complete_molB])
     avg_map = np.mean(ratios)
-
-    return 1 - avg_map
+    print(ratios, avg_map, map_molA, complete_molA, map_molB, complete_molB)
+    return np.round(1 - avg_map,2)
 
 
 def number_of_mapped_atoms_ratio(mapping: LigandAtomMapping) -> float:
@@ -157,7 +157,7 @@ def number_of_mapped_atoms_ratio(mapping: LigandAtomMapping) -> float:
     if len(molB.GetAtoms()) > larger_nAtoms:
         larger_nAtoms = len(molB.GetAtoms())
 
-    return len(molA_to_molB) / larger_nAtoms
+    return np.round(1-(len(molA_to_molB) / larger_nAtoms), 2)
 
 
 def default_kartograf_score(mapping: LigandAtomMapping) -> float:
