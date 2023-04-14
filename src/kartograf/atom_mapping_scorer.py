@@ -265,7 +265,7 @@ class mapping_shape_distance(_abstract_ligand_atom_mapping_scorer):
 class default_kartograf_scorer(_abstract_ligand_atom_mapping_scorer):
 
     def __init__(self):
-        self.scorers = [mapping_volume_ratio()]
+        self.scorers = [mapping_ratio_of_mapped_atoms(), mapping_shape_distance()]
 
     def get_score(self, mapping: LigandAtomMapping) -> float:
         """
