@@ -465,7 +465,7 @@ class KartografAtomMapper(AtomMapper):
         )
 
         if len(molA_pos) == 0 or len(molB_pos) == 0:  # TODO: check if this is correct
-            log.warning("no mappable Atoms were found!")
+            if(len(pre_mapped_atoms)==0): log.warning("no mappable Atoms were found!")
             return pre_mapped_atoms
 
         # Calculate mapping
@@ -492,7 +492,7 @@ class KartografAtomMapper(AtomMapper):
         log.debug("Raw Mapping: " + str(mapping))
 
         if len(mapping) == 0:  # TODO: check if this is correct
-            log.warning("no mapping could be found!")
+            if(len(pre_mapped_atoms)==0): log.warning("no mapping could be found!")
             return pre_mapped_atoms
 
         # reverse any prior masking:
