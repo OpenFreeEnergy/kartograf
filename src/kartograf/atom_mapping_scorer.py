@@ -12,7 +12,7 @@ from rdkit.Chem import rdShapeHelpers
 from scipy.spatial import ConvexHull
 from scipy import constants as const
 
-from gufe import LigandAtomMapping
+from gufe import LigandAtomMapping, SmallMoleculeComponent
 from gufe.mapping import AtomMapping
 
 import logging
@@ -28,7 +28,10 @@ rms_func = lambda x: np.sqrt(np.mean(np.square(x)))
 
 
 import abc
-class _abstract_ligand_atom_mapping_scorer(abc.ABC):
+class _AbstractLigandAtomMappingScorer(abc.ABC):
+
+    def __init__(self):
+        pass
 
     def __call__(self, mapping:LigandAtomMapping, *args, **kwargs)->float:
         return self.get_score(mapping)
@@ -54,7 +57,7 @@ class _abstract_ligand_atom_mapping_scorer(abc.ABC):
         """
         pass
 
-class mapping_rmsd(_abstract_ligand_atom_mapping_scorer):
+class MappingRMSDScorer(_AbstractLigandAtomMappingScorer):
     def get_rmsd(self, mapping: LigandAtomMapping) -> float:
         """this function calculates the rmsd between the mapped atoms of the two molecules
 
@@ -111,7 +114,7 @@ class mapping_rmsd(_abstract_ligand_atom_mapping_scorer):
         return np.round(1-self.get_rmsd_p(mapping, accepted_distance_rmsd = accepted_distance_rmsd, k_hook= k_hook, T= T),2)
 
 
-class mapping_volume_ratio(_abstract_ligand_atom_mapping_scorer):
+class MappingVolumeRatioScorer(_AbstractLigandAtomMappingScorer):
 
     def get_score(self, mapping: LigandAtomMapping) -> float:
         return np.round(1-self.get_volume_ratio(mapping), 2)
@@ -153,13 +156,13 @@ class mapping_volume_ratio(_abstract_ligand_atom_mapping_scorer):
         ratios = np.array([map_molA / complete_molA, map_molB / complete_molB])
         avg_map_volume_ratio = np.mean(ratios)
 
-        print("ratios",avg_map_volume_ratio, ratios)
-        print("volumes", map_molA, complete_molA, map_molB, complete_molB)
+        #print("ratios",avg_map_volume_ratio, ratios)
+        #print("volumes", map_molA, complete_molA, map_molB, complete_molB)
         #print('ind', mapping_molA, mapping_molB)
         return avg_map_volume_ratio
 
 
-class mapping_ratio_of_mapped_atoms(_abstract_ligand_atom_mapping_scorer):
+class MappingRatioMappedAtomsScorer(_AbstractLigandAtomMappingScorer):
     def get_score(self, mapping: LigandAtomMapping) -> float:
         """calculate the number of mapped atoms/number of atoms in the larger molecule
 
@@ -185,16 +188,59 @@ class mapping_ratio_of_mapped_atoms(_abstract_ligand_atom_mapping_scorer):
         return np.round(1-(len(molA_to_molB) / larger_nAtoms), 2)
 
 
-class mapping_shape_distance(_abstract_ligand_atom_mapping_scorer):
+class MappingShapeDistanceScorer(_AbstractLigandAtomMappingScorer):
     mapping_mols: Tuple[Chem.Mol, Chem.Mol]
 
+    def __init__(self,  _rd_shape_dist_func=rdShapeHelpers.ShapeTanimotoDist,
+                    _gridSpacing=0.5, _vdwScale=0.8, _ignoreHs=False, _maxLayers=-1, _stepSize=0.25):
+
+        self._shape_dist_func = lambda molA, molB: _rd_shape_dist_func(molA, molB, gridSpacing=_gridSpacing,
+                                                                  vdwScale=_vdwScale, ignoreHs=_ignoreHs,
+                                                                  maxLayers=_maxLayers, stepSize=_stepSize)
     def get_score(self, mapping:LigandAtomMapping) ->float:
-        s = self.get_shape_mapping_distance(mapping)
+        s = self.get_mapping_shape_distance(mapping)
         return np.round(s,2) if(s<1) else 1
 
-    def get_shape_mapping_distance(self, mapping:LigandAtomMapping, _rd_shape_dist_func=rdShapeHelpers.ShapeTanimotoDist,
-                                   _gridSpacing=0.5, _vdwScale=0.8, _ignoreHs=False, _maxLayers=-1,
-                                   _stepSize=0.25)->float:
+    def get_mapped_mols(self, mapping:LigandAtomMapping)->Tuple[Chem.Mol, Chem.Mol  ]:
+        molA = mapping.componentA.to_rdkit()
+        molB = mapping.componentB.to_rdkit()
+        mapped_atomIDs = mapping.componentA_to_componentB
+
+        em_A = AllChem.RWMol(molA)
+        em_B = AllChem.RWMol(molB)
+
+        i=0
+        for atom in molA.GetAtoms():
+            if(not atom.GetIdx() in mapped_atomIDs.keys()):
+                em_A.RemoveAtom(atom.GetIdx()-i)
+                i+=1
+
+        i=0
+        for atom in molB.GetAtoms():
+            if(not atom.GetIdx() in mapped_atomIDs.values()):
+                em_B.RemoveAtom(atom.GetIdx()-i)
+                i+=1
+
+        mapping_molA = em_A.GetMol()
+        mapping_molB = em_B.GetMol()
+        return [mapping_molA, mapping_molB]
+
+
+    def get_rdmol_shape_distance(self, molA:Chem.Mol, molB: Chem.Mol)->float:
+        return self._shape_dist_func(molA=molA, molB=molB)
+
+    def get_mol_shape_distance(self, molA:SmallMoleculeComponent, molB:SmallMoleculeComponent)->float:
+        return self.get_rdmol_shape_distance(molA=molA.to_rdkit(), molB=molB.to_rdkit())
+
+    def get_mapping_mol_shape_distance(self, mapping:LigandAtomMapping)->float:
+        return self.get_mol_shape_distance(molA=mapping.componentA, molB=mapping.componentB)
+
+    def get_mapped_structure_shape_distance(self, mapping:LigandAtomMapping)->float:
+        self.mapping_mols = self.get_mapped_mols(mapping=mapping)
+        mapped_molA, mapped_molB = self.mapping_mols
+        return self.get_rdmol_shape_distance(molA=mapped_molA, molB=mapped_molB)
+
+    def get_mapping_shape_distance(self, mapping:LigandAtomMapping)->float:
         """
             the function builds two mapped mols, each for one molecule. Basically reduces the atoms to the mapped region.
             next it calculates the shape distance of both full molecules and of both mapped mols.
@@ -225,47 +271,21 @@ class mapping_shape_distance(_abstract_ligand_atom_mapping_scorer):
 
         """
 
-        molA = mapping.componentA.to_rdkit()
-        molB = mapping.componentB.to_rdkit()
-        mapped_atomIDs = mapping.componentA_to_componentB
-
-        #Build mapped mols
-        #print("build mols")
-        em_A = AllChem.RWMol(molA)
-        em_B = AllChem.RWMol(molB)
-
-        i=0
-        for atom in molA.GetAtoms():
-            if(not atom.GetIdx() in mapped_atomIDs.keys()):
-                em_A.RemoveAtom(atom.GetIdx()-i)
-                i+=1
-
-        i=0
-        for atom in molB.GetAtoms():
-            if(not atom.GetIdx() in mapped_atomIDs.values()):
-                em_B.RemoveAtom(atom.GetIdx()-i)
-                i+=1
-
-        mapping_molA = em_A.GetMol()
-        mapping_molB = em_B.GetMol()
-        self.mapping_mols = [mapping_molA, mapping_molB]
-
         #calculate metrics
-        #print("calc metrics")
-        _shape_dist_func = lambda molA, molB: _rd_shape_dist_func(molA, molB, gridSpacing=_gridSpacing,
-                                                                  vdwScale=_vdwScale, ignoreHs=_ignoreHs,
-                                                                  maxLayers=_maxLayers, stepSize=_stepSize)
-        mol_shape_dist = _shape_dist_func(molA, molB)
-        mapped_shape_dist =_shape_dist_func(mapping_molA, mapping_molB)
+        mol_shape_dist = self.get_mapping_mol_shape_distance(mapping=mapping)
+        mapped_shape_dist = self.get_mapped_structure_shape_distance(mapping=mapping)
         shape_dist_ratio = mapped_shape_dist/mol_shape_dist if(mapped_shape_dist != 0 and mol_shape_dist != 0) else 0.0
-        print("\tratio", np.round(shape_dist_ratio, 2), "\n\tmol shape D", mol_shape_dist, "\n\tmapped mol shape D", mapped_shape_dist)
+        #print("\tratio", np.round(shape_dist_ratio, 2), "\n\tmol shape D", mol_shape_dist, "\n\tmapped mol shape D", mapped_shape_dist)
         return shape_dist_ratio
 
 
-class default_kartograf_scorer(_abstract_ligand_atom_mapping_scorer):
+class DefaultKartografScorer(_AbstractLigandAtomMappingScorer):
 
     def __init__(self):
-        self.scorers = [mapping_ratio_of_mapped_atoms(), mapping_shape_distance()]
+        self.scorers = [MappingVolumeRatioScorer(), #MappingRatioMappedAtomsScorer
+                        MappingShapeDistanceScorer(),
+                        MappingRMSDScorer()]
+        self.weights = [0.1,0.45,0.45]
 
     def get_score(self, mapping: LigandAtomMapping) -> float:
         """
@@ -281,6 +301,13 @@ class default_kartograf_scorer(_abstract_ligand_atom_mapping_scorer):
         float
             normalized score
         """
-        d = (scorer(mapping) for scorer in self.scorers)
-        score = math.prod(d)
+        log.info("Kartograf Score:")
+        scores = []
+        for weight, scorer in zip(self.weights, self.scorers):
+            s = scorer.get_score(mapping)
+            log.info("\t"+scorer.__class__.__name__+"\t"+str(s)+"\tweight: "+str(weight))
+            scores.append(s*weight)
+
+        score = np.round(np.mean(scores),2)
+        log.info("Result: "+str(score))
         return score
