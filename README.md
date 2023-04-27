@@ -3,7 +3,10 @@
 [![coverage](https://codecov.io/gh/OpenFreeEnergy/kartograf/branch/main/graph/badge.svg)](https://codecov.io/gh/OpenFreeEnergy/kartograf)
 [![Documentation Status](https://readthedocs.org/projects/kartograf/badge/?version=latest)](https://kartograf.readthedocs.io/en/latest/?badge=latest)
 
-# Kartograf: The tools for mapping your FE calcuations
+[![Pip Install](https://img.shields.io/badge/pip%20install-kartograf-d9c4b1)](https://img.shields.io/badge/pip%20install-kartograf-d9c4b1)
+[![Conda Install](https://img.shields.io/badge/Conda%20install---c%20conda--forge%20kartograf-009384)](https://img.shields.io/badge/Conda%20install---c%20conda--forge%20kartograf-009384)
+
+# Kartograf: An 3D Graph atom mapper for Hybrid Topology Relative Free Energy Calculations 
 
 Kartograf offers at the moment a geometric hybrid topology atom mapper approach. 
 
