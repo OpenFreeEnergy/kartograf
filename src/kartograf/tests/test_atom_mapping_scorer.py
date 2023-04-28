@@ -1,29 +1,22 @@
 import pytest
 from kartograf.atom_mapping_scorer import (
-    mapping_volume_ratio,
-    mapping_rmsd,
-    mapping_ratio_of_mapped_atoms,
-    mapping_shape_distance,
-    default_kartograf_scorer
+    MappingRMSDScorer,
+    _MappingShapeDistanceScorer,
+    MappingShapeMismatchScorer,
+    MappingShapeOverlapScorer,
+    MappingVolumeRatioScorer,
+    MappingRatioMappedAtomsScorer,
+    DefaultKartografScorer
 )
 
-from .conf import stereo_chem_mapping, benzene_benzene_mapping
-
-
-def test_score_mapping_volume_ratio(stereo_chem_mapping):
-    """
-    Currently a smoke test
-    """
-    scorer = mapping_volume_ratio()
-    score = scorer(stereo_chem_mapping)
-    print(score)
+from .conf import stereo_chem_mapping, benzene_benzene_mapping, benzene_benzene_empty_mapping
 
 
 def test_score_mappings_rmsd(stereo_chem_mapping):
     """
     Currently a smoke test
     """
-    scorer = mapping_rmsd()
+    scorer = MappingRMSDScorer()
     score = scorer.get_rmsd(stereo_chem_mapping)
     print(score)
 
@@ -32,39 +25,75 @@ def test_score_norm_mapping_rmsd(stereo_chem_mapping):
     """
     Currently a smoke test
     """
-    scorer = mapping_rmsd()
+    scorer = MappingRMSDScorer()
     score = scorer.get_rmsd_p(stereo_chem_mapping)
     print(score)
 
-
-
-def test_score_tanimoto_shape_identical(benzene_benzene_mapping):
+def test_score_mapping_volume_ratio(stereo_chem_mapping):
     """
     Currently a smoke test
     """
-    scorer = mapping_shape_distance()
+    scorer = MappingVolumeRatioScorer()
+    score = scorer(stereo_chem_mapping)
+    print(score)
+
+
+def test_score_shape_dist(stereo_chem_mapping):
+    """
+    Currently a smoke test
+    """
+    scorer = _MappingShapeDistanceScorer()
+    score = scorer(stereo_chem_mapping)
+    print(score)
+
+def test_score_shape_overlap(stereo_chem_mapping):
+    """
+    Currently a smoke test
+    """
+    scorer = MappingShapeOverlapScorer()
+    score = scorer(stereo_chem_mapping)
+    print(score)
+
+def test_score_shape_mismatch(stereo_chem_mapping):
+    """
+    Currently a smoke test
+    """
+    scorer = MappingShapeMismatchScorer()
+    score = scorer(stereo_chem_mapping)
+    print(score)
+
+
+@pytest.mark.parametrize("scorer_class", [ MappingRMSDScorer,
+    _MappingShapeDistanceScorer,
+    MappingShapeMismatchScorer,
+    MappingShapeOverlapScorer,
+    MappingVolumeRatioScorer,
+    MappingRatioMappedAtomsScorer,
+    DefaultKartografScorer])
+def test_scorer_identical_molecules(scorer_class, benzene_benzene_mapping):
+    """
+    Currently a smoke test
+    """
+    scorer = scorer_class()
     score = scorer(benzene_benzene_mapping)
 
     assert isinstance(score, float)
     assert score == 0, "Score of identical Molecule should be 0"
 
 
-def test_default_kartograph_scorer_identical(benzene_benzene_mapping):
+@pytest.mark.parametrize("scorer_class, exp", [(MappingRMSDScorer, 0),
+                                               (_MappingShapeDistanceScorer, 1),
+                                               (MappingShapeMismatchScorer,1),
+                                               (MappingShapeOverlapScorer, 1),
+                                               (MappingVolumeRatioScorer, 1),
+                                               (MappingRatioMappedAtomsScorer,1),
+                                               (DefaultKartografScorer,1)])
+def test_scorer_empty_mapping(scorer_class, exp:float, benzene_benzene_empty_mapping):
     """
     Currently a smoke test
     """
-    scorer = default_kartograf_scorer()
-    score = scorer(benzene_benzene_mapping)
+    scorer = scorer_class()
+    score = scorer(benzene_benzene_empty_mapping)
 
     assert isinstance(score, float)
-    assert score == 0, "Score of identical Molecule should be 0"
-
-def test_default_kartograph_scorer_identical(benzene_benzene_mapping):
-    """
-    Currently a smoke test
-    """
-    scorer = mapping_ratio_of_mapped_atoms()
-    score = scorer(benzene_benzene_mapping)
-
-    assert isinstance(score, float)
-    assert score == 0, "Score of identical Molecule should be 0"
+    assert score == exp, "Score of non-Mapping should be "+str(exp)+" for "+str(scorer_class.__name__)+" but is: "+str(score)

@@ -86,7 +86,7 @@ class MappingRMSDScorer(_AbstractLigandAtomMappingScorer):
         diffs = np.array(diffs)
         rmsd_map_diff = np.round(np.sqrt(np.sum(diffs**2)), 3)
 
-        return np.round(rmsd_map_diff,5)
+        return float(np.round(rmsd_map_diff,5))
 
     def get_rmsd_p(self, mapping, accepted_distance_rmsd:float = 0.5, k_hook=1, T=298) -> float:
         """estimate likelihood of this shift by calculating the probability of the rmsd of the mapping with a harmonic oscillator
@@ -108,16 +108,17 @@ class MappingRMSDScorer(_AbstractLigandAtomMappingScorer):
         beta = 1000 / (const.k * const.Avogadro * T)
         V = k_hook * (rmsd-accepted_distance_rmsd)
         p = np.exp(-beta * V) if(np.exp(-beta * V) < 1) else 1
-        return np.round(p,5)
+        return float(np.round(p,5))
 
     def get_score(self, mapping, accepted_distance_rmsd:float = 0, k_hook=10**0, T=298)->float:
-        return np.round(1-self.get_rmsd_p(mapping, accepted_distance_rmsd = accepted_distance_rmsd, k_hook= k_hook, T= T),2)
+        return float(np.round(1-self.get_rmsd_p(mapping, accepted_distance_rmsd = accepted_distance_rmsd, k_hook= k_hook, T= T),2))
 
 
 class MappingVolumeRatioScorer(_AbstractLigandAtomMappingScorer):
 
     def get_score(self, mapping: LigandAtomMapping) -> float:
-        return np.round(1-self.get_volume_ratio(mapping), 2)
+        r = self.get_volume_ratio(mapping)
+        return 1 if(r<0) else np.round(1-r, 2)
 
     def get_volume_ratio(self, mapping: LigandAtomMapping) -> float:
         """this function calculates the ratio of the volume of the convex hull of the mapped atoms to the volume of the convex hull of the complete molecule
@@ -145,8 +146,8 @@ class MappingVolumeRatioScorer(_AbstractLigandAtomMappingScorer):
         mapping_molB = np.array(list(sorted(molA_to_molB.values())))
 
         if len(mapping_molA) < 4:
-            return np.inf
-            raise ValueError("Mapping is too small to calculate convex hull")
+            return 0.0
+            #raise ValueError("Mapping is too small to calculate convex hull")
 
         complete_molA = ConvexHull(molA.GetConformer().GetPositions()).volume
         map_molA = ConvexHull(molA.GetConformer().GetPositions()[mapping_molA]).volume
@@ -188,7 +189,7 @@ class MappingRatioMappedAtomsScorer(_AbstractLigandAtomMappingScorer):
         return np.round(1-(len(molA_to_molB) / larger_nAtoms), 2)
 
 
-class MappingShapeDistanceScorer(_AbstractLigandAtomMappingScorer):
+class _MappingShapeDistanceScorer(_AbstractLigandAtomMappingScorer):
     mapping_mols: Tuple[Chem.Mol, Chem.Mol]
 
     def __init__(self,  _rd_shape_dist_func=rdShapeHelpers.ShapeTanimotoDist,
@@ -199,12 +200,15 @@ class MappingShapeDistanceScorer(_AbstractLigandAtomMappingScorer):
                                                                   maxLayers=_maxLayers, stepSize=_stepSize)
     def get_score(self, mapping:LigandAtomMapping) ->float:
         s = self.get_mapping_shape_distance(mapping)
-        return np.round(s,2) if(s<1) else 1
+        return np.round(s,2) if(s<1) else 1.0
 
     def get_mapped_mols(self, mapping:LigandAtomMapping)->Tuple[Chem.Mol, Chem.Mol  ]:
         molA = mapping.componentA.to_rdkit()
         molB = mapping.componentB.to_rdkit()
         mapped_atomIDs = mapping.componentA_to_componentB
+
+        if(len(mapped_atomIDs) == 0):
+            return [None, None]
 
         em_A = AllChem.RWMol(molA)
         em_B = AllChem.RWMol(molB)
@@ -227,6 +231,11 @@ class MappingShapeDistanceScorer(_AbstractLigandAtomMappingScorer):
 
 
     def get_rdmol_shape_distance(self, molA:Chem.Mol, molB: Chem.Mol)->float:
+        if(any([x is None for x in [molA, molB]])):
+            if(all([x is None for x in [molA, molB]])):
+                return np.inf
+            else:
+                raise ValueError("One rdkit mol is None! (molA, molB)", [molA, molB])
         return self._shape_dist_func(molA=molA, molB=molB)
 
     def get_mol_shape_distance(self, molA:SmallMoleculeComponent, molB:SmallMoleculeComponent)->float:
@@ -274,18 +283,39 @@ class MappingShapeDistanceScorer(_AbstractLigandAtomMappingScorer):
         #calculate metrics
         mol_shape_dist = self.get_mapping_mol_shape_distance(mapping=mapping)
         mapped_shape_dist = self.get_mapped_structure_shape_distance(mapping=mapping)
-        shape_dist_ratio = mapped_shape_dist/mol_shape_dist if(mapped_shape_dist != 0 and mol_shape_dist != 0) else 0.0
-        #print("\tratio", np.round(shape_dist_ratio, 2), "\n\tmol shape D", mol_shape_dist, "\n\tmapped mol shape D", mapped_shape_dist)
-        return shape_dist_ratio
 
+        if(mapped_shape_dist == np.inf):    # no mapping
+            return 1.0
+        elif(mol_shape_dist == 0 and mapped_shape_dist == 0): # identical mols
+            return 0.0
+        else:
+            shape_dist_ratio = mapped_shape_dist/mol_shape_dist
+            return shape_dist_ratio
+
+
+class MappingShapeOverlapScorer(_MappingShapeDistanceScorer):
+    def __init__(self, _gridSpacing=0.5, _vdwScale=0.8, _ignoreHs=False, _maxLayers=-1, _stepSize=0.25):
+
+        super().__init__(_rd_shape_dist_func=rdShapeHelpers.ShapeTanimotoDist, _gridSpacing=_gridSpacing,
+                         _vdwScale=_vdwScale, _ignoreHs=_ignoreHs, _maxLayers=_maxLayers, _stepSize=_stepSize)
+
+class MappingShapeMismatchScorer(_MappingShapeDistanceScorer):
+
+    def __init__(self, _gridSpacing=0.5, _vdwScale=0.8, _ignoreHs=False, _maxLayers=-1, _stepSize=0.25):
+
+        super().__init__(_rd_shape_dist_func=rdShapeHelpers.ShapeProtrudeDist, _gridSpacing=_gridSpacing,
+                         _vdwScale=_vdwScale, _ignoreHs=_ignoreHs, _maxLayers=_maxLayers, _stepSize=_stepSize)
 
 class DefaultKartografScorer(_AbstractLigandAtomMappingScorer):
 
     def __init__(self):
         self.scorers = [MappingVolumeRatioScorer(), #MappingRatioMappedAtomsScorer
-                        MappingShapeDistanceScorer(),
+                        MappingShapeOverlapScorer(),
+                        MappingShapeMismatchScorer(),
                         MappingRMSDScorer()]
-        self.weights = [0.1,0.45,0.45]
+
+        self.weights = np.array([1,3,3,3])
+        self.weigths = self.weights/sum(self.weights)
 
     def get_score(self, mapping: LigandAtomMapping) -> float:
         """
@@ -309,5 +339,6 @@ class DefaultKartografScorer(_AbstractLigandAtomMappingScorer):
             scores.append(s*weight)
 
         score = np.round(np.mean(scores),2)
+        score = score if(score<1.0) else 1.0
         log.info("Result: "+str(score))
         return score
