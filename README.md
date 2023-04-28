@@ -8,6 +8,56 @@
 
 # Kartograf: An 3D Graph atom mapper for Hybrid Topology Relative Free Energy Calculations 
 
-Kartograf offers at the moment a geometric hybrid topology atom mapper approach. 
+Kartograf offers a geometric hybrid topology atom mapper approach, that allows to map a given set of ligand coordinates.
+This package can be used standalone, or from the OpenFE environment.
 
-More will be here soon!
+**More will be here soon!**
+
+## Usage
+```python3
+from rdkit import Chem
+from kartograf.atom_align import align_mol_shape
+from kartograf import KartografAtomMapper, SmallMoleculeComponent
+
+#Preprocessing from Smiles - Here you can add your Input!
+# Generate Data: START
+smiles = ["c1ccccc1", "c1ccccc1(CO)"]
+rdmols = [Chem.MolFromSmiles(s) for s in smiles]
+rdmols = [Chem.AddHs(m, addCoords=True) for m in rdmols]
+[Chem.rdDistGeom.EmbedMolecule(m, useRandomCoords=False, randomSeed = 0) for m in rdmols]
+# Generate Data: END
+
+# Build Small Molecule Components
+molA, molB = [SmallMoleculeComponent.from_rdkit(m) for m in rdmols]
+
+# Align the mols first - this might not needed, depends on input.
+a_molB = align_mol_shape(molB, ref_mol=molA)
+
+
+# Build Kartograf Atom Mapper
+mapper = KartografAtomMapper(atom_map_hydrogens=True)
+
+# Get Mapping
+kartograf_mapping = next(mapper.suggest_mappings(molA, a_molB))
+
+kartograf_mapping
+```
+![](.img/alignment_benz_ol.png)
+
+## Installation
+you can install Kartograf via the package manager of your choice:
+
+```shell
+pip install kartograf
+```
+
+```shell
+conda install -c conda-forge kartograf
+```
+
+Or use Kartograf from the OpenFE Environment (soon).
+
+## References
+
+
+
