@@ -1,7 +1,7 @@
 
 <p align="center">
-    <img src=".img/Kartograf_logo_boxed_dark_transp.png" id="gh-dark-mode-only"  width=35%/>
-    <!-- <img src=".img/Kartograf_logo_boxed_light_transp.png" id="gh-light-mode-only"  width=20%/> -->
+    <img src="docs/img/Kartograf_logo_boxed_dark_transp.png" id="gh-dark-mode-only"  width=35%/>
+    <!-- <img src="img/Kartograf_logo_boxed_light_transp.png" id="gh-light-mode-only"  width=20%/> -->
 </p>
 
 Kartograf: A 3D atom graph mapper
@@ -51,7 +51,7 @@ kartograf_mapping = next(mapper.suggest_mappings(molA, a_molB))
 
 kartograf_mapping
 ```
-![](.img/alignment_benz_ol.png)
+![](docs/img/alignment_benz_ol.png)
 
 ## Installation
 you can install Kartograf via the package manager of your choice:
