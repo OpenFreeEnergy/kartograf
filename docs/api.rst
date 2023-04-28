@@ -7,5 +7,5 @@ API docs
    :caption: API Contents:
 
    api/atom_mapping
-   api/networks
+   api/atom_align
 
