@@ -1,7 +1,7 @@
 
 <p align="center">
-    <img src=".img/Kartograf_logo_boxed_dark_transp.png" id="gh-dark-mode-only"  width=20%/>
-    <img src=".img/Kartograf_logo_boxed_light_transp.png" id="gh-light-mode-only"  width=20%/>
+    <img src=".img/Kartograf_logo_boxed_dark_transp.png" id="gh-dark-mode-only"  width=10%/>
+    <!-- <img src=".img/Kartograf_logo_boxed_light_transp.png" id="gh-light-mode-only"  width=20%/> -->
 </p>
 
 Kartograf: A 3D atom graph mapper
