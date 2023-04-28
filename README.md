@@ -4,7 +4,7 @@
     <!-- <img src="img/Kartograf_logo_boxed_light_transp.png" id="gh-light-mode-only"  width=20%/> -->
 </p>
 
-Kartograf: A 3D atom graph mapper
+Kartograf: A 3D Atom Graph Mapper
 ==================================
 
 [//]: # (Badges)
