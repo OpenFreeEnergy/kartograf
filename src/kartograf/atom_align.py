@@ -1,8 +1,9 @@
 from copy import deepcopy
 
 from rdkit import Chem
-from rdkit.Chem import rdFMCS
 from rdkit.Chem import AllChem
+from rdkit.Chem import rdFMCS
+from rdkit.Chem import rdMolAlign
 
 from gufe import SmallMoleculeComponent
 
@@ -17,6 +18,7 @@ def align_mol_sceletons(
 ) -> SmallMoleculeComponent:
     """
         WORK IN PROGRESS!
+        This i a Wrapper for rdkit - MCS align
         Aligns very simply molecule to the reference molecule, based on the shared MCS.
 
     Parameters
@@ -58,6 +60,35 @@ def align_mol_sceletons(
         atomMap=idx_mappings,
     )
     logging.debug(rms)
+
+    mol._rdkit = mol2b
+    return mol
+
+def align_mol_shape(mol:SmallMoleculeComponent, ref_mol:SmallMoleculeComponent)->Chem.Mol:
+    """
+        WORK IN PROGRESS!
+        This i a Wrapper for rdkit / OPEN3DAlign
+        Aligns shape based two SmallMoleculeComponents.
+
+    Parameters
+    ----------
+    mol : SmallMoleculeComponent
+        molecule to be aligned to molA (will be moved)
+    ref_mol : SmallMoleculeComponent
+        molecule with the reference_positions.
+
+    Returns
+    -------
+    SmallMoleculeComponent
+        return an aligned copy of molB
+    """
+    mol = deepcopy(mol)
+
+    mol1b = ref_mol._rdkit
+    mol2b = mol._rdkit
+    pyO3A = rdMolAlign.GetO3A(prbMol=mol2b, refMol=mol1b,)
+    score = pyO3A.Align()
+    logging.debug("alignment score: "+str(score))
 
     mol._rdkit = mol2b
     return mol
