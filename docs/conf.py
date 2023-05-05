@@ -51,8 +51,17 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # a list of builtin themes.
 #
 html_theme = 'pydata_sphinx_theme'
+html_theme_options = {
+   "logo": {
+      "image_light": "./_static/img/Kartograf_logo_boxed_dark_transp.png",
+      "image_dark": "./_static/img/Kartograf_logo_boxed_dark_transp.png",
+   }
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+html_css_files = [
+    'css/custom.css',
+]
