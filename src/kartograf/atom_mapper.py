@@ -3,7 +3,6 @@
 
 import copy
 import numpy as np
-import networkx as nx
 from enum import Enum
 
 from collections import OrderedDict
