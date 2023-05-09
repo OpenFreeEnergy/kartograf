@@ -1,14 +1,31 @@
+html{
+    --ofe-color-BadassBlue: #31394d;
+    --ofe-color-OtherBlue: #002f4a;
+    --ofe-color-SandySergio: #d9c4b1;
+    --ofe-color-SergiosCousin: #ede3da;
+    --ofe-color-FeelingSpicy: #b85741;
+    --ofe-color-FeelingSick: #009384;
+    --ofe-color-BeastlyGrey: #666666;
+
+    --ofe-color-GoldenYellow: #EEC044FF;
+    --ofe-color-DarkGoldenYellow: #c9a239;
+
+    --ofe-color-SergiosBrigtherCousin: #fffaf5;
+    --ofe-color-BeastlyLightGrey: #464545;
+}
+
+
 /*
 NavBar
 */
 code{
-    color: #009384;
+    color: var(--ofe-color-FeelingSick);
 }
 .bd-page-width {
     max-width: None;
 }
 .bd-header .bd-header__inner{
-    background: #31394d;
+    background: var(--ofe-color-BadassBlue);
 }
 
 /*NavBar links*/
@@ -45,25 +62,40 @@ code{
     color: var(--pst-color-primary-highlight);
 }
 
+.navbar{
+    --bs-navbar-brand-hover-color: var(--ofe-color-SandySergio);
+}
+
+.navbar img{
+    border: 0px;
+}
+.navbar p {
+    color: var(--ofe-color-SergiosCousin);
+
+}
+
+img {
+    border: 2px solid var(--ofe-color-BeastlyGrey);
+}
 
 /*
-Themes
+Themes - Deviating Colors are ofe-colorVars rest is original scipyData theme.
 */
 
 html[data-theme=light]{
-    --pst-color-primary: #002f4a;
-    --pst-color-primary-text: #d9c4b1;
-    --pst-color-primary-highlight: #ede3da;
+    --pst-color-primary: var(--ofe-color-OtherBlue);
+    --pst-color-primary-text: var(--ofe-color-SandySergio);
+    --pst-color-primary-highlight: var(--ofe-color-SergiosCousin);
     --sd-color-primary: var(--pst-color-primary);
     --sd-color-primary-text: var(--pst-color-primary-text);
     --sd-color-primary-highlight: var(--pst-color-primary-highlight);
-    --pst-color-secondary: #d9c4b1;
+    --pst-color-secondary: var(--ofe-color-SandySergio);
     --pst-color-secondary-text: #fff;
     --pst-color-secondary-highlight: #cf6912;
     --sd-color-secondary: var(--pst-color-secondary);
     --sd-color-secondary-text: var(--pst-color-secondary-text);
     --sd-color-secondary-highlight: var(--pst-color-secondary-highlight);
-    --pst-color-success: #009384;
+    --pst-color-success: #28a745;
     --pst-color-success-text: #fff;
     --pst-color-success-highlight: #19692c;
     --sd-color-success: var(--pst-color-success);
@@ -75,13 +107,13 @@ html[data-theme=light]{
     --sd-color-info: var(--pst-color-info);
     --sd-color-info-text: var(--pst-color-info-text);
     --sd-color-info-highlight: var(--pst-color-info-highlight);
-    --pst-color-warning: #b85741;
+    --pst-color-warning: #ee9040;
     --pst-color-warning-text: #fff;
     --pst-color-warning-highlight: #cf6912;
     --sd-color-warning: var(--pst-color-warning);
     --sd-color-warning-text: var(--pst-color-warning-text);
     --sd-color-warning-highlight: var(--pst-color-warning-highlight);
-    --pst-color-danger: #b85741;
+    --pst-color-danger: #dc3545;
     --pst-color-danger-text: #fff;
     --pst-color-danger-highlight: #a71d2a;
     --sd-color-danger: var(--pst-color-danger);
@@ -93,7 +125,7 @@ html[data-theme=light]{
     --sd-color-light: var(--pst-color-light);
     --sd-color-light-text: var(--pst-color-light-text);
     --sd-color-light-highlight: var(--pst-color-light-highlight);
-    --pst-color-muted: #666666;
+    --pst-color-muted: #646464;
     --pst-color-muted-text: #fff;
     --pst-color-muted-highlight: #3e3e3e;
     --sd-color-muted: var(--pst-color-muted);
@@ -119,14 +151,14 @@ html[data-theme=light]{
     --sd-color-white-highlight: var(--pst-color-white-highlight)
 }
 html[data-theme=light] {
-    --pst-color-attention: #ffc107;
-    --pst-color-text-base: #323232;
-    --pst-color-text-muted: #646464;
+    --pst-color-attention: var(--ofe-color-GoldenYellow);
+    --pst-color-text-base: var(--ofe-color-OtherBlue);
+    --pst-color-text-muted: var(--ofe-color-BadassBlue);
     --pst-color-shadow: #d8d8d8;
     --pst-color-border: #c9c9c9;
-    --pst-color-inline-code: #b85741;
-    --pst-color-target: #fbe54e;
-    --pst-color-background: #fff;
+    --pst-color-inline-code: var(--ofe-color-FeelingSpicy);
+    --pst-color-target: var(--ofe-color-GoldenYellow);
+    --pst-color-background: var(--ofe-color-SergiosBrigtherCousin);
     --pst-color-on-background: #fff;
     --pst-color-surface: #f5f5f5;
     --pst-color-on-surface: #e1e1e1;
@@ -136,8 +168,8 @@ html[data-theme=light] {
 
 /*DarkTheme*/
 html[data-theme=dark] {
-    --pst-color-primary: #ede3da;
-    --pst-color-primary-text: #d9c4b1;
+    --pst-color-primary: var(--ofe-color-SergiosCousin);
+    --pst-color-primary-text: var(--ofe-color-SandySergio);
     --pst-color-primary-highlight: #306e81;
     --sd-color-primary: var(--pst-color-primary);
     --sd-color-primary-text: var(--pst-color-primary-text);
@@ -206,16 +238,16 @@ html[data-theme=dark] {
 
 
 html[data-theme=dark] {
-    --pst-color-attention: #dca90f;
-    --pst-color-text-base: #cecece;
-    --pst-color-text-muted: #a6a6a6;
+    --pst-color-attention: var(--ofe-color-FeelingSpicy);
+    --pst-color-text-base: var(--ofe-color-SergiosBrigtherCousin);
+    --pst-color-text-muted: var(--ofe-color-SandySergio);
     --pst-color-shadow: #212121;
     --pst-color-border: silver;
-    --pst-color-inline-code: #009384;
-    --pst-color-target: #472700;
-    --pst-color-background: #121212;
+    --pst-color-inline-code: var(--ofe-color-FeelingSick);
+    --pst-color-target: var(--ofe-color-DarkGoldenYellow);
+    --pst-color-background: var(--ofe-color-BeastlyLightGrey);
     --pst-color-on-background: #1e1e1e;
-    --pst-color-surface: #212121;
+    --pst-color-surface: #666666;
     --pst-color-on-surface: #373737;
     --pst-color-link: var(--pst-color-primary);
     --pst-color-link-hover: var(--pst-color-warning)
