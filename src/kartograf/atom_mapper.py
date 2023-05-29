@@ -36,10 +36,11 @@ vector_eucledean_dist = calculate_edge_weight = lambda x, y: np.sqrt(
     np.sum(np.square(y - x), axis=1)
 )
 
+
 # filter functions:
 def filter_atoms_h_only_h_mapped(
-    molA: Chem.Mol, molB: Chem.Mol, mapping: Dict[int, int]
-) -> Dict[int, int]:
+    molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
+) -> dict[int, int]:
 
     filtered_mapping = {}
     for atomA_idx, atomB_idx in mapping.items():
@@ -51,24 +52,14 @@ def filter_atoms_h_only_h_mapped(
         ):
             filtered_mapping[atomA_idx] = atomB_idx
             log.debug(
-                "keep mapping for atomIDs ("
-                + str(atomA_idx)
-                + ", "
-                + str(atomB_idx)
-                + "): ",
-                atomA.GetAtomicNum(),
-                atomB.GetAtomicNum(),
+                f"keep mapping for atomIDs ({atomA_idx}, {atomB_idx}): "
+                f"{atomA.GetAtomicNum()} {atomB.GetAtomicNum()}"
             )
 
         else:
             log.debug(
-                "no mapping for atomIDs ("
-                + str(atomA_idx)
-                + ", "
-                + str(atomB_idx)
-                + "): ",
-                atomA.GetAtomicNum(),
-                atomB.GetAtomicNum(),
+                f"no mapping for atomIDs ({atomA_idx}, {atomB_idx}): "
+                f"{atomA.GetAtomicNum()} {atomB.GetAtomicNum()}"
             )
 
     return filtered_mapping
@@ -81,20 +72,20 @@ class KartografAtomMapper(AtomMapper):
     atom_map_hydrogens: bool
     mapping_algorithm: mapping_algorithm
 
-    _filter_funcs: Iterable[
-        Callable[Tuple[Chem.Mol, Chem.Mol, Dict[int, int]], Dict[int, int]]
+    _filter_funcs: list[
+        Callable[[Chem.Mol, Chem.Mol, dict[int, int]], dict[int, int]]
     ]
 
     def __init__(
         self,
         *,
-        atom_ring_matches_ring: Optional[bool] = False,
-        atom_max_distance: Optional[float] = 0.95,
-        atom_map_hydrogens: Optional[bool] = True,
-        map_hydrogens_on_hydrogens_only: Optional[bool] = False,
+        atom_ring_matches_ring: bool = False,
+        atom_max_distance: float = 0.95,
+        atom_map_hydrogens: bool = True,
+        map_hydrogens_on_hydrogens_only: bool = False,
         _additional_mapping_filter_functions: Optional[
             Iterable[
-                Callable[Tuple[Chem.Mol, Chem.Mol, Dict[int, int]], Dict[int, int]]
+                Callable[[Chem.Mol, Chem.Mol, dict[int, int]], dict[int, int]]
             ]
         ] = None,
         _mapping_algorithm: Optional[
@@ -139,13 +130,15 @@ class KartografAtomMapper(AtomMapper):
             )
 
     # TODO: Needs to be implemented
-    def _from_dict():
+    @classmethod
+    def _from_dict(cls, d: dict):
         pass
 
-    def _to_dict():
+    def _to_dict(self) -> dict:
         pass
 
-    def _defaults():
+    @classmethod
+    def _defaults(cls) -> dict:
         pass
 
     """
@@ -377,7 +370,7 @@ class KartografAtomMapper(AtomMapper):
         return mapping
 
     def _additional_filter_rules(
-        self, molA: Chem.Mol, molB: Chem.Mol, mapping: Dict[int, int]
+        self, molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
     ) -> Dict[int, int]:
         filtered_mapping = copy.deepcopy(mapping)
         for filter_rule in self._filter_funcs:
@@ -389,11 +382,11 @@ class KartografAtomMapper(AtomMapper):
         molA: Chem.Mol,
         molB: Chem.Mol,
         max_d: float = 0.95,
-        masked_atoms_molA=[],
-        masked_atoms_molB=[],
-        pre_mapped_atoms={},
+        masked_atoms_molA: Optional[list[int]] = None,
+        masked_atoms_molB: Optional[list[int]] = None,
+        pre_mapped_atoms: Optional[dict[int, int]] = None,
         map_hydrogens: bool = True,
-    ) -> AtomMapping:
+    ) -> dict[int, int]:
         """
             find a mapping between two molecules based on 3D coordinates.
 
@@ -419,6 +412,12 @@ class KartografAtomMapper(AtomMapper):
         AtomMapping
             _description_
         """
+        if masked_atoms_molA is None:
+            masked_atoms_molA = []
+        if masked_atoms_molB is None:
+            masked_atoms_molB = []
+        if pre_mapped_atoms is None:
+            pre_mapped_atoms = dict()
 
         molA_pos = molA.GetConformer().GetPositions()
         molB_pos = molB.GetConformer().GetPositions()
@@ -525,10 +524,10 @@ class KartografAtomMapper(AtomMapper):
         self,
         molA: Chem.Mol,
         molB: Chem.Mol,
-        masked_atoms_molA=[],
-        masked_atoms_molB=[],
-        pre_mapped_atoms={},
-    ) -> Dict[int, int]:
+        masked_atoms_molA: Optional[list] = None,
+        masked_atoms_molB: Optional[list] = None,
+        pre_mapped_atoms: Optional[dict] = None,
+    ) -> dict[int, int]:
         """
         The function effectivly maps the two molecules on to each other and
         applies the given settings by the obj.
@@ -543,8 +542,14 @@ class KartografAtomMapper(AtomMapper):
             remove categorical atoms by index of MolB from the mapping, by default []
         pre_mapped_atoms : dict, optional
             pre_mapped atoms, that need to be part of the mapping, by default {}
-
         """
+        if masked_atoms_molA is None:
+            masked_atoms_molA = []
+        if masked_atoms_molB is None:
+            masked_atoms_molB = []
+        if pre_mapped_atoms is None:
+            pre_mapped_atoms = {}
+
         molA = Chem.Mol(molA)
         molB = Chem.Mol(molB)
         masked_atoms_molA = copy.deepcopy(masked_atoms_molA)
