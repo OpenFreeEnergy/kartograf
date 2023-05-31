@@ -25,3 +25,16 @@ def filter_atoms_h_only_h_mapped(
                          f" {atomA.GetAtomicNum()} {atomB.GetAtomicNum()}")
 
     return filtered_mapping
+
+
+def filter_element_changes(molA, molB,
+                           mapping: dict[int, int]) -> dict[int, int]:
+    """Forces a mapping to exclude any alchemical element changes in the core"""
+    filtered_mapping = {}
+
+    for i, j in mapping.items():
+        if molA.GetAtomWithIdx(i).GetAtomicNum() != molB.GetAtomWithIdx(j):
+            continue
+        filtered_mapping[i] = j
+
+    return filtered_mapping
