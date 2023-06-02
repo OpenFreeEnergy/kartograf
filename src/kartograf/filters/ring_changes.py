@@ -30,7 +30,11 @@ def filter_ringsize_changes(molA, molB,
 
 def filter_ringbreak_changes(molA, molB,
                              mapping: dict[int, int]) -> dict[int, int]:
-    """Prevent any ring cleaving transformations in the mapping"""
+    """Prevent any ring cleaving transformations in the mapping
+
+    This filter prevents any non-ring atom turning into a ring atom (or
+    vice versa)
+    """
     filtered_mapping = {}
 
     for i, j in mapping.items():
@@ -41,3 +45,29 @@ def filter_ringbreak_changes(molA, molB,
         filtered_mapping[i] = j
 
     return filtered_mapping
+
+
+def filter_whole_rings_only(molA, molB,
+                            mapping: dict[int, int]) -> dict[int, int]:
+    """Ensure that any mapped rings are wholly mapped"""
+    proposed_mapping = {**mapping}
+
+    for mol in [molA, molB]:  # loop over A->B and B->A directions
+        ri = mol.GetRingInfo().AtomRings()  # gives list of tuple of atom indices
+        ok: dict[int, bool] = {}  # if a ring atom, is this ok to keep?
+        for ring in ri:
+            # for each ring, atoms are ok if all the atoms of this ring are in
+            # the mapping
+            all_in_ring = all(atom in proposed_mapping for atom in ring)
+            for atom in ring:
+                ok[atom] = all_in_ring
+
+        filtered_mapping = {}
+        for i, j in proposed_mapping.items():
+            if ok.get(i, True):  # if not present, isn't in ring so keep
+                filtered_mapping[i] = j
+
+        # reverse the mapping to check B->A (then reverse again)
+        proposed_mapping = {v: k for k, v in filtered_mapping}
+
+    return proposed_mapping
