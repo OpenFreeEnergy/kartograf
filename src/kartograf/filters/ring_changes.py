@@ -15,6 +15,12 @@ def filter_ringsize_changes(molA, molB,
         at_i = molA.GetAtomWithIdx(i)
         at_j = molB.GetAtomWithIdx(j)
 
+        if not (at_i.IsInRing() and at_j.IsInRing()):
+            # only applicable for atoms in rings
+            # other cases are handled with other filters
+            filtered_mapping[i] = j
+            continue
+
         # AtomRingSizes gives as tuple of ring sizes that this atom is part of
         rs_i = set(riA.AtomRingSizes(at_i))
         rs_j = set(riB.AtomRingSizes(at_j))
