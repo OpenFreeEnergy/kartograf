@@ -118,6 +118,7 @@ class KartografAtomMapper(AtomMapper):
         self.atom_max_distance = atom_max_distance
         self.atom_ring_matches_ring = atom_ring_matches_ring
         self.atom_map_hydrogens = atom_map_hydrogens
+        self._map_hydrogens_on_hydrogens_only = False
 
         self._filter_funcs = []
         if map_hydrogens_on_hydrogens_only:
@@ -126,6 +127,7 @@ class KartografAtomMapper(AtomMapper):
             self._filter_funcs.extend(additional_mapping_filter_functions)
 
         if _mapping_algorithm == _mapping_algorithm.linear_sum_assignment:
+            self._map_hydrogens_on_hydrogens_only = True
             self.mapping_algorithm = self._linearSumAlgorithm_map
         elif _mapping_algorithm == _mapping_algorithm.minimal_spanning_tree:
             self.mapping_algorithm = self._minimalSpanningTree_map
@@ -134,6 +136,20 @@ class KartografAtomMapper(AtomMapper):
                 "Mapping algorithm not implemented or unknown (options: MST or LSA). got key: "
                 + str(_mapping_algorithm)
             )
+
+    @property
+    def map_hydrogens_on_hydrogens_only(self)->bool:
+        """this property is a shortcut for setting hydrogen shall be mapped only on hydrogen filter."""
+        return self._map_hydrogens_on_hydrogens_only
+    @map_hydrogens_on_hydrogens_only.setter
+    def map_hydrogens_on_hydrogens_only(self, s:bool):
+        self._map_hydrogens_on_hydrogens_only = s
+        if(s and filter_atoms_h_only_h_mapped not in self._filter_funcs):
+            self._filter_funcs.insert(0, filter_atoms_h_only_h_mapped)
+        elif(filter_atoms_h_only_h_mapped in self._filter_funcs):
+            self._filter_funcs.remove(filter_atoms_h_only_h_mapped)
+
+
 
     @classmethod
     def _from_dict(cls, d: dict):
@@ -144,9 +160,9 @@ class KartografAtomMapper(AtomMapper):
 
     def _to_dict(self) -> dict:
         d = {}
-        for key, val in self._defaults().items():
-            d[key] = val
-
+        for key in self._defaults():
+            if(hasattr(self, key)):
+                d[key] = getattr(self, key)
         return d
 
     @classmethod
