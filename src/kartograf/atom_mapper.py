@@ -87,7 +87,7 @@ class KartografAtomMapper(AtomMapper):
         atom_max_distance: float = 0.95,
         atom_map_hydrogens: bool = True,
         map_hydrogens_on_hydrogens_only: bool = False,
-        _additional_mapping_filter_functions: Optional[
+        additional_mapping_filter_functions: Optional[
             Iterable[
                 Callable[[Chem.Mol, Chem.Mol, dict[int, int]], dict[int, int]]
             ]
