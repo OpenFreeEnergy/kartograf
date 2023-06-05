@@ -137,6 +137,10 @@ class KartografAtomMapper(AtomMapper):
                 + str(_mapping_algorithm)
             )
 
+    """
+        Properties
+    """
+
     @property
     def map_hydrogens_on_hydrogens_only(self)->bool:
         """this property is a shortcut for setting hydrogen shall be mapped only on hydrogen filter."""
@@ -149,7 +153,9 @@ class KartografAtomMapper(AtomMapper):
         elif(filter_atoms_h_only_h_mapped in self._filter_funcs):
             self._filter_funcs.remove(filter_atoms_h_only_h_mapped)
 
-
+    """
+        Privat - Serialize
+    """
 
     @classmethod
     def _from_dict(cls, d: dict):
@@ -159,6 +165,7 @@ class KartografAtomMapper(AtomMapper):
         return cls(**d)
 
     def _to_dict(self) -> dict:
+
         d = {}
         for key in self._defaults():
             if(hasattr(self, key)):
@@ -169,7 +176,6 @@ class KartografAtomMapper(AtomMapper):
     def _defaults(cls):
         """This method should be overridden to provide the dict of defaults
             appropriate for the `GufeTokenizable` subclass.
-
         """
         sig = inspect.signature(cls.__init__)
 
@@ -180,8 +186,9 @@ class KartografAtomMapper(AtomMapper):
 
         return defaults
 
+
     """
-       Privat - Set Operations
+       Private - Set Operations
     """
 
     @classmethod
