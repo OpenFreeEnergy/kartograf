@@ -90,7 +90,7 @@ def test_mapping_naphtalene_benzene_noHs_add_filter(naphtalene_benzene_molecules
         atom_max_distance=0.95,
         atom_map_hydrogens=True,
         map_hydrogens_on_hydrogens_only=False,
-        _additional_mapping_filter_functions=[filter_atoms_h_only_h_mapped],
+        additional_mapping_filter_functions=[filter_atoms_h_only_h_mapped],
     )
 
     geom_mapping = next(
