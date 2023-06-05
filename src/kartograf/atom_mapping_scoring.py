@@ -225,17 +225,67 @@ class MappingRatioMappedAtomsScorer(_AbstractAtomMappingScorer):
 class _MappingShapeDistanceScorer(_AbstractAtomMappingScorer):
     mapping_mols: Tuple[Chem.Mol, Chem.Mol]
 
-    def __init__(self,  _rd_shape_dist_func=rdShapeHelpers.ShapeTanimotoDist,
-                    _gridSpacing=0.5, _vdwScale=0.8, _ignoreHs=False, _maxLayers=-1, _stepSize=0.25):
+    def __init__(self, _rd_shape_dist_func=rdShapeHelpers.ShapeTanimotoDist, _grid_spacing:float=0.5, _vdw_scale:float=0.8, _ignore_hs:bool=False,
+                 _max_layers:int=-1, _step_size:float=0.25):
+        """
+        This function is using the implemented shape distances in rdkit and applies them to the atom mapping problem.
 
-        self._shape_dist_func = lambda molA, molB: _rd_shape_dist_func(molA, molB, gridSpacing=_gridSpacing,
-                                                                  vdwScale=_vdwScale, ignoreHs=_ignoreHs,
-                                                                  maxLayers=_maxLayers, stepSize=_stepSize)
+
+        Parameters
+        ----------
+        _rd_shape_dist_func: rdShapeHelpers.ShapeTanimotoDist, optional
+            a rdkit function for calculating a shape distance. rdkit so far provides:
+            * ShapeProtrudeDist
+            * ShapeTanimotoDist
+            * ShapeTverskyIndex (however this needs to be curried for alpha and beta parameters)
+        _gridSpacing: float, optional
+            spacing of the grid for shape calculation, defaults to 0.5
+        _vdwScale: float, optional
+            range of vdw interactions, defaults to 0.8
+        _ignoreHs: bool, optional
+            shall Hs be counted as well?, defaults to True
+        _maxLayers: int, optional
+            number of bits per gridpoints, defaults to -1
+        _stepSize: int, optional
+            step size between layers, defaults to 0.25
+
+
+        """
+        super().__init__()
+        self._shape_dist_func = lambda molA, molB: _rd_shape_dist_func(molA, molB, gridSpacing=_grid_spacing,
+                                                                       vdwScale=_vdw_scale, ignoreHs=_ignore_hs,
+                                                                       maxLayers=_max_layers, stepSize=_step_size)
+
     def get_score(self, mapping:AtomMapping) ->float:
+        """calculate the number of mapped atoms/number of atoms in the larger molecule
+
+        Parameters
+        ----------
+        mapping : AtomMapping
+            AtomMapping to be scored
+
+        Returns
+        -------
+        float
+            normalized ratio of mapped atoms.
+        """
         s = self.get_mapping_shape_distance(mapping)
         return np.round(s,2) if(s<1) else 1.0
 
     def get_mapped_mols(self, mapping:AtomMapping)->Tuple[Chem.Mol, Chem.Mol  ]:
+        """
+        reduce the two molecules to an rdmol, representing the mapping.
+
+        Parameters
+        ----------
+        mapping: AtomMapping
+            AtomMapping to be scored
+
+        Returns
+        -------
+        Chem.Mol, Chem.Mol
+            returns the two mapping based molecules starting once from molA and once from molB
+        """
         molA = mapping.componentA.to_rdkit()
         molB = mapping.componentB.to_rdkit()
         mapped_atomIDs = mapping.componentA_to_componentB
@@ -264,6 +314,19 @@ class _MappingShapeDistanceScorer(_AbstractAtomMappingScorer):
 
 
     def get_rdmol_shape_distance(self, molA:Chem.Mol, molB: Chem.Mol)->float:
+        """
+        Calculates the shape distance of two rdmols.
+
+        Parameters
+        ----------
+        molA: Chem.Mol
+        molB: Chem.Mol
+
+        Returns
+        -------
+        float
+            raw result of the applied rdkit shape distance.
+        """
         if(any([x is None for x in [molA, molB]])):
             if(all([x is None for x in [molA, molB]])):
                 return np.inf
@@ -272,12 +335,49 @@ class _MappingShapeDistanceScorer(_AbstractAtomMappingScorer):
         return self._shape_dist_func(molA=molA, molB=molB)
 
     def get_mol_shape_distance(self, molA:SmallMoleculeComponent, molB:SmallMoleculeComponent)->float:
+        """
+        Calculates the shape distance of two gufe Components.
+
+        Parameters
+        ----------
+        molA: Chem.Mol
+        molB: Chem.Mol
+
+        Returns
+        -------
+        float
+            raw result of the applied rdkit shape distance.
+        """
         return self.get_rdmol_shape_distance(molA=molA.to_rdkit(), molB=molB.to_rdkit())
 
     def get_mapping_mol_shape_distance(self, mapping:AtomMapping)->float:
+        """
+        Calculates the shape distance of a gufe AtomMapping .
+
+        Parameters
+        ----------
+        mapping: AtomMapping
+
+        Returns
+        -------
+        float
+            raw result of the applied rdkit shape distance.
+        """
         return self.get_mol_shape_distance(molA=mapping.componentA, molB=mapping.componentB)
 
     def get_mapped_structure_shape_distance(self, mapping:AtomMapping)->float:
+        """
+        Calculates the shape distance of the mapped parts of the molecules only.
+
+        Parameters
+        ----------
+        mapping: AtomMapping
+
+        Returns
+        -------
+        float
+            raw result of the applied rdkit shape distance.
+        """
         self.mapping_mols = self.get_mapped_mols(mapping=mapping)
         mapped_molA, mapped_molB = self.mapping_mols
         return self.get_rdmol_shape_distance(molA=mapped_molA, molB=mapped_molB)
@@ -290,21 +390,7 @@ class _MappingShapeDistanceScorer(_AbstractAtomMappingScorer):
         Parameters
         ----------
         mapping: AtomMapping
-        _rd_shape_dist_func: rdShapeHelpers.ShapeTanimotoDist, optional
-            a rdkit function for calculating a shape distance. rdkit so far provides:
-            * ShapeProtrudeDist
-            * ShapeTanimotoDist
-            * ShapeTverskyIndex (however this needs to be curried for alpha and beta parameters)
-        _gridSpacing: float, optional
-            spacing of the grid for shape calculation, defaults to 0.5
-        _vdwScale: float, optional
-            range of vdw interactions, defaults to 0.8
-        _ignoreHs: bool, optional
-            shall Hs be counted as well?, defaults to True
-        _maxLayers: int, optional
-            number of bits per gridpoints, defaults to -1
-        _stepSize: int, optional
-            step size between layers, defaults to 0.25
+
 
         Returns
         -------
@@ -327,21 +413,58 @@ class _MappingShapeDistanceScorer(_AbstractAtomMappingScorer):
 
 
 class MappingShapeOverlapScorer(_MappingShapeDistanceScorer):
-    def __init__(self, _gridSpacing=0.5, _vdwScale=0.8, _ignoreHs=False, _maxLayers=-1, _stepSize=0.25):
+    def __init__(self, _grid_spacing=0.5, _vdw_scale=0.8, _ignore_hs=False, _max_layers=-1, _step_size=0.25):
+        """
+        This class uses the _MappingShapeDistanceScorer with the settings such, that the overlap of the two molecules are taken into consideration.
 
-        super().__init__(_rd_shape_dist_func=rdShapeHelpers.ShapeTanimotoDist, _gridSpacing=_gridSpacing,
-                         _vdwScale=_vdwScale, _ignoreHs=_ignoreHs, _maxLayers=_maxLayers, _stepSize=_stepSize)
+        Parameters
+        ----------
+        _gridSpacing: float, optional
+            spacing of the grid for shape calculation, defaults to 0.5
+        _vdwScale: float, optional
+            range of vdw interactions, defaults to 0.8
+        _ignoreHs: bool, optional
+            shall Hs be counted as well?, defaults to True
+        _maxLayers: int, optional
+            number of bits per gridpoints, defaults to -1
+        _stepSize: int, optional
+            step size between layers, defaults to 0.25
+        """
+
+        super().__init__(_rd_shape_dist_func=rdShapeHelpers.ShapeTanimotoDist, _grid_spacing=_grid_spacing,
+                         _vdw_scale=_vdw_scale, _ignore_hs=_ignore_hs, _max_layers=_max_layers, _step_size=_step_size)
 
 class MappingShapeMismatchScorer(_MappingShapeDistanceScorer):
 
-    def __init__(self, _gridSpacing=0.5, _vdwScale=0.8, _ignoreHs=False, _maxLayers=-1, _stepSize=0.25):
+    def __init__(self, _grid_spacing=0.5, _vdw_scale=0.8, _ignore_hs=False, _max_layers=-1, _step_size=0.25):
+        """
+        This class uses the _MappingShapeDistanceScorer with the settings such, that the volume mismatches of the two molecules are taken into consideration.
 
-        super().__init__(_rd_shape_dist_func=rdShapeHelpers.ShapeProtrudeDist, _gridSpacing=_gridSpacing,
-                         _vdwScale=_vdwScale, _ignoreHs=_ignoreHs, _maxLayers=_maxLayers, _stepSize=_stepSize)
+        Parameters
+        ----------
+        _gridSpacing: float, optional
+            spacing of the grid for shape calculation, defaults to 0.5
+        _vdwScale: float, optional
+            range of vdw interactions, defaults to 0.8
+        _ignoreHs: bool, optional
+            shall Hs be counted as well?, defaults to True
+        _maxLayers: int, optional
+            number of bits per gridpoints, defaults to -1
+        _stepSize: int, optional
+            step size between layers, defaults to 0.25
+        """
+
+        super().__init__(_rd_shape_dist_func=rdShapeHelpers.ShapeProtrudeDist, _grid_spacing=_grid_spacing,
+                         _vdw_scale=_vdw_scale, _ignore_hs=_ignore_hs, _max_layers=_max_layers, _step_size=_step_size)
 
 class DefaultKartografScorer(_AbstractAtomMappingScorer):
 
     def __init__(self):
+        """
+        this could be a future scorer using the here derined metrics?
+
+        don't use ;)
+        """
         self.scorers = [MappingVolumeRatioScorer(), #MappingRatioMappedAtomsScorer
                         MappingShapeOverlapScorer(),
                         MappingShapeMismatchScorer(),
