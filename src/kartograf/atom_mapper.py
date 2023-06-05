@@ -2,6 +2,7 @@
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
 import copy
+import inspect
 import numpy as np
 from enum import Enum
 
@@ -134,17 +135,34 @@ class KartografAtomMapper(AtomMapper):
                 + str(_mapping_algorithm)
             )
 
-    # TODO: Needs to be implemented
     @classmethod
     def _from_dict(cls, d: dict):
-        pass
+        """Deserialize from dict representation"""
+        if(any([not k in cls._defaults() for k in d])):
+            raise ValueError("I don't know about all the keys here"+str(list(filter(lambda k: k in cls._defaults(), d.keys()))))
+        return cls(**d)
 
     def _to_dict(self) -> dict:
-        pass
+        d = {}
+        for key, val in self._defaults().items():
+            d[key] = val
+
+        return d
 
     @classmethod
-    def _defaults(cls) -> dict:
-        pass
+    def _defaults(cls):
+        """This method should be overridden to provide the dict of defaults
+            appropriate for the `GufeTokenizable` subclass.
+
+        """
+        sig = inspect.signature(cls.__init__)
+
+        defaults = {
+            param.name: param.default for param in sig.parameters.values()
+            if param.default is not inspect.Parameter.empty
+        }
+
+        return defaults
 
     """
        Privat - Set Operations
