@@ -22,8 +22,8 @@ def filter_ringsize_changes(molA, molB,
             continue
 
         # AtomRingSizes gives as tuple of ring sizes that this atom is part of
-        rs_i = set(riA.AtomRingSizes(at_i))
-        rs_j = set(riB.AtomRingSizes(at_j))
+        rs_i = set(riA.AtomRingSizes(i))
+        rs_j = set(riB.AtomRingSizes(j))
 
         # if there's any intersection in ring size, we're ok
         if not (rs_i & rs_j):
