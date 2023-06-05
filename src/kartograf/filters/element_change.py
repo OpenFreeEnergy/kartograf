@@ -33,7 +33,7 @@ def filter_element_changes(molA, molB,
     filtered_mapping = {}
 
     for i, j in mapping.items():
-        if molA.GetAtomWithIdx(i).GetAtomicNum() != molB.GetAtomWithIdx(j):
+        if molA.GetAtomWithIdx(i).GetAtomicNum() != molB.GetAtomWithIdx(j).GetAtomicNum():
             continue
         filtered_mapping[i] = j
 
