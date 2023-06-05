@@ -1,5 +1,5 @@
 import pytest
-from kartograf.atom_mapping_scorer import (
+from kartograf.atom_mapping_scoring import (
     MappingRMSDScorer,
     _MappingShapeDistanceScorer,
     MappingShapeMismatchScorer,

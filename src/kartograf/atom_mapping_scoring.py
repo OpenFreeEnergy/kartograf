@@ -1,7 +1,6 @@
 # This code is part of OpenFE and is licensed under the MIT license.
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
-import math
 import numpy as np
 from typing import Tuple
 
@@ -12,7 +11,7 @@ from rdkit.Chem import rdShapeHelpers
 from scipy.spatial import ConvexHull
 from scipy import constants as const
 
-from gufe import LigandAtomMapping, SmallMoleculeComponent
+from gufe import AtomMapping, SmallMoleculeComponent
 from gufe.mapping import AtomMapping
 
 import logging
@@ -28,23 +27,23 @@ rms_func = lambda x: np.sqrt(np.mean(np.square(x)))
 
 
 import abc
-class _AbstractLigandAtomMappingScorer(abc.ABC):
+class _AbstractAtomMappingScorer(abc.ABC):
 
     def __init__(self):
         pass
 
-    def __call__(self, mapping:LigandAtomMapping, *args, **kwargs)->float:
+    def __call__(self, mapping:AtomMapping, *args, **kwargs)->float:
         return self.get_score(mapping)
 
     @abc.abstractmethod
-    def get_score(self,mapping:LigandAtomMapping, *args, **kwargs)->float:
+    def get_score(self,mapping:AtomMapping, *args, **kwargs)->float:
         """
             the scoring function returns a value between 0 and 1.
             a value close to Zero indicates a small distance, a score close to one indicates a large cost/error.
 
         Parameters
         ----------
-        mapping: LigandAtomMapping
+        mapping: AtomMapping
             the mapping to be scored
         args
         kwargs
@@ -57,13 +56,13 @@ class _AbstractLigandAtomMappingScorer(abc.ABC):
         """
         pass
 
-class MappingRMSDScorer(_AbstractLigandAtomMappingScorer):
-    def get_rmsd(self, mapping: LigandAtomMapping) -> float:
+class MappingRMSDScorer(_AbstractAtomMappingScorer):
+    def get_rmsd(self, mapping: AtomMapping) -> float:
         """this function calculates the rmsd between the mapped atoms of the two molecules
 
         Parameters
         ----------
-        mapping : LigandAtomMapping
+        mapping : AtomMapping
             A mapping to be scored
 
         Returns
@@ -88,13 +87,13 @@ class MappingRMSDScorer(_AbstractLigandAtomMappingScorer):
 
         return float(np.round(rmsd_map_diff,5))
 
-    def get_rmsd_p(self, mapping, accepted_distance_rmsd:float = 0.5, k_hook=1, T=298) -> float:
+    def get_rmsd_p(self, mapping:AtomMapping, accepted_distance_rmsd:float = 0.5, k_hook=1, T=298) -> float:
         """estimate likelihood of this shift by calculating the probability of the rmsd of the mapping with a harmonic oscillator
 
         Parameters
         ----------
-        mapping : _type_
-            _description_
+        mapping : AtomMapping
+            A mapping to be scored
         k_hook : float, optional
             hook constant of the harmonic oscillator
         T : float, optional
@@ -111,21 +110,55 @@ class MappingRMSDScorer(_AbstractLigandAtomMappingScorer):
         return float(np.round(p,5))
 
     def get_score(self, mapping, accepted_distance_rmsd:float = 0, k_hook=10**0, T=298)->float:
+        """
+            returns a normalized value between 0 and 1, where 0 is the best and 1 ist the worst score.
+            The value is rounded to 2 digits.
+
+        Parameters
+        ----------
+        mapping : AtomMapping
+            A mapping to be scored
+        k_hook : float, optional
+            hook constant of the harmonic oscillator
+        T : float, optional
+            Temperature
+        Returns
+        -------
+        float
+            normalized score between 0 and 1.
+        """
         return float(np.round(1-self.get_rmsd_p(mapping, accepted_distance_rmsd = accepted_distance_rmsd, k_hook= k_hook, T= T),2))
 
 
-class MappingVolumeRatioScorer(_AbstractLigandAtomMappingScorer):
+class MappingVolumeRatioScorer(_AbstractAtomMappingScorer):
 
-    def get_score(self, mapping: LigandAtomMapping) -> float:
+    def get_score(self, mapping: AtomMapping) -> float:
+        """
+            returns a normalized value between 0 and 1, where 0 is the best and 1 ist the worst score.
+            The value is rounded to 2 digits.
+
+        Parameters
+        ----------
+        mapping : AtomMapping
+            A mapping to be scored
+        k_hook : float, optional
+            hook constant of the harmonic oscillator
+        T : float, optional
+            Temperature
+        Returns
+        -------
+        float
+            normalized score between 0 and 1.
+        """
         r = self.get_volume_ratio(mapping)
         return 1 if(r<0) else np.round(1-r, 2)
 
-    def get_volume_ratio(self, mapping: LigandAtomMapping) -> float:
+    def get_volume_ratio(self, mapping: AtomMapping) -> float:
         """this function calculates the ratio of the volume of the convex hull of the mapped atoms to the volume of the convex hull of the complete molecule
 
         Parameters
         ----------
-        mapping : LigandAtomMapping
+        mapping : AtomMapping
             mapped to be scored
 
         Returns
@@ -163,14 +196,14 @@ class MappingVolumeRatioScorer(_AbstractLigandAtomMappingScorer):
         return avg_map_volume_ratio
 
 
-class MappingRatioMappedAtomsScorer(_AbstractLigandAtomMappingScorer):
-    def get_score(self, mapping: LigandAtomMapping) -> float:
+class MappingRatioMappedAtomsScorer(_AbstractAtomMappingScorer):
+    def get_score(self, mapping: AtomMapping) -> float:
         """calculate the number of mapped atoms/number of atoms in the larger molecule
 
         Parameters
         ----------
-        mapping : LigandAtomMapping
-            ligandAtomMapping to be scored
+        mapping : AtomMapping
+            AtomMapping to be scored
 
         Returns
         -------
@@ -189,7 +222,7 @@ class MappingRatioMappedAtomsScorer(_AbstractLigandAtomMappingScorer):
         return np.round(1-(len(molA_to_molB) / larger_nAtoms), 2)
 
 
-class _MappingShapeDistanceScorer(_AbstractLigandAtomMappingScorer):
+class _MappingShapeDistanceScorer(_AbstractAtomMappingScorer):
     mapping_mols: Tuple[Chem.Mol, Chem.Mol]
 
     def __init__(self,  _rd_shape_dist_func=rdShapeHelpers.ShapeTanimotoDist,
@@ -198,11 +231,11 @@ class _MappingShapeDistanceScorer(_AbstractLigandAtomMappingScorer):
         self._shape_dist_func = lambda molA, molB: _rd_shape_dist_func(molA, molB, gridSpacing=_gridSpacing,
                                                                   vdwScale=_vdwScale, ignoreHs=_ignoreHs,
                                                                   maxLayers=_maxLayers, stepSize=_stepSize)
-    def get_score(self, mapping:LigandAtomMapping) ->float:
+    def get_score(self, mapping:AtomMapping) ->float:
         s = self.get_mapping_shape_distance(mapping)
         return np.round(s,2) if(s<1) else 1.0
 
-    def get_mapped_mols(self, mapping:LigandAtomMapping)->Tuple[Chem.Mol, Chem.Mol  ]:
+    def get_mapped_mols(self, mapping:AtomMapping)->Tuple[Chem.Mol, Chem.Mol  ]:
         molA = mapping.componentA.to_rdkit()
         molB = mapping.componentB.to_rdkit()
         mapped_atomIDs = mapping.componentA_to_componentB
@@ -241,22 +274,22 @@ class _MappingShapeDistanceScorer(_AbstractLigandAtomMappingScorer):
     def get_mol_shape_distance(self, molA:SmallMoleculeComponent, molB:SmallMoleculeComponent)->float:
         return self.get_rdmol_shape_distance(molA=molA.to_rdkit(), molB=molB.to_rdkit())
 
-    def get_mapping_mol_shape_distance(self, mapping:LigandAtomMapping)->float:
+    def get_mapping_mol_shape_distance(self, mapping:AtomMapping)->float:
         return self.get_mol_shape_distance(molA=mapping.componentA, molB=mapping.componentB)
 
-    def get_mapped_structure_shape_distance(self, mapping:LigandAtomMapping)->float:
+    def get_mapped_structure_shape_distance(self, mapping:AtomMapping)->float:
         self.mapping_mols = self.get_mapped_mols(mapping=mapping)
         mapped_molA, mapped_molB = self.mapping_mols
         return self.get_rdmol_shape_distance(molA=mapped_molA, molB=mapped_molB)
 
-    def get_mapping_shape_distance(self, mapping:LigandAtomMapping)->float:
+    def get_mapping_shape_distance(self, mapping:AtomMapping)->float:
         """
             the function builds two mapped mols, each for one molecule. Basically reduces the atoms to the mapped region.
             next it calculates the shape distance of both full molecules and of both mapped mols.
             The ratio mappedMolShapeDist/MolShapeDist is then returned.
         Parameters
         ----------
-        mapping: LigandAtomMapping
+        mapping: AtomMapping
         _rd_shape_dist_func: rdShapeHelpers.ShapeTanimotoDist, optional
             a rdkit function for calculating a shape distance. rdkit so far provides:
             * ShapeProtrudeDist
@@ -306,7 +339,7 @@ class MappingShapeMismatchScorer(_MappingShapeDistanceScorer):
         super().__init__(_rd_shape_dist_func=rdShapeHelpers.ShapeProtrudeDist, _gridSpacing=_gridSpacing,
                          _vdwScale=_vdwScale, _ignoreHs=_ignoreHs, _maxLayers=_maxLayers, _stepSize=_stepSize)
 
-class DefaultKartografScorer(_AbstractLigandAtomMappingScorer):
+class DefaultKartografScorer(_AbstractAtomMappingScorer):
 
     def __init__(self):
         self.scorers = [MappingVolumeRatioScorer(), #MappingRatioMappedAtomsScorer
@@ -317,14 +350,14 @@ class DefaultKartografScorer(_AbstractLigandAtomMappingScorer):
         self.weights = np.array([1,3,3,3])
         self.weigths = self.weights/sum(self.weights)
 
-    def get_score(self, mapping: LigandAtomMapping) -> float:
+    def get_score(self, mapping: AtomMapping) -> float:
         """
             Under Development
 
         Parameters
         ----------
         mapping : AtomMapping
-            ligandAtomMapping to be scored
+            AtomMapping to be scored
 
         Returns
         -------
