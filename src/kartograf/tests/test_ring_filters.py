@@ -21,10 +21,10 @@ def test_ringsize_filter(reverse):
 
 
 def test_ringsize_safe():
-    m1 = Chem.MolFromSmiles('c1ccccc1')
-    m2 = Chem.MolFromSmiles('c1ccccn1')
+    m1 = Chem.MolFromSmiles('c1c(C)cccc1')
+    m2 = Chem.MolFromSmiles('c1c(C)cccn1')
 
-    mapping = {i: i for i in range(6)}
+    mapping = {i: i for i in range(7)}
     newmapping = filters.filter_ringsize_changes(m1, m2, mapping)
 
     assert newmapping == mapping
