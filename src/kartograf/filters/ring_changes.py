@@ -1,9 +1,10 @@
 import logging
+from rdkit import Chem
 
 logger = logging.getLogger(__name__)
 
 
-def filter_ringsize_changes(molA, molB,
+def filter_ringsize_changes(molA: Chem.Mol, molB: Chem.Mol,
                             mapping: dict[int, int]) -> dict[int, int]:
     """Prevents mutating the size of rings in the mapping"""
     riA = molA.GetRingInfo()
@@ -34,7 +35,7 @@ def filter_ringsize_changes(molA, molB,
     return filtered_mapping
 
 
-def filter_ringbreak_changes(molA, molB,
+def filter_ringbreak_changes(molA: Chem.Mol, molB: Chem.Mol,
                              mapping: dict[int, int]) -> dict[int, int]:
     """Prevent any ring cleaving transformations in the mapping
 
@@ -53,7 +54,7 @@ def filter_ringbreak_changes(molA, molB,
     return filtered_mapping
 
 
-def filter_whole_rings_only(molA, molB,
+def filter_whole_rings_only(molA: Chem.Mol, molB: Chem.Mol,
                             mapping: dict[int, int]) -> dict[int, int]:
     """Ensure that any mapped rings are wholly mapped"""
     proposed_mapping = {**mapping}

@@ -27,7 +27,7 @@ def filter_atoms_h_only_h_mapped(
     return filtered_mapping
 
 
-def filter_element_changes(molA, molB,
+def filter_element_changes(molA: Chem.Mol, molB: Chem.Mol,
                            mapping: dict[int, int]) -> dict[int, int]:
     """Forces a mapping to exclude any alchemical element changes in the core"""
     filtered_mapping = {}
