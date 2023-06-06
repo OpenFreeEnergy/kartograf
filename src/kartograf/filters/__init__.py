@@ -5,4 +5,5 @@ from .element_change import (
 from .ring_changes import (
     filter_ringsize_changes,
     filter_ringbreak_changes,
+    filter_whole_rings_only,
 )
