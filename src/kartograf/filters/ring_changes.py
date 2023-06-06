@@ -75,6 +75,6 @@ def filter_whole_rings_only(molA: Chem.Mol, molB: Chem.Mol,
                 filtered_mapping[i] = j
 
         # reverse the mapping to check B->A (then reverse again)
-        proposed_mapping = {v: k for k, v in filtered_mapping}
+        proposed_mapping = {v: k for k, v in filtered_mapping.items()}
 
     return proposed_mapping
