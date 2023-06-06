@@ -20,6 +20,16 @@ def test_ringsize_filter(reverse):
     assert newmapping == {i: i for i in range(6)}
 
 
+def test_ringsize_safe():
+    m1 = Chem.MolFromSmiles('c1ccccc1')
+    m2 = Chem.MolFromSmiles('c1ccccn1')
+
+    mapping = {i: i for i in range(6)}
+    newmapping = filters.filter_ringsize_changes(m1, m2, mapping)
+
+    assert newmapping == mapping
+
+
 @pytest.mark.parametrize('reverse', [False, True])
 def test_ringbreaks(reverse):
     # naphthalene to toluene
@@ -37,6 +47,16 @@ def test_ringbreaks(reverse):
     assert newmapping == {i: i for i in range(6)}
 
 
+def test_ringbreaks_safe():
+    m1 = Chem.MolFromSmiles('c1ccccc1')
+    m2 = Chem.MolFromSmiles('c1ccccn1')
+
+    mapping = {i: i for i in range(6)}
+    newmapping = filters.filter_ringbreak_changes(m1, m2, mapping)
+
+    assert newmapping == mapping
+
+
 @pytest.mark.parametrize('reverse', [False, True])
 def test_whole_rings_only(reverse):
     # benzene to pyridine
@@ -51,3 +71,13 @@ def test_whole_rings_only(reverse):
     newmapping = filters.filter_whole_rings_only(m1, m2, mapping)
 
     assert newmapping == {}
+
+
+def test_whole_rings_safe():
+    m1 = Chem.MolFromSmiles('c1ccccc1')
+    m2 = Chem.MolFromSmiles('c1ccccn1')
+
+    mapping = {i: i for i in range(6)}
+    newmapping = filters.filter_whole_rings_only(m1, m2, mapping)
+
+    assert newmapping == mapping
