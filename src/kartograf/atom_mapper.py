@@ -551,7 +551,7 @@ class KartografAtomMapper(AtomMapper):
             filtered_mapping = filter_rule(molA, molB, filtered_mapping)
         return filtered_mapping
 
-    def calculate_mapping(
+    def _calculate_mapping(
         self,
         molA: Chem.Mol,
         molB: Chem.Mol,
@@ -562,7 +562,7 @@ class KartografAtomMapper(AtomMapper):
         map_hydrogens: bool = True,
     ) -> dict[int, int]:
         """
-            find a mapping between two molecules based on 3D coordinates.
+            find a mapping between two molecules based on 3D coordinates. This is a helper function for the suggest mapping functions.
 
         Parameters
         ----------
@@ -694,7 +694,7 @@ class KartografAtomMapper(AtomMapper):
         Mapping functions
     """
 
-    def get_mapping(
+    def suggest_mapping_from_rdmols(
         self,
         molA: Chem.Mol,
         molB: Chem.Mol,
@@ -734,7 +734,7 @@ class KartografAtomMapper(AtomMapper):
         log.info("Map Heavy Atoms ")
         log.info("#################################")
 
-        mapping = self.calculate_mapping(
+        mapping = self._calculate_mapping(
             molA,
             molB,
             max_d=self.atom_max_distance,
@@ -751,7 +751,7 @@ class KartografAtomMapper(AtomMapper):
 
             pre_mapped_atoms.update(mapping)
 
-            mapping = self.calculate_mapping(
+            mapping = self._calculate_mapping(
                 molA,
                 molB,
                 max_d=self.atom_max_distance,
@@ -782,5 +782,5 @@ class KartografAtomMapper(AtomMapper):
             returns an interator of possible atom mappings.
         """
         yield LigandAtomMapping(
-            A, B, self.get_mapping(molA=A.to_rdkit(), molB=B.to_rdkit())
+            A, B, self.suggest_mapping_from_rdmols(molA=A.to_rdkit(), molB=B.to_rdkit())
         )
