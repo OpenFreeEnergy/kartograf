@@ -22,6 +22,10 @@ from gufe import AtomMapping, AtomMapper
 
 import logging
 
+from .filters import (
+    filter_atoms_h_only_h_mapped,
+)
+
 log = logging.getLogger(__name__)
 
 
@@ -35,34 +39,6 @@ class mapping_algorithm(Enum):
 vector_eucledean_dist = calculate_edge_weight = lambda x, y: np.sqrt(
     np.sum(np.square(y - x), axis=1)
 )
-
-
-# filter functions:
-def filter_atoms_h_only_h_mapped(
-    molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
-) -> dict[int, int]:
-
-    filtered_mapping = {}
-    for atomA_idx, atomB_idx in mapping.items():
-        atomA = molA.GetAtomWithIdx(atomA_idx)
-        atomB = molB.GetAtomWithIdx(atomB_idx)
-
-        if (atomA.GetAtomicNum() == atomB.GetAtomicNum() == 1) or (
-            atomA.GetAtomicNum() == atomB.GetAtomicNum() != 1
-        ):
-            filtered_mapping[atomA_idx] = atomB_idx
-            log.debug(
-                f"keep mapping for atomIDs ({atomA_idx}, {atomB_idx}): "
-                f"{atomA.GetAtomicNum()} {atomB.GetAtomicNum()}"
-            )
-
-        else:
-            log.debug(
-                f"no mapping for atomIDs ({atomA_idx}, {atomB_idx}): "
-                f"{atomA.GetAtomicNum()} {atomB.GetAtomicNum()}"
-            )
-
-    return filtered_mapping
 
 
 # Implementation of Mapper:
