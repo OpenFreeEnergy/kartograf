@@ -16,7 +16,6 @@ dependencies:
   # Sci
   - numpy
   - scipy
-  - networkx
   # Chem
   - rdkit
   # docs
