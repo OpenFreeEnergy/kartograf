@@ -458,7 +458,9 @@ class MappingShapeMismatchScorer(_MappingShapeDistanceScorer):
                          _vdw_scale=_vdw_scale, _ignore_hs=_ignore_hs, _max_layers=_max_layers, _step_size=_step_size)
 
 class DefaultKartografScorer(_AbstractAtomMappingScorer):
-
+    """
+    Warning this is highly experimental!
+    """
     def __init__(self):
         """
         this could be a future scorer using the here derined metrics?
