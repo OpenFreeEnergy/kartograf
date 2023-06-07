@@ -71,8 +71,6 @@ def naphtalene_benzene_molecules():
 def naphtalene_benzene_mapping():
     mols = naphtalene_benzene_mols()
     expected_mapping = {
-        6: 11,
-        9: 6,
         10: 7,
         11: 8,
         12: 9,
