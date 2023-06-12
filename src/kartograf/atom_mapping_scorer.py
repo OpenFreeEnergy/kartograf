@@ -6,11 +6,11 @@ import numpy as np
 
 from gufe.mapping import AtomMapping
 
-from mapping_metrics import MappingRMSDScorer
-from mapping_metrics import MappingShapeOverlapScorer, MappingShapeMismatchScorer
-from mapping_metrics import MappingVolumeRatioScorer
+from .mapping_metrics import MappingRMSDScorer
+from .mapping_metrics import MappingShapeOverlapScorer, MappingShapeMismatchScorer
+from .mapping_metrics import MappingVolumeRatioScorer
 
-from mapping_metrics._abstract_scorer import _AbstractAtomMappingScorer
+from .mapping_metrics._abstract_scorer import _AbstractAtomMappingScorer
 
 log = logging.getLogger(__name__)
 

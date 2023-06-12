@@ -7,7 +7,7 @@ from scipy import constants as const
 
 from gufe.mapping import AtomMapping
 
-from mapping_metrics._abstract_scorer import _AbstractAtomMappingScorer
+from ._abstract_scorer import _AbstractAtomMappingScorer
 
 log = logging.getLogger(__name__)
 

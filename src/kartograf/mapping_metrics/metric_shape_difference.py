@@ -4,12 +4,15 @@
 import logging
 from typing import Tuple
 import numpy as np
+
 from rdkit import Chem
+from rdkit.Chem import AllChem
 from rdkit.Chem import rdShapeHelpers
 
+from gufe import SmallMoleculeComponent
 from gufe.mapping import AtomMapping
 
-from mapping_metrics._abstract_scorer import _AbstractAtomMappingScorer
+from ._abstract_scorer import _AbstractAtomMappingScorer
 
 log = logging.getLogger(__name__)
 
