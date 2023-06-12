@@ -10,5 +10,5 @@ Atom Mapping
 Atom Mapping Scoring
 ========================
 
-.. autoclass:: kartograf.atom_mapping_scoring.DefaultKartografScorer
+.. autoclass:: kartograf.atom_mapping_scorer.DefaultKartografScorer
 	       :members:
