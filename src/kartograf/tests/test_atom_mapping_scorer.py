@@ -1,14 +1,15 @@
 import pytest
-from kartograf.atom_mapping_scoring import (
+from kartograf.atom_mapping_scorer import DefaultKartografScorer
+from kartograf.mapping_metrics import (
     MappingRMSDScorer,
-    _MappingShapeDistanceScorer,
     MappingShapeMismatchScorer,
     MappingShapeOverlapScorer,
     MappingVolumeRatioScorer,
     MappingRatioMappedAtomsScorer,
-    DefaultKartografScorer
+
 )
 
+from kartograf.mapping_metrics.metric_shape_difference import _MappingShapeDistanceScorer
 from .conf import stereo_chem_mapping, benzene_benzene_mapping, benzene_benzene_empty_mapping
 
 
