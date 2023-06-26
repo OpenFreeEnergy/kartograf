@@ -1,19 +1,20 @@
-from openfe.utils.visualization_3D import view_mapping_3d
-from ipywidgets import interact, widgets
+from typing import List
+from ipywidgets import widgets
+
+from gufe import AtomMapping
+from openfe.utils.visualization_3D import view_mapping_3d as display_mapping_3d
 
 
-def display_mapping_edges(mappingSet):
+def display_mappings_3d(mappingSet:List[AtomMapping])->widgets.VBox:
     def display_edge(index):
         print("MolA: " + mappingSet[index].componentA.name)
         print("MolB: " + mappingSet[index].componentB.name)
         print("Mapping MolA->MolB:", mappingSet[index].componentA_to_componentB)
-        if (hasattr(mappingSet[index], "lscore")):
-            print("Lomap Score: ", mappingSet[index].lscore, end="\t")
-        if (hasattr(mappingSet[index], "kscore")):
-            print("Karto Score: ", mappingSet[index].kscore, end="\n")
+        if (hasattr(mappingSet[index], "score")):
+            print("Mapping Score: ", getattr(mappingSet[index], 'score'))
         else:
             print()
-        view = view_mapping_3d(mappingSet[index], spheres=True, show_atomIDs=True)  # shift=(0.1, 0, 0))
+        view = display_mapping_3d(mappingSet[index], spheres=True, show_atomIDs=True)  # shift=(0.1, 0, 0))
         view.show()
 
     slider = widgets.IntSlider(tooltip="select mapping",

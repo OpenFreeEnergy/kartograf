@@ -20,6 +20,8 @@ dependencies = [
   'scipy',
   'numpy',
   'gufe',
+  'ipywidgets',
+  'py3Dmol'
 ]
 description="Kartograf is a package for mapping geometrically atoms of two molecules. (like you need it with hybrid topology)"
 readme="README.md"
