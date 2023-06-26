@@ -59,9 +59,8 @@ class MappingVolumeRatioScorer(_AbstractAtomMappingScorer):
         mapping_molA = np.array(list(sorted(molA_to_molB.keys())))
         mapping_molB = np.array(list(sorted(molA_to_molB.values())))
 
-        if len(mapping_molA) < 4:
-            return 0.0
-            #raise ValueError("Mapping is too small to calculate convex hull")
+        if len(mapping_molA) < 4 or len(mapping_molB) < 4:
+            raise ValueError("Mapping is too small to calculate convex hull")
 
         complete_molA = ConvexHull(molA.GetConformer().GetPositions()).volume
         map_molA = ConvexHull(molA.GetConformer().GetPositions()[mapping_molA]).volume

@@ -31,7 +31,7 @@ class DefaultKartografScorer(_AbstractAtomMappingScorer):
                         MappingRMSDScorer()]
 
         self.weights = np.array([1,3,3,3])
-        self.weigths = self.weights/sum(self.weights)
+        self.weights = self.weights/np.sum(self.weights)
 
     def get_score(self, mapping: AtomMapping) -> float:
         """
