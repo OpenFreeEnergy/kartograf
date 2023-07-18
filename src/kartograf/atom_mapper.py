@@ -1,5 +1,6 @@
 # This code is part of OpenFE and is licensed under the MIT license.
 # For details, see https://github.com/OpenFreeEnergy/kartograf
+from collections import defaultdict
 
 import copy
 import inspect
@@ -867,10 +868,41 @@ class KartografAtomMapper(AtomMapper):
 
         #merge mappings:
         multi_state_mapping = self._merge_mappings_to_multistate_mapping(mappings=mappings)
+        multi_state_mapping = list(filter(lambda x: len(x) == len(molecules), multi_state_mapping))
 
-        #get connected sets:
+        # get all connected sets
+        connected_sets = {}
+        for component in molecules:
+            map_atom_ids = [m[component.name] for m in multi_state_mapping]
+            connected_set = self._get_connected_atom_subsets(component.to_rdkit(), map_atom_ids)
+            connected_sets[component.name] = connected_set
 
-        return multi_state_mapping
+        # translate mappings into mapping set - tuples
+        connected_s = {}
+        mapping_connected_sets = defaultdict(dict)
+        for i, m in enumerate(multi_state_mapping):
+            mapping_connected_sets[i] = []
+            mid = 0
+            for k, (lig, aid) in enumerate(m.items()):
+                connected = connected_sets[lig]
+                for j, s in enumerate(connected):
+                    mid += 1
+                    if (aid in s):
+                        mapping_connected_sets[i].append(mid)
+                        break
+
+        # max overlap
+        tup = [tuple(m) for m in mapping_connected_sets.values()]
+        combinations, counts = np.unique(tup, return_counts=True, axis=0)
+        max_overlap_tuple = tuple(combinations[list(counts).index(max(counts))])
+
+        # Filter Mappings
+        filter_map = []
+        for mid, mapping_sets in mapping_connected_sets.items():
+            if (max_overlap_tuple == tuple(mapping_sets)):
+                filter_map.append(multi_state_mapping[mid])
+
+        return filter_map
 
 
 
