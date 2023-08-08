@@ -74,7 +74,7 @@ git clone https://github.com/OpenFreeEnergy/kartograf.git
 cd kartograf
 conda env create -f environment.yml
 
-conda activate Kartograf
+conda activate kartograf
 pip install .
 
 ```
