@@ -2,9 +2,16 @@ from typing import List
 from ipywidgets import widgets
 
 from gufe import AtomMapping
-from openfe.utils.visualization_3D import view_mapping_3d as display_mapping_3d
+
+try:
+    from openfe.utils.visualization_3D import view_mapping_3d as display_mapping_3d
+except ImportError:
+    pass # Don't throw  error, will happen later
+
+from .optional_imports import requires_package
 
 
+@requires_package("py3Dmol")
 def display_mappings_3d(mappingSet:List[AtomMapping])->widgets.VBox:
     def display_edge(index):
         print("MolA: " + mappingSet[index].componentA.name)
