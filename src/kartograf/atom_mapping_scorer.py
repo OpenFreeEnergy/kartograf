@@ -2,6 +2,7 @@
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
 import logging
+import warnings
 import numpy as np
 
 from gufe.mapping import AtomMapping
@@ -14,6 +15,7 @@ from .mapping_metrics._abstract_scorer import _AbstractAtomMappingScorer
 
 log = logging.getLogger(__name__)
 
+warnings.warn("This Atom Mapper is Highly experimental and not guaranteed to work well.")
 
 class DefaultKartografScorer(_AbstractAtomMappingScorer):
     """
@@ -54,7 +56,7 @@ class DefaultKartografScorer(_AbstractAtomMappingScorer):
             log.info("\t"+scorer.__class__.__name__+"\t"+str(s)+"\tweight: "+str(weight))
             scores.append(s*weight)
 
-        score = np.round(np.mean(scores),2)
+        score = np.round(np.sum(scores),2)
         score = score if(score<1.0) else 1.0
         log.info("Result: "+str(score))
         return score
