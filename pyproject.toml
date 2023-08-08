@@ -20,6 +20,7 @@ dependencies = [
   'scipy',
   'numpy',
   'gufe',
+  'ipywidgets',
 ]
 description="Kartograf is a package for mapping geometrically atoms of two molecules. (like you need it with hybrid topology)"
 readme="README.md"
@@ -32,6 +33,9 @@ classifiers = [
 
 [project.urls]
 "Homepage" = "https://github.com/OpenFreeEnergy/kartograf"
+
+[tool.poetry.extras]
+vis = ["openfe",   'py3Dmol']
 
 [tool.versioningit]
 default-version = "1+unknown"

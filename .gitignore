@@ -92,3 +92,6 @@ dmypy.json
 
 # don't check in version
 src/kartograf/_version.py
+
+#IDE
+.idea
