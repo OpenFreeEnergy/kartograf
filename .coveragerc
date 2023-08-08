@@ -3,6 +3,7 @@ omit =
     */_version.py
     */tests/dev/*py
     src/kartograf/tests/*
+    src/kartograf/utils/*
 
 [report]
 exclude_lines =
