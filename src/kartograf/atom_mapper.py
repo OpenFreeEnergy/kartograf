@@ -26,7 +26,8 @@ import logging
 from .filters import (
     filter_atoms_h_only_h_mapped,
     filter_ringbreak_changes,
-    filter_ringsize_changes
+    filter_ringsize_changes,
+    filter_whole_rings_only,
 )
 
 log = logging.getLogger(__name__)
@@ -69,7 +70,7 @@ class KartografAtomMapper(AtomMapper):
             Iterable[
                 Callable[[Chem.Mol, Chem.Mol, dict[int, int]], dict[int, int]]
             ]
-        ] = [filter_ringbreak_changes, filter_ringsize_changes],
+        ] = None,
         _mapping_algorithm: Optional[
             mapping_algorithm
         ] = mapping_algorithm.linear_sum_assignment,
@@ -89,7 +90,8 @@ class KartografAtomMapper(AtomMapper):
             map hydrogens only on hydrogens. Default False
         additional_mapping_filter_functions : Iterable[Callable[[Chem.Mol, Chem.Mol, Dict[int, int]], Dict[int, int]]], optional
             with this optional parameter you can further filter the distance based mappings with your own custom filters, provided as iterables.
-            as default we suggest to avoid ring size/breaking changes.
+            as default we suggest to avoid ring size/breaking changes and only
+            allow whole rings to be mapped
         _mapping_algorithm : str, optional
             mapping_algorithm.linear_sum_assignment
 
@@ -102,8 +104,12 @@ class KartografAtomMapper(AtomMapper):
         self._filter_funcs = []
         if map_hydrogens_on_hydrogens_only:
             self._filter_funcs.append(filter_atoms_h_only_h_mapped)
-        if additional_mapping_filter_functions is not None:
-            self._filter_funcs.extend(additional_mapping_filter_functions)
+        if additional_mapping_filter_functions is None:
+            self._filter_funcs.extend([
+                filter_ringbreak_changes,
+                filter_ringsize_changes,
+                filter_whole_rings_only,
+            ])
 
         if _mapping_algorithm == _mapping_algorithm.linear_sum_assignment:
             self._map_hydrogens_on_hydrogens_only = True
