@@ -110,6 +110,8 @@ class KartografAtomMapper(AtomMapper):
                 filter_ringsize_changes,
                 filter_whole_rings_only,
             ])
+        else:
+            self._filter_funcs = additional_mapping_filter_functions
 
         if _mapping_algorithm == _mapping_algorithm.linear_sum_assignment:
             self._map_hydrogens_on_hydrogens_only = True
