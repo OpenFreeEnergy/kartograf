@@ -1,2 +1,2 @@
 myst-parser
-pydata_sphinx_theme
+ofe_sphinx_theme @ git+https://github.com/OpenFreeEnergy/ofe-sphinx-theme@main

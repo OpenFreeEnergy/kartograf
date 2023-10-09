@@ -51,14 +51,13 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # a list of builtin themes.
 
 html_static_path = ['_static']
-html_theme = 'pydata_sphinx_theme'
+html_theme = 'ofe_sphinx_theme'
 
 html_favicon = '_static/img/Kartograf_logo_boxed_dark.ico'
+html_logo = "_static/img/Kartograf_logo_light_transp.png"
 html_theme_options = {
     "logo": {
         "text": "Kartograf Documentation",
-        "image_light": "_static/img/Kartograf_logo_boxed_dark_transp.png",
-        "image_dark": "_static/img/Kartograf_logo_boxed_dark_transp.png",
     },
     "icon_links": [
         {
@@ -67,7 +66,8 @@ html_theme_options = {
             "icon": "fa-brands fa-square-github",
             "type": "fontawesome",
         }
-    ]
+    ],
+    "accent_color": "FeelingSick",
 }
 #html_logo = "_static/Squaredcircle.svg"
 
