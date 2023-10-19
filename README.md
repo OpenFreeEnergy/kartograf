@@ -66,6 +66,18 @@ conda install -c conda-forge kartograf
 
 Or use Kartograf from the OpenFE Environment (soon).
 
+For Developing Kartograf, you might want to use this approach:
+
+```shell
+git clone https://github.com/OpenFreeEnergy/kartograf.git
+
+cd kartograf
+conda env create -f environment.yml
+
+conda activate kartograf
+pip install .
+
+```
 ## References
 
 

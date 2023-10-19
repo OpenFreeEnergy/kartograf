@@ -79,16 +79,14 @@ def test_scorer_identical_molecules(scorer_class, benzene_benzene_mapping):
     score = scorer(benzene_benzene_mapping)
 
     assert isinstance(score, float)
-    assert score == 0, "Score of identical Molecule should be 0"
+    assert score == 1.0, "Score of identical Molecule should be 1.0"
 
 
-@pytest.mark.parametrize("scorer_class, exp", [(MappingRMSDScorer, 0),
-                                               (_MappingShapeDistanceScorer, 1),
-                                               (MappingShapeMismatchScorer,1),
-                                               (MappingShapeOverlapScorer, 1),
-                                               (MappingVolumeRatioScorer, 1),
-                                               (MappingRatioMappedAtomsScorer,1),
-                                               (DefaultKartografScorer,1)])
+@pytest.mark.parametrize("scorer_class, exp", [(MappingRMSDScorer, 1.0),
+                                               (_MappingShapeDistanceScorer, 0),
+                                               (MappingShapeMismatchScorer, 0),
+                                               (MappingShapeOverlapScorer, 0),
+                                               (MappingRatioMappedAtomsScorer, 0)])
 def test_scorer_empty_mapping(scorer_class, exp:float, benzene_benzene_empty_mapping):
     """
     Currently a smoke test
@@ -98,3 +96,16 @@ def test_scorer_empty_mapping(scorer_class, exp:float, benzene_benzene_empty_map
 
     assert isinstance(score, float)
     assert score == exp, "Score of non-Mapping should be "+str(exp)+" for "+str(scorer_class.__name__)+" but is: "+str(score)
+
+
+@pytest.mark.parametrize("scorer_class, exp", [(MappingVolumeRatioScorer, 1),
+                                               (DefaultKartografScorer,1)])
+def test_scorer_empty_mapping_err(scorer_class, exp:float, benzene_benzene_empty_mapping):
+    """
+    Currently a smoke test
+    """
+    with pytest.raises(ValueError) as exc:
+        scorer = scorer_class()
+        score = scorer(benzene_benzene_empty_mapping)
+
+    assert "Mapping is too small to calculate convex hull" in str(exc.value)

@@ -683,6 +683,10 @@ class KartografAtomMapper(AtomMapper):
             mapping.update(pre_mapped_atoms)
         log.debug("reverse Masking Mapping: " + str(mapping))
 
+        if len(mapping) == 0:
+            if(len(pre_mapped_atoms)==0): log.warning("no mapping could be found, after applying filters!")
+            return pre_mapped_atoms
+
         # Reduce mapping to maximally overlapping two connected sets
         log.info("Find Maximal overlapping connected sets of mapped atoms")
         mapping = self._filter_mapping_for_max_overlapping_connected_atom_set(

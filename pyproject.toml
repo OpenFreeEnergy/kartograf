@@ -33,6 +33,9 @@ classifiers = [
 [project.urls]
 "Homepage" = "https://github.com/OpenFreeEnergy/kartograf"
 
+[tool.poetry.extras]
+vis = ["openfe",   'ipywidgets', 'py3Dmol']
+
 [tool.versioningit]
 default-version = "1+unknown"
 

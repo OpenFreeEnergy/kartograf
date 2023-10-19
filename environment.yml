@@ -21,3 +21,9 @@ dependencies:
   # docs
   - myst-parser
   - pydata-sphinx-theme
+  # vis
+  - ipywidgets
+  - py3Dmol
+  # docs
+  - pip:
+    - git+https://github.com/OpenFreeEnergy/ofe-sphinx-theme@main
