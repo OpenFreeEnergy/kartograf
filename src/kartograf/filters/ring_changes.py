@@ -1,3 +1,6 @@
+# This code is part of OpenFE and is licensed under the MIT license.
+# For details, see https://github.com/OpenFreeEnergy/kartograf
+
 from collections import defaultdict
 import logging
 from rdkit import Chem
@@ -5,8 +8,9 @@ from rdkit import Chem
 logger = logging.getLogger(__name__)
 
 
-def filter_ringsize_changes(molA: Chem.Mol, molB: Chem.Mol,
-                            mapping: dict[int, int]) -> dict[int, int]:
+def filter_ringsize_changes(
+    molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
+) -> dict[int, int]:
     """Prevents mutating the size of rings in the mapping"""
     riA = molA.GetRingInfo()
     riB = molB.GetRingInfo()
@@ -36,8 +40,9 @@ def filter_ringsize_changes(molA: Chem.Mol, molB: Chem.Mol,
     return filtered_mapping
 
 
-def filter_ringbreak_changes(molA: Chem.Mol, molB: Chem.Mol,
-                             mapping: dict[int, int]) -> dict[int, int]:
+def filter_ringbreak_changes(
+    molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
+) -> dict[int, int]:
     """Prevent any ring cleaving transformations in the mapping
 
     This filter prevents any non-ring atom turning into a ring atom (or
@@ -55,13 +60,16 @@ def filter_ringbreak_changes(molA: Chem.Mol, molB: Chem.Mol,
     return filtered_mapping
 
 
-def filter_whole_rings_only(molA: Chem.Mol, molB: Chem.Mol,
-                            mapping: dict[int, int]) -> dict[int, int]:
+def filter_whole_rings_only(
+    molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
+) -> dict[int, int]:
     """Ensure that any mapped rings are wholly mapped"""
     proposed_mapping = {**mapping}
 
     for mol in [molA, molB]:  # loop over A->B and B->A directions
-        ri = mol.GetRingInfo().AtomRings()  # gives list of tuple of atom indices
+        ri = (
+            mol.GetRingInfo().AtomRings()
+        )  # gives list of tuple of atom indices
         # for each ring, are we fully present?
         ringok: dict[frozenset[int], bool] = {}
         # for each atom, which (maybe unmapped) rings is it present in?

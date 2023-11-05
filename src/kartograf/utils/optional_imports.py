@@ -1,3 +1,6 @@
+# This code is part of OpenFE and is licensed under the MIT license.
+# For details, see https://github.com/OpenFreeEnergy/kartograf
+
 """
 Tools for integration with miscellaneous non-required packages.
 shamelessly borrowed from openff.toolkit
@@ -29,8 +32,9 @@ def requires_package(package_name: str) -> Callable:
             try:
                 importlib.import_module(package_name)
             except (ImportError, ModuleNotFoundError):
-                raise ImportError(function.__name__ + " requires package: " +
-                                  package_name)
+                raise ImportError(
+                    function.__name__ + " requires package: " + package_name
+                )
             except Exception as e:
                 raise e
 

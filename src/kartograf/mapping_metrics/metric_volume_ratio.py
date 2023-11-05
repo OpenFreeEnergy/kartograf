@@ -11,8 +11,8 @@ from ._abstract_scorer import _AbstractAtomMappingScorer
 
 log = logging.getLogger(__name__)
 
-class MappingVolumeRatioScorer(_AbstractAtomMappingScorer):
 
+class MappingVolumeRatioScorer(_AbstractAtomMappingScorer):
     def get_score(self, mapping: AtomMapping) -> float:
         """
             returns a normalized value between 0 and 1, where 0 is the best and 1 ist the worst score.
@@ -63,16 +63,22 @@ class MappingVolumeRatioScorer(_AbstractAtomMappingScorer):
             raise ValueError("Mapping is too small to calculate convex hull")
 
         complete_molA = ConvexHull(molA.GetConformer().GetPositions()).volume
-        map_molA = ConvexHull(molA.GetConformer().GetPositions()[mapping_molA]).volume
+        map_molA = ConvexHull(
+            molA.GetConformer().GetPositions()[mapping_molA]
+        ).volume
         complete_molB = ConvexHull(molB.GetConformer().GetPositions()).volume
-        map_molB = ConvexHull(molB.GetConformer().GetPositions()[mapping_molB]).volume
+        map_molB = ConvexHull(
+            molB.GetConformer().GetPositions()[mapping_molB]
+        ).volume
 
-        ratios = np.array([map_molA / complete_molA, map_molB / complete_molB])
+        ratios = np.array(
+            [map_molA / complete_molA, map_molB / complete_molB]
+        )
         avg_map_volume_ratio = np.mean(ratios)
 
-        #print("ratios",avg_map_volume_ratio, ratios)
-        #print("volumes", map_molA, complete_molA, map_molB, complete_molB)
-        #print('ind', mapping_molA, mapping_molB)
+        # print("ratios",avg_map_volume_ratio, ratios)
+        # print("volumes", map_molA, complete_molA, map_molB, complete_molB)
+        # print('ind', mapping_molA, mapping_molB)
         return avg_map_volume_ratio
 
 

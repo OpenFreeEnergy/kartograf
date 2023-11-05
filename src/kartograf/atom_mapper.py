@@ -36,8 +36,9 @@ logger = logging.getLogger(__name__)
 # Enums:
 class mapping_algorithm(Enum):
     """
-        This enum helps selecting the optimization algorithm for the distance graph based atom mapping.
+    This enum helps selecting the optimization algorithm for the distance graph based atom mapping.
     """
+
     linear_sum_assignment = "LSA"
     minimal_spanning_tree = "MST"
 
@@ -105,11 +106,13 @@ class KartografAtomMapper(AtomMapper):
         if map_hydrogens_on_hydrogens_only:
             self._filter_funcs.append(filter_atoms_h_only_h_mapped)
         if additional_mapping_filter_functions is None:
-            self._filter_funcs.extend([
-                filter_ringbreak_changes,
-                filter_ringsize_changes,
-                filter_whole_rings_only,
-            ])
+            self._filter_funcs.extend(
+                [
+                    filter_ringbreak_changes,
+                    filter_ringsize_changes,
+                    filter_whole_rings_only,
+                ]
+            )
         else:
             self._filter_funcs = additional_mapping_filter_functions
 
@@ -129,15 +132,16 @@ class KartografAtomMapper(AtomMapper):
     """
 
     @property
-    def map_hydrogens_on_hydrogens_only(self)->bool:
+    def map_hydrogens_on_hydrogens_only(self) -> bool:
         """this property is a shortcut for setting hydrogen shall be mapped only on hydrogen filter."""
         return self._map_hydrogens_on_hydrogens_only
+
     @map_hydrogens_on_hydrogens_only.setter
-    def map_hydrogens_on_hydrogens_only(self, s:bool):
+    def map_hydrogens_on_hydrogens_only(self, s: bool):
         self._map_hydrogens_on_hydrogens_only = s
-        if(s and filter_atoms_h_only_h_mapped not in self._filter_funcs):
+        if s and filter_atoms_h_only_h_mapped not in self._filter_funcs:
             self._filter_funcs.insert(0, filter_atoms_h_only_h_mapped)
-        elif(filter_atoms_h_only_h_mapped in self._filter_funcs):
+        elif filter_atoms_h_only_h_mapped in self._filter_funcs:
             self._filter_funcs.remove(filter_atoms_h_only_h_mapped)
 
     """
@@ -147,32 +151,34 @@ class KartografAtomMapper(AtomMapper):
     @classmethod
     def _from_dict(cls, d: dict):
         """Deserialize from dict representation"""
-        if(any([not k in cls._defaults() for k in d])):
-            raise ValueError("I don't know about all the keys here"+str(list(filter(lambda k: k in cls._defaults(), d.keys()))))
+        if any([not k in cls._defaults() for k in d]):
+            raise ValueError(
+                "I don't know about all the keys here"
+                + str(list(filter(lambda k: k in cls._defaults(), d.keys())))
+            )
         return cls(**d)
 
     def _to_dict(self) -> dict:
-
         d = {}
         for key in self._defaults():
-            if(hasattr(self, key)):
+            if hasattr(self, key):
                 d[key] = getattr(self, key)
         return d
 
     @classmethod
     def _defaults(cls):
         """This method should be overridden to provide the dict of defaults
-            appropriate for the `GufeTokenizable` subclass.
+        appropriate for the `GufeTokenizable` subclass.
         """
         sig = inspect.signature(cls.__init__)
 
         defaults = {
-            param.name: param.default for param in sig.parameters.values()
+            param.name: param.default
+            for param in sig.parameters.values()
             if param.default is not inspect.Parameter.empty
         }
 
         return defaults
-
 
     """
        Private - Set Operations
@@ -180,7 +186,10 @@ class KartografAtomMapper(AtomMapper):
 
     @classmethod
     def _filter_mapping_for_max_overlapping_connected_atom_set(
-            cls, moleculeA: Chem.Mol, moleculeB: Chem.Mol, atom_mapping: Dict[int, int]
+        cls,
+        moleculeA: Chem.Mol,
+        moleculeB: Chem.Mol,
+        atom_mapping: Dict[int, int],
     ) -> Dict[int, int]:
         """
             This algorithm finds the maximal overlapping connected  set of two molecules and a given mapping.
@@ -205,8 +214,12 @@ class KartografAtomMapper(AtomMapper):
 
         """
         # get connected sets from mappings
-        sets_a = cls._get_connected_atom_subsets(moleculeA, atom_mapping.keys())
-        sets_b = cls._get_connected_atom_subsets(moleculeB, atom_mapping.values())
+        sets_a = cls._get_connected_atom_subsets(
+            moleculeA, atom_mapping.keys()
+        )
+        sets_b = cls._get_connected_atom_subsets(
+            moleculeB, atom_mapping.values()
+        )
 
         logger.debug(
             "Found connected sets: "
@@ -214,9 +227,10 @@ class KartografAtomMapper(AtomMapper):
         )
 
         # get maximally overlapping largest sets
-        ((max_set_a_id, max_set_b_id), max_set) = cls._get_maximal_mapping_set_overlap(
-            sets_a, sets_b, atom_mapping
-        )
+        (
+            (max_set_a_id, max_set_b_id),
+            max_set,
+        ) = cls._get_maximal_mapping_set_overlap(sets_a, sets_b, atom_mapping)
 
         # filter mapping for atoms in maximally overlapping sets
         atom_mapping = cls._filter_mapping_for_set_overlap(
@@ -225,7 +239,9 @@ class KartografAtomMapper(AtomMapper):
 
         logger.debug(
             "Found connected set overlaps: "
-            + "\t".join(map(str, [max_set_a_id, max_set_b_id, max_set, atom_mapping]))
+            + "\t".join(
+                map(str, [max_set_a_id, max_set_b_id, max_set, atom_mapping])
+            )
         )
 
         return atom_mapping
@@ -279,15 +295,21 @@ class KartografAtomMapper(AtomMapper):
         for set_i in bonded_atom_sets:
             for ai in set_i:
                 for aj in set_i:
-                    connection_matrix[r_atom_mappings[ai]][r_atom_mappings[aj]] = 1
+                    connection_matrix[r_atom_mappings[ai]][
+                        r_atom_mappings[aj]
+                    ] = 1
 
         logger.debug("Adjacency Matrix: " + str(connection_matrix))
 
         # get connected components
         matrix = csr_matrix(connection_matrix)
-        n_components, labels = connected_components(csgraph=matrix, directed=False)
+        n_components, labels = connected_components(
+            csgraph=matrix, directed=False
+        )
 
-        logger.debug("Connected Components: " + str(n_components) + "\t" + str(labels))
+        logger.debug(
+            "Connected Components: " + str(n_components) + "\t" + str(labels)
+        )
 
         # Translate back
         merged_connnected_atom_sets = []
@@ -338,7 +360,9 @@ class KartografAtomMapper(AtomMapper):
         """
         # Calculate overlaps
 
-        logger.debug("Input: " + str(sets_a) + " " + str(sets_b) + " " + str(mapping))
+        logger.debug(
+            "Input: " + str(sets_a) + " " + str(sets_b) + " " + str(mapping)
+        )
 
         max_set_combi = {}
         for ida, set_a in enumerate(sets_a):
@@ -363,7 +387,10 @@ class KartografAtomMapper(AtomMapper):
 
         logger.debug("Set overlap properties" + str(overlap_sorted_sets))
 
-        max_overlap_set_a_id, max_overlap_set_b_id = overlap_sorted_sets.popitem()
+        (
+            max_overlap_set_a_id,
+            max_overlap_set_b_id,
+        ) = overlap_sorted_sets.popitem()
         return max_overlap_set_a_id, max_overlap_set_b_id
 
     @staticmethod
@@ -394,7 +421,6 @@ class KartografAtomMapper(AtomMapper):
                 filtered_mapping[atom_a] = atom_b
         return filtered_mapping
 
-
     """
         Utils
     """
@@ -404,7 +430,8 @@ class KartografAtomMapper(AtomMapper):
         atomA_pos: np.array,
         atomB_pos: np.array,
         metric: Callable[
-            [Union[float, Iterable], Union[float, Iterable]], Union[float, Iterable]
+            [Union[float, Iterable], Union[float, Iterable]],
+            Union[float, Iterable],
         ] = vector_eucledean_dist,
     ) -> np.array:
         """
@@ -530,7 +557,9 @@ class KartografAtomMapper(AtomMapper):
         row_ind, col_ind = linear_sum_assignment(distance_matrix)
         raw_mapping = list(zip(map(int, row_ind), map(int, col_ind)))
         # filter for mask value
-        mapping = dict(filter(lambda x: distance_matrix[x] < max_dist, raw_mapping))
+        mapping = dict(
+            filter(lambda x: distance_matrix[x] < max_dist, raw_mapping)
+        )
 
         return mapping
 
@@ -612,8 +641,15 @@ class KartografAtomMapper(AtomMapper):
             masked_atoms_molA.extend(pre_mapped_atoms.keys())
             masked_atoms_molB.extend(pre_mapped_atoms.values())
 
-        logger.debug("Positions lengths: " + str(len(molA_pos)) + " " + str(len(molB_pos)))
-        logger.debug("Positions: \n" + "\n\t".join(map(str, [molA_pos, molB_pos])))
+        logger.debug(
+            "Positions lengths: "
+            + str(len(molA_pos))
+            + " "
+            + str(len(molB_pos))
+        )
+        logger.debug(
+            "Positions: \n" + "\n\t".join(map(str, [molA_pos, molB_pos]))
+        )
         logger.debug("masked_atoms_molA: " + str(masked_atoms_molA))
         logger.debug("masked_atoms_molB: " + str(masked_atoms_molB))
         logger.debug("pre_mapped_atoms: " + str(pre_mapped_atoms))
@@ -636,7 +672,9 @@ class KartografAtomMapper(AtomMapper):
 
         logger.debug(
             "Remove Masked Atoms: \n"
-            + "\n\t".join(map(str, [molA_masked_atomMapping, molB_masked_atomMapping]))
+            + "\n\t".join(
+                map(str, [molA_masked_atomMapping, molB_masked_atomMapping])
+            )
             + "\n"
             + "\n\t".join(map(str, [molA_pos, molB_pos]))
         )
@@ -645,8 +683,11 @@ class KartografAtomMapper(AtomMapper):
             + "\t".join(map(str, [len(molA_pos), len(molB_pos)]))
         )
 
-        if len(molA_pos) == 0 or len(molB_pos) == 0:  # TODO: check if this is correct
-            if(len(pre_mapped_atoms)==0): logger.warning("no mappable Atoms were found!")
+        if (
+            len(molA_pos) == 0 or len(molB_pos) == 0
+        ):  # TODO: check if this is correct
+            if len(pre_mapped_atoms) == 0:
+                logger.warning("no mappable Atoms were found!")
             return pre_mapped_atoms
 
         # Calculate mapping
@@ -659,10 +700,15 @@ class KartografAtomMapper(AtomMapper):
         # np.inf is considererd as not possible in lsa implementation - therefore use a high value
         self.mask_dist_val = max_d * 10**6
         masked_dmatrix = np.array(
-            np.ma.where(distance_matrix < max_d, distance_matrix, self.mask_dist_val)
+            np.ma.where(
+                distance_matrix < max_d, distance_matrix, self.mask_dist_val
+            )
         )
         logger.debug(
-            "masked Distance Matrix: " + str(max_d) + "\n\t" + str(masked_dmatrix)
+            "masked Distance Matrix: "
+            + str(max_d)
+            + "\n\t"
+            + str(masked_dmatrix)
         )
 
         # solve atom mappings
@@ -692,7 +738,10 @@ class KartografAtomMapper(AtomMapper):
         logger.debug("reverse Masking Mapping: " + str(mapping))
 
         if len(mapping) == 0:
-            if(len(pre_mapped_atoms)==0): logger.warning("no mapping could be found, after applying filters!")
+            if len(pre_mapped_atoms) == 0:
+                logger.warning(
+                    "no mapping could be found, after applying filters!"
+                )
             return pre_mapped_atoms
 
         # Reduce mapping to maximally overlapping two connected sets
@@ -796,5 +845,9 @@ class KartografAtomMapper(AtomMapper):
             returns an interator of possible atom mappings.
         """
         yield LigandAtomMapping(
-            A, B, self.suggest_mapping_from_rdmols(molA=A.to_rdkit(), molB=B.to_rdkit())
+            A,
+            B,
+            self.suggest_mapping_from_rdmols(
+                molA=A.to_rdkit(), molB=B.to_rdkit()
+            ),
         )

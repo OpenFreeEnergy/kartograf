@@ -1,3 +1,6 @@
+# This code is part of OpenFE and is licensed under the MIT license.
+# For details, see https://github.com/OpenFreeEnergy/kartograf
+
 import pytest
 from kartograf.atom_mapping_scorer import DefaultKartografScorer
 from kartograf.mapping_metrics import (
