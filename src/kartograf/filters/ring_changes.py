@@ -1,3 +1,4 @@
+from collections import defaultdict
 import logging
 from rdkit import Chem
 
@@ -61,17 +62,27 @@ def filter_whole_rings_only(molA: Chem.Mol, molB: Chem.Mol,
 
     for mol in [molA, molB]:  # loop over A->B and B->A directions
         ri = mol.GetRingInfo().AtomRings()  # gives list of tuple of atom indices
-        ok: dict[int, bool] = {}  # if a ring atom, is this ok to keep?
+        # for each ring, are we fully present?
+        ringok: dict[frozenset[int], bool] = {}
+        # for each atom, which (maybe unmapped) rings is it present in?
+        atom2ring: dict[int, list[frozenset[int]]] = defaultdict(list)
         for ring in ri:
-            # for each ring, atoms are ok if all the atoms of this ring are in
-            # the mapping
-            all_in_ring = all(atom in proposed_mapping for atom in ring)
+            ringset = frozenset(ring)
+
+            ringok[ringset] = all(atom in proposed_mapping for atom in ring)
             for atom in ring:
-                ok[atom] = all_in_ring
+                atom2ring[atom].append(ringset)
 
         filtered_mapping = {}
         for i, j in proposed_mapping.items():
-            if ok.get(i, True):  # if not present, isn't in ring so keep
+            # if not in any rings, we're ok
+            if i not in atom2ring:
+                filtered_mapping[i] = j
+                continue
+
+            # if in any rings, at least one must be ok
+            # e.g. if on edge of fused rings, one ring being completely mapped is ok
+            if any(ringok[r] for r in atom2ring[i]):
                 filtered_mapping[i] = j
 
         # reverse the mapping to check B->A (then reverse again)
