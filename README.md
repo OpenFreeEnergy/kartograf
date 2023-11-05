@@ -1,7 +1,9 @@
-
 <p align="center">
-    <img src="docs/_static/img/kartograf_logo_style5.png" id="gh-dark-mode-only"  width=35%/>
-    <!--<img src="docs/_static/img/kartograf_logo_style4.png" id="gh-light-mode-only"  width=35%/>-->
+    <picture align="center">
+      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/OpenFreeEnergy/kartograf/blob/0a2ecb10f1c5ede3842fd9b92ffb232ad726426f/docs/_static/img/kartograf_logo_style5.png">
+      <source media="(prefers-color-scheme: light)" srcset="https://github.com/OpenFreeEnergy/kartograf/blob/0a2ecb10f1c5ede3842fd9b92ffb232ad726426f/docs/_static/img/kartograf_logo_style4.png">
+      <img alt="Kartografs fancy logo" src="https://github.com/OpenFreeEnergy/kartograf/blob/0a2ecb10f1c5ede3842fd9b92ffb232ad726426f/docs/_static/img/kartograf_logo_style4.png" width=35% >
+    </picture>
 </p>
 
 Kartograf: A 3D Atom Graph Mapper
