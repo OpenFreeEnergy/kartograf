@@ -21,6 +21,8 @@ from gufe import SmallMoleculeComponent
 from gufe import LigandAtomMapping
 from gufe import AtomMapping, AtomMapper
 
+from numpy.typing import NDArray
+
 import logging
 
 from .filters import (
@@ -72,9 +74,7 @@ class KartografAtomMapper(AtomMapper):
                 Callable[[Chem.Mol, Chem.Mol, dict[int, int]], dict[int, int]]
             ]
         ] = None,
-        _mapping_algorithm: Optional[
-            mapping_algorithm
-        ] = mapping_algorithm.linear_sum_assignment,
+        _mapping_algorithm: mapping_algorithm = mapping_algorithm.linear_sum_assignment,
     ):
         """
         This mapper is a homebrew, that utilises rdkit in order
@@ -215,10 +215,10 @@ class KartografAtomMapper(AtomMapper):
         """
         # get connected sets from mappings
         sets_a = cls._get_connected_atom_subsets(
-            moleculeA, atom_mapping.keys()
+            moleculeA, list(atom_mapping.keys())
         )
         sets_b = cls._get_connected_atom_subsets(
-            moleculeB, atom_mapping.values()
+            moleculeB, list(atom_mapping.values())
         )
 
         logger.debug(
@@ -427,8 +427,8 @@ class KartografAtomMapper(AtomMapper):
 
     @staticmethod
     def _get_full_distance_matrix(
-        atomA_pos: np.array,
-        atomB_pos: np.array,
+        atomA_pos: NDArray,
+        atomB_pos: NDArray,
         metric: Callable[
             [Union[float, Iterable], Union[float, Iterable]],
             Union[float, Iterable],
@@ -440,9 +440,9 @@ class KartografAtomMapper(AtomMapper):
 
         Parameters
         ----------
-        atomA_pos : np.array
+        atomA_pos : NDArray
             position matrix A
-        atomB_pos : np.array
+        atomB_pos : NDArray
             position matrix B
         metric : Callable[[Union[float, Iterable], Union[float, Iterable]], Union[float, Iterable]], optional
             the applied metric to calculate the distance matrix. default metric: eucledean distance.
@@ -492,14 +492,14 @@ class KartografAtomMapper(AtomMapper):
         return masked_atomMapping, pos
 
     def _minimalSpanningTree_map(
-        self, distance_matrix: np.array, max_dist: float
+        self, distance_matrix: NDArray, max_dist: float
     ) -> Dict[int, int]:
         """
         This function is a numpy graph based implementation to build up an Atom Mapping purely on 3D criteria.
 
         Parameters
         ----------
-        distance_matrix: np.array
+        distance_matrix: NDArray
             distances of atoms to each other.
         max_dist: float
             maximal distance of a atoms in a mapping.
@@ -537,14 +537,14 @@ class KartografAtomMapper(AtomMapper):
 
     @staticmethod
     def _linearSumAlgorithm_map(
-        distance_matrix: np.array, max_dist: float
+        distance_matrix: NDArray, max_dist: float
     ) -> Dict[int, int]:
         """
         This function is a LSA based implementation to build up an Atom Mapping purely on 3D criteria.
 
         Parameters
         ----------
-        distance_matrix: np.array
+        distance_matrix: NDArray
             distances of atoms to each other.
         max_dist: float
             maximal distance of a atoms in a mapping.
