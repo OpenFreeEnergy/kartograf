@@ -685,7 +685,7 @@ class KartografAtomMapper(AtomMapper):
 
         if (
             len(molA_pos) == 0 or len(molB_pos) == 0
-        ):  # TODO: check if this is correct
+        ):
             if len(pre_mapped_atoms) == 0:
                 logger.warning("no mappable Atoms were found!")
             return pre_mapped_atoms
