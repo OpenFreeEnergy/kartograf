@@ -12,7 +12,9 @@ authors=[
     {name="Benjamin Ries", email="benjamin-ries@outlook.com"},
     {name="David Swenson", email="dwhswenson@gmail.com"},
     {name="Irfan Alibay", email="irfan.alibay@gmail.com"},
+    {name="Hannah Baumann", email="hannah.baumann@omsf.io"},
     {name="Mike Henry", email="mike.henry@choderalab.org"},
+    {name="James Eastwood", email="james.eastwood@omsf.io"},
     {name="Richard J Gowers", email="richardjgowers@gmail.com"},
 ]
 dependencies = [
