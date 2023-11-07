@@ -13,4 +13,4 @@ Additionally can rules be applied during the mapping algorithm, such that for ex
 
 Approach:
 
-.. image:: ../_static/img/Kartograf_mapping_approach.png
+.. image:: ../_static/img/logo/Kartograf_mapping_approach.png
