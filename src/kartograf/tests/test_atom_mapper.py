@@ -193,7 +193,7 @@ def test_to_from_dict():
 def test_to_from_dict_wrong():
     mapper = KartografAtomMapper()
     d1 = mapper._to_dict()
-    d1.update({"FLEEEEE":"You FOOLS"})
+    d1.update({"FLEEEEE": "You FOOLS"})
 
     with pytest.raises(ValueError) as exc:
         mapper2 = KartografAtomMapper._from_dict(d1)
@@ -235,8 +235,8 @@ def test_mapping_rdmols(
     mols = [naphtalene_benzene_molecules[0],
             naphtalene_benzene_molecules[1]]
 
-    geom_mapping = geom_mapper.suggest_mapping_from_rdmols(mols[0].to_rdkit(),
-                                            mols[1].to_rdkit(),
-                                            masked_atoms_molA=None,
-                                            masked_atoms_molB=None,
-                                            pre_mapped_atoms=None)
+    m = geom_mapper.suggest_mapping_from_rdmols(mols[0].to_rdkit(),
+                                                mols[1].to_rdkit(),
+                                                masked_atoms_molA=None,
+                                                masked_atoms_molB=None,
+                                                pre_mapped_atoms=None)
