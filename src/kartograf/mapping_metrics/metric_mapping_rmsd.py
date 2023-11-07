@@ -51,8 +51,8 @@ class MappingRMSDScorer(_AbstractAtomMappingScorer):
         k_hook: float = 1,
         T: float = 298,
     ) -> float:
-        """estimate likelihood of this shift by calculating the probability of the rmsd
-            of the mapping with a harmonic oscillator
+        """estimate likelihood of this shift by calculating the probability
+        of the rmsd of the mapping with a harmonic oscillator
 
         Parameters
         ----------

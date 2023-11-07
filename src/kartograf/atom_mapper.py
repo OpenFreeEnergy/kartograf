@@ -75,7 +75,8 @@ class KartografAtomMapper(AtomMapper):
                 Callable[[Chem.Mol, Chem.Mol, dict[int, int]], dict[int, int]]
             ]
         ] = None,
-        _mapping_algorithm: mapping_algorithm = mapping_algorithm.linear_sum_assignment,
+        _mapping_algorithm: mapping_algorithm =
+        mapping_algorithm.linear_sum_assignment,
     ):
         """
         This mapper is a homebrew, that utilises rdkit in order
@@ -90,12 +91,15 @@ class KartografAtomMapper(AtomMapper):
             can be maximal (in Angstrom). Default 0.95
         map_hydrogens_on_hydrogens_only : bool, optional
             map hydrogens only on hydrogens. Default False
-        additional_mapping_filter_functions : Iterable[Callable[[Chem.Mol, Chem.Mol, Dict[int, int]], Dict[int, int]]], optional
-            with this optional parameter you can further filter the distance based mappings with your own custom filters, provided as iterables.
+        additional_mapping_filter_functions : Iterable[Callable[[Chem.Mol,
+        Chem.Mol, Dict[int, int]], Dict[int, int]]], optional
+            with this optional parameter you can further filter the distance
+            based mappings with your own custom filters, provided as iterables.
             as default we suggest to avoid ring size/breaking changes and only
             allow whole rings to be mapped
         _mapping_algorithm : str, optional
-            mapping_algorithm.linear_sum_assignment
+            mapping_algorithm.linear_sum_assignment - this allows to swap the
+            optimization algorithm. Not recommended.
 
         """
         self.atom_max_distance = atom_max_distance
@@ -152,7 +156,7 @@ class KartografAtomMapper(AtomMapper):
     @classmethod
     def _from_dict(cls, d: dict):
         """Deserialize from dict representation"""
-        if any([not k in cls._defaults() for k in d]):
+        if any([k not in cls._defaults() for k in d]):
             raise ValueError(
                 "I don't know about all the keys here"
                 + str(list(filter(lambda k: k in cls._defaults(), d.keys())))
