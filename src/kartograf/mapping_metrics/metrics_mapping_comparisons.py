@@ -3,7 +3,7 @@ import numpy as np
 from gufe import AtomMapping
 
 
-def jaccard_score(mappingA:AtomMapping, mappingB:AtomMapping) -> float:
+def jaccard_score(mappingA: AtomMapping, mappingB: AtomMapping) -> float:
     """
         The Jaccard score is a normalized score ([0,1]) , that gives insight
         on the selected atom pair diversity of two compared mappings.
@@ -24,6 +24,13 @@ def jaccard_score(mappingA:AtomMapping, mappingB:AtomMapping) -> float:
 
     mappingA_pairs = set(mappingA.componentA_to_componentB.items())
     mappingB_pairs = set(mappingB.componentA_to_componentB.items())
+
+    if(len(mappingA_pairs) == 0):
+        raise ValueError("Mapping A does not contain any mapped atoms: "+str(
+            mappingA_pairs))
+    if(len(mappingB_pairs) == 0):
+        raise ValueError("Mapping A does not contain any mapped atoms: "+str(
+            mappingB_pairs))
 
     intersection = mappingA_pairs.intersection(mappingB_pairs)
     union = mappingA_pairs.union(mappingB_pairs)
