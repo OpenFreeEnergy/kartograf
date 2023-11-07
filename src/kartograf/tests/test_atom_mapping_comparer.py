@@ -64,14 +64,25 @@ def test_mapping_comparison_jcs_diverse(benzene_benzene_mapping):
         assert score == 0
 
 
-def test_mapping_comparison_jcs_empty_mapping(benzene_benzene_empty_mapping):
+def test_mapping_comparison_jcs_empty_mapping(benzene_benzene_mapping,
+                                              benzene_benzene_empty_mapping):
     """
     Check empty mappings
     """
-    mapping=benzene_benzene_empty_mapping
-    print(mapping)
+    mappingA = benzene_benzene_empty_mapping
+    mappingB = benzene_benzene_mapping
     with pytest.raises(ValueError) as exc:
-        score = jaccard_score(mappingA=mapping,
-                              mappingB=mapping)
+        score = jaccard_score(mappingA=mappingA,
+                              mappingB=mappingB)
 
     assert "Mapping A does not contain any mapped atoms: set()" in str(exc.value)
+
+    mappingA = benzene_benzene_mapping
+    mappingB = benzene_benzene_empty_mapping
+    with pytest.raises(ValueError) as exc:
+        score = jaccard_score(mappingA=mappingA,
+                              mappingB=mappingB)
+
+    assert "Mapping B does not contain any mapped atoms: set()" in str(
+        exc.value)
+

@@ -60,6 +60,80 @@ def test_mapping_naphtalene_benzene(
     check_mapping_vs_expected(geom_mapping, expected_mapping)
 
 
+def test_mapping_naphtalene_benzene_mst(
+    naphtalene_benzene_molecules, naphtalene_benzene_mapping
+):
+    """
+    Test mapping of naphtalene to benzene.
+    """
+    from kartograf.atom_mapper import mapping_algorithm
+    expected_mapping = naphtalene_benzene_mapping.componentA_to_componentB
+    geom_mapper = KartografAtomMapper(
+        atom_max_distance=0.95,
+        atom_map_hydrogens=True,
+        map_hydrogens_on_hydrogens_only=False,
+        _mapping_algorithm=mapping_algorithm.minimal_spanning_tree
+    )
+
+    geom_mapping = next(
+        geom_mapper.suggest_mappings(
+            naphtalene_benzene_molecules[0],
+            naphtalene_benzene_molecules[1],
+        )
+    )
+
+    check_mapping_vs_expected(geom_mapping, expected_mapping)
+
+def test_mapping_naphtalene_benzene_noMap(
+    naphtalene_benzene_molecules, naphtalene_benzene_mapping
+):
+    """
+    Test mapping of naphtalene to benzene.
+    """
+    expected_mapping = naphtalene_benzene_mapping.componentA_to_componentB
+    geom_mapper = KartografAtomMapper(
+        atom_max_distance=0.95,
+        atom_map_hydrogens=True,
+        map_hydrogens_on_hydrogens_only=False,
+        _mapping_algorithm= None
+    )
+
+    geom_mapping = next(
+        geom_mapper.suggest_mappings(
+            naphtalene_benzene_molecules[0],
+            naphtalene_benzene_molecules[1],
+        )
+    )
+
+    with pytest.raises(ValueError) as exc:
+        check_mapping_vs_expected(geom_mapping, expected_mapping)
+
+    assert "Mapping algorithm not implemented or unknown (options: MST or " \
+           "LSA). got key:" in str(exc.value)
+
+#Check non params
+def test_mapping_naphtalene_benzene(
+    naphtalene_benzene_molecules, naphtalene_benzene_mapping
+):
+    """
+    Test mapping of naphtalene to benzene.
+    """
+    expected_mapping = naphtalene_benzene_mapping.componentA_to_componentB
+    geom_mapper = KartografAtomMapper(
+        atom_max_distance=0.95,
+        atom_map_hydrogens=True,
+        map_hydrogens_on_hydrogens_only=False,
+    )
+
+    mols = [            naphtalene_benzene_molecules[0],
+            naphtalene_benzene_molecules[1],]
+
+    geom_mapping = geom_mapper.suggest_mapping_from_rdmols(mols[0].to_rdkit(),
+                                            mols[1].to_rdkit(),
+                                            masked_atoms_molA= None,
+                                            masked_atoms_molB= None,
+                                            pre_mapped_atoms= None)
+
 def test_mapping_naphtalene_benzene_noHs(naphtalene_benzene_molecules):
     """
     Test mapping of naphtalene to benzene without H-atoms.
@@ -121,7 +195,7 @@ def test_stereo_mapping(stereco_chem_molecules, stereo_chem_mapping):
     check_mapping_vs_expected(geom_mapping, expected_mapping)
 
 
-def test_to_From_dict():
+def test_to_from_dict():
     mapper = KartografAtomMapper()
     d1 = mapper._to_dict()
     mapper2 = KartografAtomMapper._from_dict(d1)
@@ -135,7 +209,7 @@ def test_to_From_dict():
 
     mapper2.atom_max_distance = 10
     d3 = mapper2._to_dict()
-    print(d3)
+
     for key, val1 in d1.items():
         val2 = d3[key]
 
@@ -143,6 +217,16 @@ def test_to_From_dict():
             raise ValueError("they need to be identical.")
         if(key == "atom_max_distance" and val1 == val2 ):
             raise ValueError("they must not be identical.")
+
+
+def test_to_from_dict_wrong():
+    mapper = KartografAtomMapper()
+    d1 = mapper._to_dict()
+    d1.update({"FLEEEEE":"You FOOLS"})
+
+    with pytest.raises(ValueError) as exc:
+        mapper2 = KartografAtomMapper._from_dict(d1)
+    assert "I don't know about all the keys here" in str(exc.value)
 
 
 def test_filter_property():

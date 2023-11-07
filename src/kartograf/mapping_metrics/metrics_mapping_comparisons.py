@@ -29,7 +29,7 @@ def jaccard_score(mappingA: AtomMapping, mappingB: AtomMapping) -> float:
         raise ValueError("Mapping A does not contain any mapped atoms: "+str(
             mappingA_pairs))
     if(len(mappingB_pairs) == 0):
-        raise ValueError("Mapping A does not contain any mapped atoms: "+str(
+        raise ValueError("Mapping B does not contain any mapped atoms: "+str(
             mappingB_pairs))
 
     intersection = mappingA_pairs.intersection(mappingB_pairs)
