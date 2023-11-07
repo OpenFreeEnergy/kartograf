@@ -13,6 +13,7 @@ from .conf import (
 )
 from copy import deepcopy
 
+
 def check_mapping_vs_expected(mapping, expected_mapping):
     assert len(expected_mapping) == len(mapping.componentA_to_componentB)
 
@@ -37,6 +38,7 @@ def check_mapping_vs_expected(mapping, expected_mapping):
         raise ValueError("mapping did not match expected mapping!")
 
 
+# Mapping Algorithm tests
 def test_mapping_naphtalene_benzene(
     naphtalene_benzene_molecules, naphtalene_benzene_mapping
 ):
@@ -84,6 +86,7 @@ def test_mapping_naphtalene_benzene_mst(
 
     check_mapping_vs_expected(geom_mapping, expected_mapping)
 
+
 def test_mapping_naphtalene_benzene_noMap(
     naphtalene_benzene_molecules, naphtalene_benzene_mapping
 ):
@@ -111,29 +114,8 @@ def test_mapping_naphtalene_benzene_noMap(
     assert "Mapping algorithm not implemented or unknown (options: MST or " \
            "LSA). got key:" in str(exc.value)
 
-#Check non params
-def test_mapping_naphtalene_benzene(
-    naphtalene_benzene_molecules, naphtalene_benzene_mapping
-):
-    """
-    Test mapping of naphtalene to benzene.
-    """
-    expected_mapping = naphtalene_benzene_mapping.componentA_to_componentB
-    geom_mapper = KartografAtomMapper(
-        atom_max_distance=0.95,
-        atom_map_hydrogens=True,
-        map_hydrogens_on_hydrogens_only=False,
-    )
 
-    mols = [            naphtalene_benzene_molecules[0],
-            naphtalene_benzene_molecules[1],]
-
-    geom_mapping = geom_mapper.suggest_mapping_from_rdmols(mols[0].to_rdkit(),
-                                            mols[1].to_rdkit(),
-                                            masked_atoms_molA= None,
-                                            masked_atoms_molB= None,
-                                            pre_mapped_atoms= None)
-
+# Check parameters/Filters
 def test_mapping_naphtalene_benzene_noHs(naphtalene_benzene_molecules):
     """
     Test mapping of naphtalene to benzene without H-atoms.
@@ -195,6 +177,7 @@ def test_stereo_mapping(stereco_chem_molecules, stereo_chem_mapping):
     check_mapping_vs_expected(geom_mapping, expected_mapping)
 
 
+# Test Serialization
 def test_to_from_dict():
     mapper = KartografAtomMapper()
     d1 = mapper._to_dict()
@@ -246,3 +229,26 @@ def test_filter_property():
     assert filter_atoms_h_only_h_mapped not in first_filters
     assert filter_atoms_h_only_h_mapped not in first_filters
 
+
+# Check non params
+def test_mapping_rdmols(
+    naphtalene_benzene_molecules, naphtalene_benzene_mapping
+):
+    """
+    Test mapping of naphtalene to benzene.
+    """
+    expected_mapping = naphtalene_benzene_mapping.componentA_to_componentB
+    geom_mapper = KartografAtomMapper(
+        atom_max_distance=0.95,
+        atom_map_hydrogens=True,
+        map_hydrogens_on_hydrogens_only=False,
+    )
+
+    mols = [naphtalene_benzene_molecules[0],
+            naphtalene_benzene_molecules[1]]
+
+    geom_mapping = geom_mapper.suggest_mapping_from_rdmols(mols[0].to_rdkit(),
+                                            mols[1].to_rdkit(),
+                                            masked_atoms_molA=None,
+                                            masked_atoms_molB=None,
+                                            pre_mapped_atoms=None)
