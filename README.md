@@ -37,9 +37,10 @@ You can find our Preprint on [ChemRxiv](https://doi.org/10.26434/chemrxiv-2023-0
 ```python3
 from rdkit import Chem
 from kartograf.atom_aligner import align_mol_shape
+from kartograf.atom_mapping_scorer import MappingRMSDScorer
 from kartograf import KartografAtomMapper, SmallMoleculeComponent
 
-#Preprocessing from Smiles - Here you can add your Input!
+# Preprocessing from Smiles - Here you can add your Input!
 # Generate Data: START
 smiles = ["c1ccccc1", "c1ccccc1(CO)"]
 rdmols = [Chem.MolFromSmiles(s) for s in smiles]
@@ -53,12 +54,16 @@ molA, molB = [SmallMoleculeComponent.from_rdkit(m) for m in rdmols]
 # Align the mols first - this might not needed, depends on input.
 a_molB = align_mol_shape(molB, ref_mol=molA)
 
-
 # Build Kartograf Atom Mapper
 mapper = KartografAtomMapper(atom_map_hydrogens=True)
 
 # Get Mapping
 kartograf_mapping = next(mapper.suggest_mappings(molA, a_molB))
+
+# Score Mapping
+rmsd_scorer = MappingRMSDScorer()
+score = rmsd_scorer(mapping=atom_mapping)
+print(f"RMSD Score: {score}")
 
 kartograf_mapping
 ```
