@@ -87,32 +87,20 @@ def test_mapping_naphtalene_benzene_mst(
     check_mapping_vs_expected(geom_mapping, expected_mapping)
 
 
-def test_mapping_naphtalene_benzene_noMap(
-    naphtalene_benzene_molecules, naphtalene_benzene_mapping
-):
+def test_mapping_noMap_algo():
     """
     Test mapping of naphtalene to benzene.
     """
-    expected_mapping = naphtalene_benzene_mapping.componentA_to_componentB
-    geom_mapper = KartografAtomMapper(
-        atom_max_distance=0.95,
-        atom_map_hydrogens=True,
-        map_hydrogens_on_hydrogens_only=False,
-        _mapping_algorithm= None
-    )
-
-    geom_mapping = next(
-        geom_mapper.suggest_mappings(
-            naphtalene_benzene_molecules[0],
-            naphtalene_benzene_molecules[1],
-        )
-    )
-
     with pytest.raises(ValueError) as exc:
-        check_mapping_vs_expected(geom_mapping, expected_mapping)
+        geom_mapper = KartografAtomMapper(
+            atom_max_distance=0.95,
+            atom_map_hydrogens=True,
+            map_hydrogens_on_hydrogens_only=False,
+            _mapping_algorithm=None
+        )
 
     assert "Mapping algorithm not implemented or unknown (options: MST or " \
-           "LSA). got key:" in str(exc.value)
+           "LSA). got key: None" in str(exc.value)
 
 
 # Check parameters/Filters

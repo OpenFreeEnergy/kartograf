@@ -121,14 +121,17 @@ class KartografAtomMapper(AtomMapper):
         else:
             self._filter_funcs = additional_mapping_filter_functions
 
-        if _mapping_algorithm == _mapping_algorithm.linear_sum_assignment:
+        if _mapping_algorithm is not None and _mapping_algorithm == \
+                _mapping_algorithm.linear_sum_assignment:
             self._map_hydrogens_on_hydrogens_only = True
             self.mapping_algorithm = self._linearSumAlgorithm_map
-        elif _mapping_algorithm == _mapping_algorithm.minimal_spanning_tree:
+        elif _mapping_algorithm is not None and _mapping_algorithm ==  \
+                _mapping_algorithm.minimal_spanning_tree:
             self.mapping_algorithm = self._minimalSpanningTree_map
         else:
             raise ValueError(
-                "Mapping algorithm not implemented or unknown (options: MST or LSA). got key: "
+                "Mapping algorithm not implemented or unknown (options: MST "
+                "or LSA). got key: "
                 + str(_mapping_algorithm)
             )
 
