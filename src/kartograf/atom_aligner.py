@@ -21,7 +21,8 @@ def align_mol_sceletons(
 ) -> SmallMoleculeComponent:
     """
         This i a Wrapper for rdkit - MCS align
-        Aligns very simply molecule to the reference molecule, based on the shared MCS - Sceleton.
+        Aligns very simply molecule to the reference molecule,
+        based on the shared MCS - Sceleton.
 
     Parameters
     ----------
@@ -71,7 +72,7 @@ def align_mol_shape(
     mol: SmallMoleculeComponent, ref_mol: SmallMoleculeComponent
 ) -> Chem.Mol:
     """
-        This i a Wrapper for rdkit / OPEN3DAlign
+        This is a Wrapper for rdkit / OPEN3DAlign
         Aligns shape based two SmallMoleculeComponents.
 
     Parameters

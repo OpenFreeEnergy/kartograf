@@ -38,7 +38,8 @@ logger = logging.getLogger(__name__)
 # Enums:
 class mapping_algorithm(Enum):
     """
-    This enum helps selecting the optimization algorithm for the distance graph based atom mapping.
+    This enum helps selecting the optimization algorithm
+    for the distance graph based atom mapping.
     """
 
     linear_sum_assignment = "LSA"

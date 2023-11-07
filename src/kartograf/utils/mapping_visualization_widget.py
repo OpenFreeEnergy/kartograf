@@ -17,10 +17,13 @@ from .optional_imports import requires_package
 
 
 @requires_package("py3Dmol")
-def display_mappings_3d(mappingSet: Union[AtomMapping, List[AtomMapping]]) -> widgets.VBox:
+def display_mappings_3d(
+        mappingSet: Union[AtomMapping, List[AtomMapping]]
+) -> widgets.VBox:
     """
-    This function is visualizing the provided list of mappings. It shows in the middle an overlay of the coordinates
-    of the molecues, and left and right the mapping of the atoms (color of the spheres indicates partners).
+    This function is visualizing the provided list of mappings. It shows in the
+    middle an overlay of the coordinates of the molecues, and left and right
+    the mapping of the atoms (color of the spheres indicates partners).
     This function is tested in jupyter notebooks.
 
     Parameters
@@ -34,11 +37,11 @@ def display_mappings_3d(mappingSet: Union[AtomMapping, List[AtomMapping]]) -> wi
         returns a widget, with the visualization and control elements.
 
     """
-    #Input Parse
+    # Input Parse
     if(isinstance(mappingSet, AtomMapping)):
         mappingSet = [mappingSet]
 
-    #helper for drawing edges
+    # helper for drawing edges
     def display_edge(index):
         print("MolA: " + mappingSet[index].componentA.name)
         print("MolB: " + mappingSet[index].componentB.name)
@@ -89,7 +92,7 @@ def display_mappings_3d(mappingSet: Union[AtomMapping, List[AtomMapping]]) -> wi
 
     previousButton.on_click(decrement)
 
-    #Aligning control elements and visualization
+    # Aligning control elements and visualization
     hbox = widgets.HBox([previousButton, nextButton, slider])
     inter = widgets.interactive_output(display_edge, {"index": slider})
     vbox = widgets.VBox([hbox, inter])

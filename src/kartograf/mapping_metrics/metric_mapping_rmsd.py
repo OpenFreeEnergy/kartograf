@@ -14,7 +14,8 @@ logger = logging.getLogger(__name__)
 
 class MappingRMSDScorer(_AbstractAtomMappingScorer):
     def get_rmsd(self, mapping: AtomMapping) -> float:
-        """this function calculates the rmsd between the mapped atoms of the two molecules
+        """this function calculates the rmsd between
+        the mapped atoms of the two molecules
 
         Parameters
         ----------

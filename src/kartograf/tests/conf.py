@@ -4,7 +4,7 @@
 import pytest
 from rdkit import Chem
 from gufe import SmallMoleculeComponent
-from kartograf.atom_align import align_mol_sceletons
+from kartograf.atom_aligner import align_mol_sceletons
 from gufe import SmallMoleculeComponent, LigandAtomMapping
 
 

@@ -3,7 +3,7 @@
 
 import pytest
 
-from kartograf.atom_align import align_mol_sceletons, align_mol_shape
+from kartograf.atom_aligner import align_mol_sceletons, align_mol_shape
 
 from .conf import stereco_chem_molecules
 
