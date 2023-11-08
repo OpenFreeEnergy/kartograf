@@ -3,7 +3,10 @@
 
 from gufe import SmallMoleculeComponent, ProteinComponent
 from .atom_mapper import KartografAtomMapper
-from . import atom_aligner
+from .atom_aligner import (
+    align_mol_sceletons,
+    align_mol_shape,
+)
 from .atom_mapping_scorer import (
     MappingRMSDScorer,
     MappingVolumeRatioScorer,
