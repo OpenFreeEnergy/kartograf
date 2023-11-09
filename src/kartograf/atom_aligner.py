@@ -1,4 +1,4 @@
-# This code is part of OpenFE and is licensed under the MIT license.
+# This code is part of kartograf and is licensed under the MIT license.
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
 from copy import deepcopy
@@ -15,14 +15,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def align_mol_sceletons(
+def align_mol_skeletons(
     mol: SmallMoleculeComponent,
     ref_mol: SmallMoleculeComponent,
 ) -> SmallMoleculeComponent:
     """
         This i a Wrapper for rdkit - MCS align
         Aligns very simply molecule to the reference molecule,
-        based on the shared MCS - Sceleton.
+        based on the shared MCS - skeleton.
 
     Parameters
     ----------

@@ -1,10 +1,10 @@
-# This code is part of OpenFE and is licensed under the MIT license.
+# This code is part of kartograf and is licensed under the MIT license.
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
 import pytest
 from rdkit import Chem
 from gufe import SmallMoleculeComponent
-from kartograf.atom_aligner import align_mol_sceletons
+from kartograf.atom_aligner import align_mol_skeletons
 from gufe import SmallMoleculeComponent, LigandAtomMapping
 
 
@@ -59,7 +59,7 @@ def naphtalene_benzene_mols():
 
     rdmols = mol_from_smiles([smi_napthalene, smi_benzene])
     mols = [SmallMoleculeComponent(m) for m in rdmols]
-    amol = align_mol_sceletons(mol=mols[1], ref_mol=mols[0])
+    amol = align_mol_skeletons(mol=mols[1], ref_mol=mols[0])
     mols = [mols[0], amol]
 
     return mols
