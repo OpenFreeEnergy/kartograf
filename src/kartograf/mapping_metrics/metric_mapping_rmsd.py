@@ -81,8 +81,8 @@ class MappingRMSDScorer(_AbstractAtomMappingScorer):
         T: float = 298,
     ) -> float:
         """
-            returns a normalized value between 0 and 1, where 1.0 is the best and 0.0 is the worst score.
-            The value is rounded to 2 digits.
+            returns a normalized value between 0 and 1, where 1.0 is the best
+            and 0.0 is the worst score. The value is rounded to 2 digits.
 
         Parameters
         ----------
@@ -97,14 +97,8 @@ class MappingRMSDScorer(_AbstractAtomMappingScorer):
         float
             normalized score between 0 and 1.
         """
-        return float(
-            np.round(
-                self.get_rmsd_p(
-                    mapping,
-                    accepted_distance_rmsd=accepted_distance_rmsd,
-                    k_hook=k_hook,
-                    T=T,
-                ),
-                2,
-            )
-        )
+        s = self.get_rmsd_p(mapping,
+                            accepted_distance_rmsd=accepted_distance_rmsd,
+                            k_hook=k_hook, T=T,)
+
+        return float(np.round(s, decimals=2,))
