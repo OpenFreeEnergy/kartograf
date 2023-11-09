@@ -5,7 +5,7 @@ import pytest
 from kartograf import KartografAtomMapper
 from kartograf.atom_mapper import filter_atoms_h_only_h_mapped
 
-from .conf import (
+from .conftest import (
     naphtalene_benzene_molecules,
     naphtalene_benzene_mapping,
     stereco_chem_molecules,

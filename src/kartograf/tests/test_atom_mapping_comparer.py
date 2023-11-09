@@ -7,7 +7,7 @@ from kartograf.mapping_metrics.metrics_mapping_comparisons import (
         jaccard_score
 )
 
-from .conf import benzene_benzene_mapping, benzene_benzene_empty_mapping
+from .conftest import benzene_benzene_mapping, benzene_benzene_empty_mapping
 
 
 def test_mapping_comparison_jcs_identical(benzene_benzene_mapping):

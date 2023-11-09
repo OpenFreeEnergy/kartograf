@@ -13,7 +13,7 @@ from kartograf.mapping_metrics import (
 )
 
 from kartograf.mapping_metrics.metric_shape_difference import _MappingShapeDistanceScorer
-from .conf import stereo_chem_mapping, benzene_benzene_mapping, benzene_benzene_empty_mapping
+from .conftest import stereo_chem_mapping, benzene_benzene_mapping, benzene_benzene_empty_mapping
 
 
 def test_score_mappings_rmsd(stereo_chem_mapping):
