@@ -245,13 +245,11 @@ def test_mapping_rdmols(
                                                 masked_atoms_molB=None,
                                                 pre_mapped_atoms=None)
 
-def test_ring_matches_property(
-    naphtalene_benzene_molecules, naphtalene_benzene_mapping
-):
+
+def test_ring_matches_property():
     """
-    Test mapping of naphtalene to benzene.
+    Test ring property changes.
     """
-    expected_mapping = naphtalene_benzene_mapping.componentA_to_componentB
     geom_mapper = KartografAtomMapper(
         atom_max_distance=0.95,
         map_exact_ring_matches_only=False
@@ -264,7 +262,6 @@ def test_ring_matches_property(
     geom_mapper.map_exact_ring_matches_only = False
     assert all(f != filter_whole_rings_only for f in geom_mapper._filter_funcs)
 
-    expected_mapping = naphtalene_benzene_mapping.componentA_to_componentB
     geom_mapper = KartografAtomMapper(
         atom_max_distance=0.95,
         map_exact_ring_matches_only=True

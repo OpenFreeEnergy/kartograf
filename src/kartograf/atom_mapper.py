@@ -161,7 +161,7 @@ class KartografAtomMapper(AtomMapper):
         self._map_exact_ring_matches_only = s
 
         for f in [filter_ringbreak_changes, filter_ringsize_changes,
-                       filter_whole_rings_only, ]:
+                  filter_whole_rings_only, ]:
             if s and f not in self._filter_funcs:
                 self._filter_funcs.append(f)
             elif f in self._filter_funcs:
