@@ -22,7 +22,7 @@ class _AbstractAtomMappingScorer(abc.ABC):
 
     @abc.abstractmethod
     def get_score(self, mapping: AtomMapping, *args, **kwargs) -> float:
-        """
+        """ calculate the score
             the scoring function returns a value between 0 and 1.
             a value close to 1.0 indicates a small distance, a score close to zero indicates a large cost/error.
 

@@ -24,7 +24,7 @@ class DefaultKartografScorer(_AbstractAtomMappingScorer):
     """
 
     def __init__(self):
-        """
+        """ Mapping Scorer
         this could be a future scorer using the here defined metrics?
 
         don't use ;)
@@ -40,7 +40,8 @@ class DefaultKartografScorer(_AbstractAtomMappingScorer):
         self.weights = self.weights / np.sum(self.weights)
 
     def get_score(self, mapping: AtomMapping) -> float:
-        """
+        """ Calculate a Score
+
             Under Development
 
         Parameters

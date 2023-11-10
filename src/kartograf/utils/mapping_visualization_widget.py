@@ -20,7 +20,7 @@ from .optional_imports import requires_package
 def display_mappings_3d(
         mappingSet: Union[AtomMapping, List[AtomMapping]]
 ) -> widgets.VBox:
-    """
+    """ Jupyter Visualization Widget
     This function is visualizing the provided list of mappings. It shows in the
     middle an overlay of the coordinates of the molecues, and left and right
     the mapping of the atoms (color of the spheres indicates partners).

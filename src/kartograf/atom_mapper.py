@@ -78,7 +78,7 @@ class KartografAtomMapper(AtomMapper):
         _mapping_algorithm: mapping_algorithm =
         mapping_algorithm.linear_sum_assignment,
     ):
-        """
+        """ Geometry Based Atom Mapper
         This mapper is a homebrew, that utilises rdkit in order
         to generate an atom-mapping based on the coordinates of two molecules.
 
@@ -140,7 +140,8 @@ class KartografAtomMapper(AtomMapper):
 
     @property
     def map_hydrogens_on_hydrogens_only(self) -> bool:
-        """this property is a shortcut for setting hydrogen shall be mapped only on hydrogen filter."""
+        """this property is a shortcut for setting hydrogen shall be mapped
+        only on hydrogen filter."""
         return self._map_hydrogens_on_hydrogens_only
 
     @map_hydrogens_on_hydrogens_only.setter
@@ -158,7 +159,7 @@ class KartografAtomMapper(AtomMapper):
     @classmethod
     def _from_dict(cls, d: dict):
         """Deserialize from dict representation"""
-        if any([k not in cls._defaults() for k in d]):
+        if any(k not in cls._defaults() for k in d):
             keys = list(filter(lambda k: k in cls._defaults(), d.keys()))
             raise ValueError(f"I don't know about all the keys here: {keys}")
         return cls(**d)
@@ -196,7 +197,7 @@ class KartografAtomMapper(AtomMapper):
         moleculeB: Chem.Mol,
         atom_mapping: Dict[int, int],
     ) -> Dict[int, int]:
-        """
+        """ Find connected core region from raw mapping
             This algorithm finds the maximal overlapping connected  set of
             two molecules and a given mapping. In order to accomplish this
             the following steps are executed:
@@ -229,7 +230,7 @@ class KartografAtomMapper(AtomMapper):
         )
 
         log_var = "\t".join(map(str, [sets_a, sets_b, atom_mapping]))
-        logger.debug(f"Found connected sets: {log_var}" )
+        logger.debug(f"Found connected sets: {log_var}")
 
         # get maximally overlapping largest sets
         ((max_set_a_id, max_set_b_id), max_set,
@@ -251,7 +252,7 @@ class KartografAtomMapper(AtomMapper):
     def _get_connected_atom_subsets(
         mol: Chem.Mol, to_be_searched: List[int]
     ) -> List[Set[int]]:
-        """
+        """ find connected sets in mappings
         Get the connected sets of all to_be_searched atom indices in mol.
         Connected means the atoms in a resulting connected set are connected
         by covalent bonds.
@@ -343,8 +344,7 @@ class KartografAtomMapper(AtomMapper):
     def _get_maximal_mapping_set_overlap(
         sets_a: Iterable[Set], sets_b: Iterable[Set], mapping: Dict[int, int]
     ) -> Tuple[Set, Set]:
-        """
-        get the largest set overlaps in the mapping of set_a and set_b.
+        """get the largest set overlaps in the mapping of set_a and set_b.
 
         Parameters
         ----------
@@ -358,7 +358,8 @@ class KartografAtomMapper(AtomMapper):
         Returns
         -------
         Tuple[Set, Set]
-            returns the found maximal and maximal overlapping sets of a and the set of b
+            returns the found maximal and maximal overlapping sets of a and
+            the set of b
         """
         # Calculate overlaps
         logger.debug(f"Input: {sets_a} {sets_b} {mapping}")
@@ -396,8 +397,8 @@ class KartografAtomMapper(AtomMapper):
     def _filter_mapping_for_set_overlap(
         set_a: Set[int], set_b: Set[int], mapping: Dict[int, int]
     ) -> Dict[int, int]:
-        """
-        This filter reduces the mapping dict to only in the sets contained atom IDs
+        """This filter reduces the mapping dict to only in the sets contained
+        atom IDs
 
         Parameters
         ----------
@@ -433,8 +434,8 @@ class KartografAtomMapper(AtomMapper):
             Union[float, Iterable],
         ] = vector_eucledean_dist,
     ) -> np.array:
-        """
-            calculates a full distance matrix between the two given input position matrixes.
+        """calculates a full distance matrix between the two given input
+        position matrixes.
 
 
         Parameters
@@ -443,8 +444,10 @@ class KartografAtomMapper(AtomMapper):
             position matrix A
         atomB_pos : NDArray
             position matrix B
-        metric : Callable[[Union[float, Iterable], Union[float, Iterable]], Union[float, Iterable]], optional
-            the applied metric to calculate the distance matrix. default metric: eucledean distance.
+        metric : Callable[[Union[float, Iterable], Union[float, Iterable]],
+        Union[float, Iterable]], optional
+            the applied metric to calculate the distance matrix. default
+            metric: eucledean distance.
 
         Returns
         -------
@@ -461,21 +464,26 @@ class KartografAtomMapper(AtomMapper):
 
     @staticmethod
     def _mask_atoms(
-        mol, mol_pos, map_hydrogens: bool = False, masked_atoms=[]
+        mol, mol_pos, map_hydrogens: bool = False, masked_atoms:List=[]
     ) -> Tuple[Dict, List]:
-        """
-        Mask atoms
+        """Mask atoms such they are not considered during the mapping.
 
         Parameters
         ----------
-        mol
-        mol_pos
-        map_hydrogens
-        masked_atoms
+        mol: Chem.Mol
+            molecule to be masked
+        mol_pos: List[List[int]]
+            positions of mol.
+        map_hydrogens: bool
+            should hydrogens be mapped?
+        masked_atoms: List[int]
+            already masked atoms.
 
         Returns
         -------
-
+        Tuple[Dict, List]
+            the return values are a dictionary, mapping atom ids onto the new
+            reduced dimensions and reduced positions.
         """
         pos = []
         masked_atomMapping = {}
@@ -493,8 +501,9 @@ class KartografAtomMapper(AtomMapper):
     def _minimalSpanningTree_map(
         self, distance_matrix: NDArray, max_dist: float
     ) -> Dict[int, int]:
-        """
-        This function is a numpy graph based implementation to build up an Atom Mapping purely on 3D criteria.
+        """MST Mapping
+        This function is a numpy graph based implementation to build up an
+        Atom Mapping purely on 3D criteria.
 
         Parameters
         ----------
@@ -538,8 +547,9 @@ class KartografAtomMapper(AtomMapper):
     def _linearSumAlgorithm_map(
         distance_matrix: NDArray, max_dist: float
     ) -> Dict[int, int]:
-        """
-        This function is a LSA based implementation to build up an Atom Mapping purely on 3D criteria.
+        """ LSA mapping
+        This function is a LSA based implementation to build up an Atom
+        Mapping purely on 3D criteria.
 
         Parameters
         ----------
@@ -565,8 +575,7 @@ class KartografAtomMapper(AtomMapper):
     def _additional_filter_rules(
         self, molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
     ) -> Dict[int, int]:
-        """
-        apply additional filter rules to the given mapping.
+        """apply additional filter rules to the given mapping.
 
         Parameters
         ----------
@@ -598,8 +607,9 @@ class KartografAtomMapper(AtomMapper):
         pre_mapped_atoms: Optional[dict[int, int]] = None,
         map_hydrogens: bool = True,
     ) -> dict[int, int]:
-        """
-            find a mapping between two molecules based on 3D coordinates. This is a helper function for the suggest mapping functions.
+        """ main mapping function - private
+            find a mapping between two molecules based on 3D coordinates.
+            This is a helper function for the suggest mapping functions.
 
         Parameters
         ----------
@@ -610,13 +620,16 @@ class KartografAtomMapper(AtomMapper):
         max_d : float, optional
             maximal allowed distance for atoms to be mapped, by default 0.95
         masked_atoms_molA : list, optional
-            remove categorical atoms by index of MolA from the mapping, by default []
+            remove categorical atoms by index of MolA from the mapping,
+            by default []
         masked_atoms_molB : list, optional
-            remove categorical atoms by index of MolB from the mapping, by default []
+            remove categorical atoms by index of MolB from the mapping,
+            by default []
         pre_mapped_atoms : dict, optional
             pre_mapped atoms, that need to be part of the mapping, by default {}
         map_hydrogens : bool, optional
-            if True map hydrogens as well, will hapen after heavy atom mapping, by default True
+            if True map hydrogens as well, will hapen after heavy atom
+            mapping, by default True
 
         Returns
         -------
@@ -666,16 +679,14 @@ class KartografAtomMapper(AtomMapper):
         )
 
         masked_atom_ids_str = "\n\t".join(map(str, [molA_masked_atomMapping,
-                                  molB_masked_atomMapping]))
+                                                    molB_masked_atomMapping]))
         unmasked_atom_ids_str = "\n\t".join(map(str, [molA_pos, molB_pos]))
         logger.debug(f"Remove Masked Atoms:\n{masked_atom_ids_str}\n"
                      f"{unmasked_atom_ids_str}")
         logger.debug(f"filtered Masked Positions lengths:{len(molA_pos)}\t"
                      f"{len(molB_pos)}")
 
-        if (
-            len(molA_pos) == 0 or len(molB_pos) == 0
-        ):
+        if len(molA_pos) == 0 or len(molB_pos) == 0:
             if len(pre_mapped_atoms) == 0:
                 logger.warning("no mappable Atoms were found!")
             return pre_mapped_atoms
@@ -687,7 +698,8 @@ class KartografAtomMapper(AtomMapper):
         logger.debug(f"Distance Matrix: \n{distance_matrix}")
 
         # Mask distance matrix with max_d
-        # np.inf is considererd as not possible in lsa implementation - therefore use a high value
+        # np.inf is considererd as not possible in lsa implementation -
+        # therefore use a high value
         self.mask_dist_val = max_d * 10**6
         masked_dmatrix = np.array(
             np.ma.where(
@@ -749,7 +761,7 @@ class KartografAtomMapper(AtomMapper):
         masked_atoms_molB: Optional[list] = None,
         pre_mapped_atoms: Optional[dict] = None,
     ) -> dict[int, int]:
-        """
+        """ Mapping Function with RDkit
         The function effectivly maps the two molecules on to each other and
         applies the given settings by the obj.
 
@@ -758,9 +770,11 @@ class KartografAtomMapper(AtomMapper):
         molA, molB : rdkit.Chem.Mol
             two rdkit molecules that should be mapped onto each other
         masked_atoms_molA : list, optional
-            remove categorical atoms by index of MolA from the mapping, by default []
+            remove categorical atoms by index of MolA from the mapping,
+            by default []
         masked_atoms_molB : list, optional
-            remove categorical atoms by index of MolB from the mapping, by default []
+            remove categorical atoms by index of MolB from the mapping,
+            by default []
         pre_mapped_atoms : dict, optional
             pre_mapped atoms, that need to be part of the mapping, by default {}
         """
@@ -813,7 +827,7 @@ class KartografAtomMapper(AtomMapper):
     def suggest_mappings(
         self, A: SmallMoleculeComponent, B: SmallMoleculeComponent
     ) -> Iterator[AtomMapping]:
-        """
+        """ Mapping generator - Gufe
         return a generator for atom mappings.
 
         Parameters

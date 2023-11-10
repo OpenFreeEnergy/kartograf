@@ -28,7 +28,7 @@ class _MappingShapeDistanceScorer(_AbstractAtomMappingScorer):
             max_layers: int = -1,
             step_size: float = 0.25,
     ):
-        """
+        """ A Shape based Scorer Class
         This function is using the implemented shape distances
         in rdkit and applies them to the atom mapping problem.
 
@@ -67,7 +67,7 @@ class _MappingShapeDistanceScorer(_AbstractAtomMappingScorer):
         )
 
     def get_score(self, mapping: AtomMapping) -> float:
-        """calculate the number of mapped atoms/number of atoms
+        """ Calculate the number of mapped atoms/number of atoms
         in the larger molecule
 
         Parameters
@@ -86,8 +86,7 @@ class _MappingShapeDistanceScorer(_AbstractAtomMappingScorer):
     def get_mapped_mols(
             self, mapping: AtomMapping
     ) -> Tuple[Chem.Mol, Chem.Mol]:
-        """
-        reduce the two molecules to an rdmol, representing the mapping.
+        """ Reduce the two molecules to an rdmol, representing the mapping.
 
         Parameters
         ----------
@@ -129,8 +128,7 @@ class _MappingShapeDistanceScorer(_AbstractAtomMappingScorer):
     def get_rdmol_shape_distance(
             self, molA: Chem.Mol, molB: Chem.Mol
     ) -> float:
-        """
-        Calculates the shape distance of two rdmols.
+        """Calculates the shape distance of two rdmols.
 
         Parameters
         ----------
@@ -142,7 +140,7 @@ class _MappingShapeDistanceScorer(_AbstractAtomMappingScorer):
         float
             raw result of the applied rdkit shape distance.
         """
-        if any([x is None for x in [molA, molB]]):
+        if any(x is None for x in [molA, molB]):
             if all([x is None for x in [molA, molB]]):
                 return np.inf
             else:
@@ -153,8 +151,8 @@ class _MappingShapeDistanceScorer(_AbstractAtomMappingScorer):
     def get_mapped_structure_shape_distance(
             self, mapping: AtomMapping
     ) -> float:
-        """
-        Calculates the shape distance of the mapped parts of the molecules only.
+        """ Calculates the shape distance of the mapped parts of the
+        molecules only.
 
         Parameters
         ----------
@@ -172,7 +170,7 @@ class _MappingShapeDistanceScorer(_AbstractAtomMappingScorer):
         )
 
     def get_mapping_shape_distance(self, mapping: AtomMapping) -> float:
-        """
+        """ Calculate shape score
             the function builds two mapped mols, each for one molecule.
             Basically reduces the atoms to the mapped region. Next it
             calculates the shape distance of both full molecules and of
@@ -219,7 +217,7 @@ class MappingShapeOverlapScorer(_MappingShapeDistanceScorer):
             max_layers: int = -1,
             step_size: float = 0.25,
     ):
-        """
+        """ Shape overlap based scorer
         This class uses the _MappingShapeDistanceScorer
         with the settings such, that the overlap of the
         two molecules are taken into consideration.
@@ -257,7 +255,7 @@ class MappingShapeMismatchScorer(_MappingShapeDistanceScorer):
             max_layers: int = -1,
             step_size: float = 0.25,
     ):
-        """
+        """ Shape mismatch based scorer
         This class uses the _MappingShapeDistanceScorer with the settings such,
         that the volume mismatches of the two molecules are taken into
         consideration.

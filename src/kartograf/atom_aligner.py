@@ -19,7 +19,7 @@ def align_mol_skeletons(
     mol: SmallMoleculeComponent,
     ref_mol: SmallMoleculeComponent,
 ) -> SmallMoleculeComponent:
-    """
+    """ Alignment based on MCS
         This i a Wrapper for rdkit - MCS align
         Aligns very simply molecule to the reference molecule,
         based on the shared MCS - skeleton.
@@ -71,7 +71,7 @@ def align_mol_skeletons(
 def align_mol_shape(
     mol: SmallMoleculeComponent, ref_mol: SmallMoleculeComponent
 ) -> Chem.Mol:
-    """
+    """ Alignment based on shape
         This is a Wrapper for rdkit / OPEN3DAlign
         Aligns shape based two SmallMoleculeComponents.
 

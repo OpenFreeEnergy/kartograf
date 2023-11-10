@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 
 class MappingVolumeRatioScorer(_AbstractAtomMappingScorer):
     def get_score(self, mapping: AtomMapping) -> float:
-        """
+        """ Calculate a Volume ratio based score
             returns a normalized value between 0 and 1, where 0 is the best
             and 1 ist the worst score.
 
@@ -35,7 +35,10 @@ class MappingVolumeRatioScorer(_AbstractAtomMappingScorer):
         return 0.0 if (r < 0) else r
 
     def get_volume_ratio(self, mapping: AtomMapping) -> float:
-        """this function calculates the ratio of the volume of the convex hull of the mapped atoms to the volume of the convex hull of the complete molecule
+        """ Calculate volume ratio
+        this function calculates the ratio of the volume of the convex
+        hull of the mapped atoms to the volume of the convex hull of the
+        complete molecule
 
         Parameters
         ----------
@@ -45,7 +48,8 @@ class MappingVolumeRatioScorer(_AbstractAtomMappingScorer):
         Returns
         -------
         float
-            returns the ratio of the volume of the convex hull of the mapped atoms to the volume of the convex hull of the complete molecule
+            returns the ratio of the volume of the convex hull of the mapped
+            atoms to the volume of the convex hull of the complete molecule
 
         Raises
         ------
@@ -81,7 +85,8 @@ class MappingVolumeRatioScorer(_AbstractAtomMappingScorer):
 
 class MappingRatioMappedAtomsScorer(_AbstractAtomMappingScorer):
     def get_score(self, mapping: AtomMapping) -> float:
-        """calculate the number of mapped atoms/number of atoms in the larger molecule
+        """calculate the number of mapped atoms/number of atoms in the
+        larger molecule
 
         Parameters
         ----------

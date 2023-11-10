@@ -80,7 +80,7 @@ class MappingRMSDScorer(_AbstractAtomMappingScorer):
         k_hook: float = 1,
         T: float = 298,
     ) -> float:
-        """
+        """ Calculate mapping RMSD based score
             returns a normalized value between 0 and 1, where 1.0 is the best
             and 0.0 is the worst score.
 

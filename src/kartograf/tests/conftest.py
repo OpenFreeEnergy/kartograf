@@ -88,16 +88,20 @@ def naphtalene_benzene_mapping():
 
     return LigandAtomMapping(mols[0], mols[1], expected_mapping)
 
+
 def benzene_mol():
     smi_benzene = "c1ccccc1"
     rdmols = mol_from_smiles([smi_benzene])
     return SmallMoleculeComponent(rdmols[0])
 
+
 @pytest.fixture(scope="session")
 def benzene_benzene_mapping():
     mol = benzene_mol()
-    expected_mapping = {6: 6, 7: 7, 8: 8, 9: 9, 10: 10, 11: 11, 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5}
+    expected_mapping = {6: 6, 7: 7, 8: 8, 9: 9, 10: 10, 11: 11, 0: 0, 1: 1,
+                        2: 2, 3: 3, 4: 4, 5: 5}
     return LigandAtomMapping(mol, mol, expected_mapping)
+
 
 @pytest.fixture(scope="session")
 def benzene_benzene_empty_mapping():
