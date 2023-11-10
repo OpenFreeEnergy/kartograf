@@ -57,17 +57,10 @@ class DefaultKartografScorer(_AbstractAtomMappingScorer):
         scores = []
         for weight, scorer in zip(self.weights, self.scorers):
             s = scorer.get_score(mapping)
-            logger.info(
-                "\t"
-                + scorer.__class__.__name__
-                + "\t"
-                + str(s)
-                + "\tweight: "
-                + str(weight)
-            )
+            logger.info(f"\t{scorer.__class__.__name__}\t{s}\tweight{weight}")
             scores.append(s)
 
         score = np.round(np.average(scores, weights=self.weights), 2)
         score = score if (score > 0) else 0.0
-        logger.info("Result: " + str(score))
+        logger.info(f"Result: {score}")
         return score

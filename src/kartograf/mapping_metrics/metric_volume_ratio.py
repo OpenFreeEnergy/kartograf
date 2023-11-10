@@ -15,8 +15,8 @@ log = logging.getLogger(__name__)
 class MappingVolumeRatioScorer(_AbstractAtomMappingScorer):
     def get_score(self, mapping: AtomMapping) -> float:
         """
-            returns a normalized value between 0 and 1, where 0 is the best and 1 ist the worst score.
-            The value is rounded to 2 digits.
+            returns a normalized value between 0 and 1, where 0 is the best
+            and 1 ist the worst score.
 
         Parameters
         ----------
@@ -32,7 +32,7 @@ class MappingVolumeRatioScorer(_AbstractAtomMappingScorer):
             normalized score between 0 and 1.
         """
         r = self.get_volume_ratio(mapping)
-        return 0.0 if (r < 0) else np.round(r, 2)
+        return 0.0 if (r < 0) else r
 
     def get_volume_ratio(self, mapping: AtomMapping) -> float:
         """this function calculates the ratio of the volume of the convex hull of the mapped atoms to the volume of the convex hull of the complete molecule
@@ -76,9 +76,6 @@ class MappingVolumeRatioScorer(_AbstractAtomMappingScorer):
         )
         avg_map_volume_ratio = np.mean(ratios)
 
-        # print("ratios",avg_map_volume_ratio, ratios)
-        # print("volumes", map_molA, complete_molA, map_molB, complete_molB)
-        # print('ind', mapping_molA, mapping_molB)
         return avg_map_volume_ratio
 
 
@@ -105,4 +102,4 @@ class MappingRatioMappedAtomsScorer(_AbstractAtomMappingScorer):
         if len(molB.GetAtoms()) > larger_nAtoms:
             larger_nAtoms = len(molB.GetAtoms())
 
-        return np.round((len(molA_to_molB) / larger_nAtoms), 2)
+        return len(molA_to_molB) / larger_nAtoms

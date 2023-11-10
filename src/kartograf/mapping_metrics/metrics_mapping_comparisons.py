@@ -33,4 +33,4 @@ def jaccard_score(mappingA: AtomMapping, mappingB: AtomMapping) -> float:
     intersection = mappingA_pairs.intersection(mappingB_pairs)
     union = mappingA_pairs.union(mappingB_pairs)
 
-    return np.round(len(intersection) / len(union), 2)
+    return len(intersection) / len(union)

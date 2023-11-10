@@ -40,9 +40,9 @@ class MappingRMSDScorer(_AbstractAtomMappingScorer):
             diffs.append(diff)
 
         diffs = np.array(diffs)
-        rmsd_map_diff = np.round(np.sqrt(np.sum(diffs**2)), 3)
+        rmsd_map_diff = np.sqrt(np.sum(diffs**2))
 
-        return float(np.round(rmsd_map_diff, 5))
+        return float(rmsd_map_diff)
 
     def get_rmsd_p(
         self,
@@ -71,7 +71,7 @@ class MappingRMSDScorer(_AbstractAtomMappingScorer):
         beta = 1000 / (const.k * const.Avogadro * T)
         V = k_hook * (rmsd - accepted_distance_rmsd)
         p = np.exp(-beta * V) if (np.exp(-beta * V) < 1) else 1
-        return float(np.round(p, 5))
+        return float(p)
 
     def get_score(
         self,
@@ -82,7 +82,7 @@ class MappingRMSDScorer(_AbstractAtomMappingScorer):
     ) -> float:
         """
             returns a normalized value between 0 and 1, where 1.0 is the best
-            and 0.0 is the worst score. The value is rounded to 2 digits.
+            and 0.0 is the worst score.
 
         Parameters
         ----------
@@ -101,4 +101,4 @@ class MappingRMSDScorer(_AbstractAtomMappingScorer):
                             accepted_distance_rmsd=accepted_distance_rmsd,
                             k_hook=k_hook, T=T,)
 
-        return float(np.round(s, decimals=2,))
+        return float(s)

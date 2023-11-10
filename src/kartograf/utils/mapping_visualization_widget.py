@@ -43,13 +43,12 @@ def display_mappings_3d(
 
     # helper for drawing edges
     def display_edge(index):
-        print("MolA: " + mappingSet[index].componentA.name)
-        print("MolB: " + mappingSet[index].componentB.name)
-        print(
-            "Mapping MolA->MolB:", mappingSet[index].componentA_to_componentB
-        )
+        print(f"MolA: {mappingSet[index].componentA.name}")
+        print(f"MolB: {mappingSet[index].componentB.name}")
+        print(f"Mapping MolA->MolB:"
+              f" {mappingSet[index].componentA_to_componentB}")
         if hasattr(mappingSet[index], "score"):
-            print("Mapping Score: ", getattr(mappingSet[index], "score"))
+            print(f"Mapping Score: {getattr(mappingSet[index])} score")
         else:
             print()
         view = display_mapping_3d(

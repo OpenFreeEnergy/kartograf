@@ -81,7 +81,7 @@ class _MappingShapeDistanceScorer(_AbstractAtomMappingScorer):
             normalized ratio of mapped atoms.
         """
         s = self.get_mapping_shape_distance(mapping)
-        return np.round(s, 2) if (s > 0) else 0.0
+        return s if (s > 0) else 0.0
 
     def get_mapped_mols(
             self, mapping: AtomMapping
@@ -146,9 +146,8 @@ class _MappingShapeDistanceScorer(_AbstractAtomMappingScorer):
             if all([x is None for x in [molA, molB]]):
                 return np.inf
             else:
-                raise ValueError(
-                    "One rdkit mol is None! (molA, molB)", [molA, molB]
-                )
+                raise ValueError(f"One rdkit mol is None! (molA, molB)"
+                                 f" {[molA, molB]}")
         return self._shape_dist_func(molA=molA, molB=molB)
 
     def get_mapped_structure_shape_distance(

@@ -96,7 +96,7 @@ def align_mol_shape(
         refMol=mol1b,
     )
     score = pyO3A.Align()
-    logging.debug("alignment score: " + str(score))
+    logging.debug(f"alignment score: {score}")
 
     mol._rdkit = mol2b
     return mol
