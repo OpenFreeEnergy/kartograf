@@ -3,7 +3,8 @@
 
 import pytest
 from kartograf import KartografAtomMapper
-from kartograf.atom_mapper import filter_atoms_h_only_h_mapped
+from kartograf.atom_mapper import (filter_atoms_h_only_h_mapped,
+                                   filter_whole_rings_only)
 
 from .conftest import (
     naphtalene_benzene_molecules,
@@ -108,7 +109,8 @@ def test_mapping_naphtalene_benzene_noHs(naphtalene_benzene_molecules):
     """
     Test mapping of naphtalene to benzene without H-atoms.
     """
-    expected_mapping = {10: 7, 11: 8, 12: 9, 13: 10, 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5}
+    expected_mapping = {10: 7, 11: 8, 12: 9, 13: 10, 0: 0, 1: 1, 2: 2, 3: 3,
+                        4: 4, 5: 5}
     geom_mapper = KartografAtomMapper(
         atom_max_distance=0.95,
         atom_map_hydrogens=True,
@@ -127,9 +129,11 @@ def test_mapping_naphtalene_benzene_noHs(naphtalene_benzene_molecules):
 
 def test_mapping_naphtalene_benzene_noHs_add_filter(naphtalene_benzene_molecules):
     """
-    Test mapping of naphtalene to benzene without H-atoms added as additional filter.
+    Test mapping of naphtalene to benzene without H-atoms added as
+     additional filter.
     """
-    expected_mapping = {10: 7, 11: 8, 12: 9, 13: 10, 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5}
+    expected_mapping = {10: 7, 11: 8, 12: 9, 13: 10, 0: 0, 1: 1, 2: 2,
+                        3: 3, 4: 4, 5: 5}
     geom_mapper = KartografAtomMapper(
         atom_max_distance=0.95,
         atom_map_hydrogens=True,
@@ -240,3 +244,29 @@ def test_mapping_rdmols(
                                                 masked_atoms_molA=None,
                                                 masked_atoms_molB=None,
                                                 pre_mapped_atoms=None)
+
+def test_ring_matches_property(
+    naphtalene_benzene_molecules, naphtalene_benzene_mapping
+):
+    """
+    Test mapping of naphtalene to benzene.
+    """
+    expected_mapping = naphtalene_benzene_mapping.componentA_to_componentB
+    geom_mapper = KartografAtomMapper(
+        atom_max_distance=0.95,
+        map_exact_ring_matches_only=False
+    )
+
+    geom_mapper.map_exact_ring_matches_only = True
+    print([f == filter_whole_rings_only for f in geom_mapper._filter_funcs])
+    assert any(f == filter_whole_rings_only for f in geom_mapper._filter_funcs)
+
+    geom_mapper.map_exact_ring_matches_only = False
+    assert all(f != filter_whole_rings_only for f in geom_mapper._filter_funcs)
+
+    expected_mapping = naphtalene_benzene_mapping.componentA_to_componentB
+    geom_mapper = KartografAtomMapper(
+        atom_max_distance=0.95,
+        map_exact_ring_matches_only=True
+    )
+    assert any(f == filter_whole_rings_only for f in geom_mapper._filter_funcs)

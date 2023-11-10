@@ -55,7 +55,7 @@ vector_eucledean_dist = calculate_edge_weight = lambda x, y: np.sqrt(
 # Implementation of Mapper:
 class KartografAtomMapper(AtomMapper):
     atom_max_distance: float
-    atom_ring_matches_ring: bool
+    _map_exact_ring_matches_only: bool
     atom_map_hydrogens: bool
     mapping_algorithm: mapping_algorithm
 
@@ -64,19 +64,16 @@ class KartografAtomMapper(AtomMapper):
     ]
 
     def __init__(
-        self,
-        *,
-        atom_ring_matches_ring: bool = False,
-        atom_max_distance: float = 0.95,
-        atom_map_hydrogens: bool = True,
-        map_hydrogens_on_hydrogens_only: bool = False,
-        additional_mapping_filter_functions: Optional[
-            Iterable[
-                Callable[[Chem.Mol, Chem.Mol, dict[int, int]], dict[int, int]]
-            ]
-        ] = None,
-        _mapping_algorithm: mapping_algorithm =
-        mapping_algorithm.linear_sum_assignment,
+            self,
+            *,
+            atom_max_distance: float = 0.95,
+            atom_map_hydrogens: bool = True,
+            map_hydrogens_on_hydrogens_only: bool = False,
+            map_exact_ring_matches_only: bool = True,
+            additional_mapping_filter_functions: Optional[Iterable[Callable[[
+                Chem.Mol, Chem.Mol, dict[int, int]], dict[int, int]]]] = None,
+            _mapping_algorithm: mapping_algorithm =
+            mapping_algorithm.linear_sum_assignment,
     ):
         """ Geometry Based Atom Mapper
         This mapper is a homebrew, that utilises rdkit in order
@@ -84,13 +81,15 @@ class KartografAtomMapper(AtomMapper):
 
         Parameters
         ----------
-        atom_ring_matches_ring : bool, optional
-            default False
         atom_max_distance : float, optional
             geometric criteria for two atoms, how far their distance
             can be maximal (in Angstrom). Default 0.95
         map_hydrogens_on_hydrogens_only : bool, optional
             map hydrogens only on hydrogens. Default False
+        map_exact_ring_matches_only : bool, optional
+            if true, only rings with matching ringsize and same bond-orders
+            will be mapped. Additionally no ring-breaking is permitted. default
+            False
         additional_mapping_filter_functions : Iterable[Callable[[Chem.Mol,
         Chem.Mol, Dict[int, int]], Dict[int, int]]], optional
             with this optional parameter you can further filter the distance
@@ -103,14 +102,14 @@ class KartografAtomMapper(AtomMapper):
 
         """
         self.atom_max_distance = atom_max_distance
-        self.atom_ring_matches_ring = atom_ring_matches_ring
         self.atom_map_hydrogens = atom_map_hydrogens
-        self._map_hydrogens_on_hydrogens_only = False
+        self._map_exact_ring_matches_only = map_exact_ring_matches_only
+        self._map_hydrogens_on_hydrogens_only = map_hydrogens_on_hydrogens_only
 
         self._filter_funcs = []
         if map_hydrogens_on_hydrogens_only:
             self._filter_funcs.append(filter_atoms_h_only_h_mapped)
-        if additional_mapping_filter_functions is None:
+        if self._map_exact_ring_matches_only:
             self._filter_funcs.extend(
                 [
                     filter_ringbreak_changes,
@@ -118,14 +117,14 @@ class KartografAtomMapper(AtomMapper):
                     filter_whole_rings_only,
                 ]
             )
-        else:
-            self._filter_funcs = additional_mapping_filter_functions
+        if additional_mapping_filter_functions is not None:
+            self._filter_funcs.extend(additional_mapping_filter_functions)
 
         if _mapping_algorithm is not None and _mapping_algorithm == \
                 _mapping_algorithm.linear_sum_assignment:
             self._map_hydrogens_on_hydrogens_only = True
             self.mapping_algorithm = self._linearSumAlgorithm_map
-        elif _mapping_algorithm is not None and _mapping_algorithm ==  \
+        elif _mapping_algorithm is not None and _mapping_algorithm == \
                 _mapping_algorithm.minimal_spanning_tree:
             self.mapping_algorithm = self._minimalSpanningTree_map
         else:
@@ -151,6 +150,22 @@ class KartografAtomMapper(AtomMapper):
             self._filter_funcs.insert(0, filter_atoms_h_only_h_mapped)
         elif filter_atoms_h_only_h_mapped in self._filter_funcs:
             self._filter_funcs.remove(filter_atoms_h_only_h_mapped)
+
+    @property
+    def map_exact_ring_matches_only(self) -> bool:
+        """this property is a shortcut for setting exact ring matches only."""
+        return self._map_exact_ring_matches_only
+
+    @map_exact_ring_matches_only.setter
+    def map_exact_ring_matches_only(self, s: bool):
+        self._map_exact_ring_matches_only = s
+
+        for f in [filter_ringbreak_changes, filter_ringsize_changes,
+                       filter_whole_rings_only, ]:
+            if s and f not in self._filter_funcs:
+                self._filter_funcs.append(f)
+            elif f in self._filter_funcs:
+                self._filter_funcs.remove(f)
 
     """
         Privat - Serialize
@@ -192,10 +207,10 @@ class KartografAtomMapper(AtomMapper):
 
     @classmethod
     def _filter_mapping_for_max_overlapping_connected_atom_set(
-        cls,
-        moleculeA: Chem.Mol,
-        moleculeB: Chem.Mol,
-        atom_mapping: Dict[int, int],
+            cls,
+            moleculeA: Chem.Mol,
+            moleculeB: Chem.Mol,
+            atom_mapping: Dict[int, int],
     ) -> Dict[int, int]:
         """ Find connected core region from raw mapping
             This algorithm finds the maximal overlapping connected  set of
@@ -250,7 +265,7 @@ class KartografAtomMapper(AtomMapper):
 
     @staticmethod
     def _get_connected_atom_subsets(
-        mol: Chem.Mol, to_be_searched: List[int]
+            mol: Chem.Mol, to_be_searched: List[int]
     ) -> List[Set[int]]:
         """ find connected sets in mappings
         Get the connected sets of all to_be_searched atom indices in mol.
@@ -342,7 +357,8 @@ class KartografAtomMapper(AtomMapper):
 
     @staticmethod
     def _get_maximal_mapping_set_overlap(
-        sets_a: Iterable[Set], sets_b: Iterable[Set], mapping: Dict[int, int]
+            sets_a: Iterable[Set], sets_b: Iterable[Set],
+            mapping: Dict[int, int]
     ) -> Tuple[Set, Set]:
         """get the largest set overlaps in the mapping of set_a and set_b.
 
@@ -395,7 +411,7 @@ class KartografAtomMapper(AtomMapper):
 
     @staticmethod
     def _filter_mapping_for_set_overlap(
-        set_a: Set[int], set_b: Set[int], mapping: Dict[int, int]
+            set_a: Set[int], set_b: Set[int], mapping: Dict[int, int]
     ) -> Dict[int, int]:
         """This filter reduces the mapping dict to only in the sets contained
         atom IDs
@@ -427,12 +443,12 @@ class KartografAtomMapper(AtomMapper):
 
     @staticmethod
     def _get_full_distance_matrix(
-        atomA_pos: NDArray,
-        atomB_pos: NDArray,
-        metric: Callable[
-            [Union[float, Iterable], Union[float, Iterable]],
-            Union[float, Iterable],
-        ] = vector_eucledean_dist,
+            atomA_pos: NDArray,
+            atomB_pos: NDArray,
+            metric: Callable[
+                [Union[float, Iterable], Union[float, Iterable]],
+                Union[float, Iterable],
+            ] = vector_eucledean_dist,
     ) -> np.array:
         """calculates a full distance matrix between the two given input
         position matrixes.
@@ -464,7 +480,7 @@ class KartografAtomMapper(AtomMapper):
 
     @staticmethod
     def _mask_atoms(
-        mol, mol_pos, map_hydrogens: bool = False, masked_atoms: List = [],
+            mol, mol_pos, map_hydrogens: bool = False, masked_atoms: List = [],
     ) -> Tuple[Dict, List]:
         """Mask atoms such they are not considered during the mapping.
 
@@ -490,7 +506,7 @@ class KartografAtomMapper(AtomMapper):
         for atom in mol.GetAtoms():
             atom_id = atom.GetIdx()
             if (
-                map_hydrogens or atom.GetSymbol() != "H"
+                    map_hydrogens or atom.GetSymbol() != "H"
             ) and atom_id not in masked_atoms:
                 masked_atomMapping[len(masked_atomMapping)] = atom_id
                 pos.append(mol_pos[atom_id])
@@ -499,7 +515,7 @@ class KartografAtomMapper(AtomMapper):
         return masked_atomMapping, pos
 
     def _minimalSpanningTree_map(
-        self, distance_matrix: NDArray, max_dist: float
+            self, distance_matrix: NDArray, max_dist: float
     ) -> Dict[int, int]:
         """MST Mapping
         This function is a numpy graph based implementation to build up an
@@ -545,7 +561,7 @@ class KartografAtomMapper(AtomMapper):
 
     @staticmethod
     def _linearSumAlgorithm_map(
-        distance_matrix: NDArray, max_dist: float
+            distance_matrix: NDArray, max_dist: float
     ) -> Dict[int, int]:
         """ LSA mapping
         This function is a LSA based implementation to build up an Atom
@@ -573,7 +589,7 @@ class KartografAtomMapper(AtomMapper):
         return mapping
 
     def _additional_filter_rules(
-        self, molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
+            self, molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
     ) -> Dict[int, int]:
         """apply additional filter rules to the given mapping.
 
@@ -598,14 +614,14 @@ class KartografAtomMapper(AtomMapper):
         return mapping
 
     def _calculate_mapping(
-        self,
-        molA: Chem.Mol,
-        molB: Chem.Mol,
-        max_d: float = 0.95,
-        masked_atoms_molA: Optional[list[int]] = None,
-        masked_atoms_molB: Optional[list[int]] = None,
-        pre_mapped_atoms: Optional[dict[int, int]] = None,
-        map_hydrogens: bool = True,
+            self,
+            molA: Chem.Mol,
+            molB: Chem.Mol,
+            max_d: float = 0.95,
+            masked_atoms_molA: Optional[list[int]] = None,
+            masked_atoms_molB: Optional[list[int]] = None,
+            pre_mapped_atoms: Optional[dict[int, int]] = None,
+            map_hydrogens: bool = True,
     ) -> dict[int, int]:
         """ main mapping function - private
             find a mapping between two molecules based on 3D coordinates.
@@ -700,7 +716,7 @@ class KartografAtomMapper(AtomMapper):
         # Mask distance matrix with max_d
         # np.inf is considererd as not possible in lsa implementation -
         # therefore use a high value
-        self.mask_dist_val = max_d * 10**6
+        self.mask_dist_val = max_d * 10 ** 6
         masked_dmatrix = np.array(
             np.ma.where(
                 distance_matrix < max_d, distance_matrix, self.mask_dist_val
@@ -754,12 +770,12 @@ class KartografAtomMapper(AtomMapper):
     """
 
     def suggest_mapping_from_rdmols(
-        self,
-        molA: Chem.Mol,
-        molB: Chem.Mol,
-        masked_atoms_molA: Optional[list] = None,
-        masked_atoms_molB: Optional[list] = None,
-        pre_mapped_atoms: Optional[dict] = None,
+            self,
+            molA: Chem.Mol,
+            molB: Chem.Mol,
+            masked_atoms_molA: Optional[list] = None,
+            masked_atoms_molB: Optional[list] = None,
+            pre_mapped_atoms: Optional[dict] = None,
     ) -> dict[int, int]:
         """ Mapping Function with RDkit
         The function effectivly maps the two molecules on to each other and
@@ -825,7 +841,7 @@ class KartografAtomMapper(AtomMapper):
         return mapping
 
     def suggest_mappings(
-        self, A: SmallMoleculeComponent, B: SmallMoleculeComponent
+            self, A: SmallMoleculeComponent, B: SmallMoleculeComponent
     ) -> Iterator[AtomMapping]:
         """ Mapping generator - Gufe
         return a generator for atom mappings.
