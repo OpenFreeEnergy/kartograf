@@ -1,3 +1,6 @@
+# This code is part of kartograf and is licensed under the MIT license.
+# For details, see https://github.com/OpenFreeEnergy/kartograf
+
 """
 Tools for integration with miscellaneous non-required packages.
 shamelessly borrowed from openff.toolkit
@@ -7,7 +10,7 @@ from typing import Callable
 
 
 def requires_package(package_name: str) -> Callable:
-    """
+    """ Optional package detection function
     Helper function to denote that a funciton requires some optional
     dependency. A function decorated with this decorator will raise
     `MissingDependencyError` if the package is not found by
@@ -29,8 +32,8 @@ def requires_package(package_name: str) -> Callable:
             try:
                 importlib.import_module(package_name)
             except (ImportError, ModuleNotFoundError):
-                raise ImportError(function.__name__ + " requires package: " +
-                                  package_name)
+                raise ImportError(f"{function.__name__} requires package:"
+                                  f" {package_name}")
             except Exception as e:
                 raise e
 
