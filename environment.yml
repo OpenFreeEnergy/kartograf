@@ -15,6 +15,7 @@ dependencies:
   - typing-extensions
   # Sci
   - numpy
+  - mpmath
   - scipy
   # Chem
   - rdkit
