@@ -14,3 +14,7 @@ Additionally can rules be applied during the mapping algorithm, such that for ex
 Approach:
 
 .. image:: ../_static/img/Kartograf_mapping_approach.png
+
+
+Atom Mapping Filters
+---------------------
