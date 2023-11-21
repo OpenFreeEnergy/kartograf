@@ -1,7 +1,23 @@
 Welcome to kartograf's documentation!
 =========================================
-Kartograf is a package, that is all about atom mapping from a 3D perspective.
-We still develop Kartograf soon there will be a release for the package.
+Kartograf is a packgage for atom mappings focussing on 3D geometries.
+This package can be for example be used to generate hybrid topology systems, where an atom mapping is required to determine the core region of the approach.
+But of course there exist also other use cases for this package.
+The atom mapper takes two set of coordinates of molecules as input.
+Optionally those set of coordinates can be aligned onto each other, checkout
+the ``atom_aligner`` module functions
+of Kartograf that offer a shape alignment implementation and a MCS-skeleton alignment.
+The ``atom_mapper`` can be used to generate the 3D geometry focused atom
+mapping, the algorithm is described in the related publication of Kartograf (see reference).
+Additionally, rule based filter functions can be provided to demap atoms,
+that do not fullfill the desired criteria, see ``filters``.
+Several mapping scoring metrics are provided, that evaluate geometric
+properties of your mapping, from ``atom_mapping_scorer``, which might be
+useful for checking quality of your mappings.
+Finally, there is a visualization function ``display_mappings_3d`` that can be
+used to check out the mappings with a jupyter notebook widget.
+
+You can find our Preprint on  `ChemRxiv <https://doi.org/10.26434/chemrxiv-2023-0n1pq>`_
 
 
 .. toctree::

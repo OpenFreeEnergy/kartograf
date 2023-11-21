@@ -5,7 +5,7 @@ Atom Mapping of two Molecules
 This is a short tutorial trying to give a hand on how to work with Kartograf.
 First the input is generated from two SMILES with RDKit. We will add all
 hydrogens and generate both a both molecules a 3D conformation with RDKit.
-Afterwards the molecules are transformed into `SmallMoleculeComponent`, which
+Afterwards the molecules are transformed into ``SmallMoleculeComponent``, which
 is the entrance into Kartograf and the OpenFE world::
 
     from rdkit import Chem
@@ -31,8 +31,8 @@ functions, that aligns the molecules based on their shape::
 
 Finally we will generate the atom mapping. Here we decide to map hydrogens as
 well as heavy atoms (this is a default). As input we give the aligned
-`SmallMoleculeComponent`s
-and we will retrieve a `AtomMapping` from the mapper, that contains both
+``SmallMoleculeComponents``
+and we will retrieve an ``AtomMapping`` from the mapper, that contains both
 components and the atom mapping from one to the other component::
 
     from kartograf import KartografAtomMapper
@@ -53,13 +53,13 @@ Note that Kartograf does first solve the geometry problem, by finding  atoms
 close to each other for the mapping. Next it will apply a set of default
 rules, that will remove mappings, that cause a so called `ring-break`, a
 `ring-size change` and a `ring-flexibility change`. This default behavior can
-be turned of and/or customized to the personal needs (see custom filters).
+be turned of and/or customized to the personal needs (see:ref:`custom-filter-label`).
 
 Additionally we could asses the quality of our mapping, there are several
 metrics in Kartograf that can be used to investigate the mapping. Here we are
 going to use the MappingRMSDScorer, that gives insight on how far the atoms
 need to travel from one state to the other, if they are mapped onto each
-oterh::
+other::
 
     from kartograf.atom_mapping_scorer import MappingRMSDScorer
 

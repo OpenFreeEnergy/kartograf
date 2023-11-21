@@ -1,6 +1,7 @@
 
 Customize Atom Mapping Filter Rules
 -----------------------------------
+.. _custom-filter-label:
 
 Sometimes the default rule based filters of Kartograf's atom mapper
 , that don't map ring size changes, ring breaks or flexibility changes in
@@ -45,5 +46,5 @@ like this::
 Now you can start building atom mappings without element changes. Note you
 can add as many filters here as you like, they will be exectued in order of
 their list appearance. The default ring rules of Kartograf can also be turned
-of by setting `map_exact_ring_matches_only=False`, not recommended though.
+of by setting ``map_exact_ring_matches_only=False``, not recommended though.
 
