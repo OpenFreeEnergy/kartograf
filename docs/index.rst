@@ -8,6 +8,8 @@ We still develop Kartograf soon there will be a release for the package.
    :maxdepth: 2
    :caption: Contents:
 
+   install
+   tutorial
    guide
    api
 

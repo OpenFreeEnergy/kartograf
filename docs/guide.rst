@@ -1,7 +1,6 @@
 Guide to Kartograf
 =====================
 
-
 .. toctree::
    :maxdepth: 2
    :caption: Applications:

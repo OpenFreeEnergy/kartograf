@@ -2,4 +2,4 @@
 Atom Mapping Scoring
 ===============================
 
-Socrers!
+Scorers!
