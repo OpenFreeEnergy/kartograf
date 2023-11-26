@@ -2,7 +2,7 @@
 Application in Free Energy Calculations
 =======================================
 
-In recent literature many ways showed up on how a system can be represented
+In recent literature, many ways have shown how a system can be represented
 during a free energy calculation. Here is a small Taxonomy that tries to
 capture them and show benefits and disadvantages (more you can find in
 [1]_ [2]_):
@@ -10,11 +10,11 @@ capture them and show benefits and disadvantages (more you can find in
 .. image:: ../_static/img/Topology_types.png
 
 The hybrid topology approach and the single topology approach depend heavily
-on atom mappings The mappings are used to find the shared core region of the
+on atom mappings, The mappings are used to find the shared core region of the
 molecules, such that the atoms part of this region can be represented as one.
-The sigle topology approach tries to maximize here the number of mapped
-atoms, where the hybrid topology approach only mapps one shared region of
-the molecules and represents the remaining atom coordinates independet of
+The single topology approach tries to maximize the number of mapped
+atoms, where the hybrid topology approach only maps one shared region of
+the molecules and represents the remaining atom coordinates independent of
 each other.
 
 The usage of Kartograf's atom mapper for this application can be found in the
