@@ -12,8 +12,12 @@ Filters is::
 
     def custom_filter(
         molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
-    ) -> dict[int, int]
+    ) -> dict[int, int]:
+        filtered_mapping = {}
+
         #do something, but always return a dict with the filtered mapping!
+
+        return filtered_mapping
 
 This signature allows you to build your own filter, with any feature you
 like, for example the following definition defines the filter for element
