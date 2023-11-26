@@ -12,3 +12,4 @@ Guide to Kartograf
    :caption: Algorithms:
 
    guide/atom_mapping
+   guide/atom_mapping_scoring
