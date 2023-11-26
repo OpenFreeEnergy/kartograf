@@ -1,7 +1,7 @@
 ===============================
 Atom Mapping Scoring
 ===============================
-Atom Mapping Scorers try to evaluate the quality of a given mapping. This
+Atom mapping scorers try to evaluate the quality of a given mapping. This
 however is a non trivial task as the quality of a mapping, depends on the use
 case of the mapping. A simple case example could be, if a program, for any
 reason, reindexes a molecule without changing the conformation, an atom mappings

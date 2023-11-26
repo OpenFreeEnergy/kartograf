@@ -2,7 +2,7 @@
 Atom Mapping
 ===============================
 
-Atom maappings can have a large variety of different use cases. The general
+Atom mappings can have a large variety of different use cases. The general
 goal of an atom mapping is to find an assignment between two sets of atoms
 based on a certain motivation. A very common approach is to find an
 assignment of atoms, between two molecules, which are considers similar/equal
@@ -35,7 +35,7 @@ Atom Mapping Filters
 Additionally can rules be applied during Kartograf's mapping algorithm,
 such that for example hydrogens are only mapped on hydrogens or no ring
 breakage occurs in the mappped core. Such rules might be necessary in order to
-ensure sampling of physical relevant configuraitons or serve other purposes.
+ensure sampling of physical relevant configurations or serve other purposes.
 
 
 
