@@ -1,6 +1,6 @@
 
-Atom Mapping of two Molecules
------------------------------
+Atom Mapping of two Molecules for finding a common core region
+---------------------------------------------------------------
 
 This is a short tutorial trying to give a hand on how to work with Kartograf.
 First the input is generated from two SMILES with RDKit. We will add all

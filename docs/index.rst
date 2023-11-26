@@ -17,8 +17,7 @@ useful for checking quality of your mappings.
 Finally, there is a visualization function ``display_mappings_3d`` that can be
 used to check out the mappings with a jupyter notebook widget.
 
-You can find our Preprint on  `ChemRxiv <https://doi.org/10.26434/chemrxiv-2023-0n1pq>`_
-
+You can find our Preprint on `Ries, B.; Alibay, I.; Swenson, D. W. H; Baumann, H. M.; Henry, M. M.; Eastwood, J. R. B.; Gowers, R. J. - Kartograf: An Accurate Geometry-Based Atom Mapper for Hybrid Topology Relative Free Energy Calculations, Chemrxiv (2023) <https://doi.org/10.26434/chemrxiv-2023-0n1pq>`_
 
 .. toctree::
    :maxdepth: 2
