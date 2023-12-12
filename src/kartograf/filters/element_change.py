@@ -1,3 +1,6 @@
+# This code is part of kartograf and is licensed under the MIT license.
+# For details, see https://github.com/OpenFreeEnergy/kartograf
+
 import logging
 from rdkit import Chem
 
@@ -18,22 +21,30 @@ def filter_atoms_h_only_h_mapped(
             atomA.GetAtomicNum() == atomB.GetAtomicNum() != 1
         ):
             filtered_mapping[atomA_idx] = atomB_idx
-            logger.debug(f"keep mapping for atomIDs ({atomA_idx}, {atomB_idx}):"
-                         f" {atomA.GetAtomicNum()} {atomB.GetAtomicNum()}")
+            logger.debug(
+                f"keep mapping for atomIDs ({atomA_idx}, {atomB_idx}):"
+                f" {atomA.GetAtomicNum()} {atomB.GetAtomicNum()}"
+            )
         else:
-            logger.debug(f"no mapping for atomIDs ({atomA_idx}, {atomB_idx}):"
-                         f" {atomA.GetAtomicNum()} {atomB.GetAtomicNum()}")
+            logger.debug(
+                f"no mapping for atomIDs ({atomA_idx}, {atomB_idx}):"
+                f" {atomA.GetAtomicNum()} {atomB.GetAtomicNum()}"
+            )
 
     return filtered_mapping
 
 
-def filter_element_changes(molA: Chem.Mol, molB: Chem.Mol,
-                           mapping: dict[int, int]) -> dict[int, int]:
+def filter_element_changes(
+    molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
+) -> dict[int, int]:
     """Forces a mapping to exclude any alchemical element changes in the core"""
     filtered_mapping = {}
 
     for i, j in mapping.items():
-        if molA.GetAtomWithIdx(i).GetAtomicNum() != molB.GetAtomWithIdx(j).GetAtomicNum():
+        if (
+            molA.GetAtomWithIdx(i).GetAtomicNum()
+            != molB.GetAtomWithIdx(j).GetAtomicNum()
+        ):
             continue
         filtered_mapping[i] = j
 

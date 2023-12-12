@@ -1,3 +1,6 @@
+# This code is part of kartograf and is licensed under the MIT license.
+# For details, see https://github.com/OpenFreeEnergy/kartograf
+
 import pytest
 from kartograf.atom_mapping_scorer import DefaultKartografScorer
 from kartograf.mapping_metrics import (
@@ -9,8 +12,10 @@ from kartograf.mapping_metrics import (
 
 )
 
-from kartograf.mapping_metrics.metric_shape_difference import _MappingShapeDistanceScorer
-from .conf import stereo_chem_mapping, benzene_benzene_mapping, benzene_benzene_empty_mapping
+from kartograf.mapping_metrics.metric_shape_difference import (
+    _MappingShapeDistanceScorer)
+from .conftest import (stereo_chem_mapping, benzene_benzene_mapping,
+                       benzene_benzene_empty_mapping)
 
 
 def test_score_mappings_rmsd(stereo_chem_mapping):

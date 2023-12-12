@@ -53,8 +53,8 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 html_static_path = ['_static']
 html_theme = 'ofe_sphinx_theme'
 
-html_favicon = '_static/img/Kartograf_logo_boxed_dark.ico'
-html_logo = "_static/img/Kartograf_logo_light_transp.png"
+html_favicon = '_static/img/logo/Kartograf_logo_boxed_dark.ico'
+html_logo = "_static/img/logo/Kartograf_logo_light_transp.png"
 html_theme_options = {
     "logo": {
         "text": "Kartograf Documentation",

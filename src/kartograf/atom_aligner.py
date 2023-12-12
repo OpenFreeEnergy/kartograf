@@ -1,3 +1,6 @@
+# This code is part of kartograf and is licensed under the MIT license.
+# For details, see https://github.com/OpenFreeEnergy/kartograf
+
 from copy import deepcopy
 
 from rdkit import Chem
@@ -9,17 +12,17 @@ from gufe import SmallMoleculeComponent
 
 import logging
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
-def align_mol_sceletons(
+def align_mol_skeletons(
     mol: SmallMoleculeComponent,
     ref_mol: SmallMoleculeComponent,
 ) -> SmallMoleculeComponent:
-    """
-        WORK IN PROGRESS!
+    """ Alignment based on MCS
         This i a Wrapper for rdkit - MCS align
-        Aligns very simply molecule to the reference molecule, based on the shared MCS.
+        Aligns very simply molecule to the reference molecule,
+        based on the shared MCS - skeleton.
 
     Parameters
     ----------
@@ -64,10 +67,12 @@ def align_mol_sceletons(
     mol._rdkit = mol2b
     return mol
 
-def align_mol_shape(mol:SmallMoleculeComponent, ref_mol:SmallMoleculeComponent)->Chem.Mol:
-    """
-        WORK IN PROGRESS!
-        This i a Wrapper for rdkit / OPEN3DAlign
+
+def align_mol_shape(
+    mol: SmallMoleculeComponent, ref_mol: SmallMoleculeComponent
+) -> Chem.Mol:
+    """ Alignment based on shape
+        This is a Wrapper for rdkit / OPEN3DAlign
         Aligns shape based two SmallMoleculeComponents.
 
     Parameters
@@ -86,9 +91,12 @@ def align_mol_shape(mol:SmallMoleculeComponent, ref_mol:SmallMoleculeComponent)-
 
     mol1b = ref_mol._rdkit
     mol2b = mol._rdkit
-    pyO3A = rdMolAlign.GetO3A(prbMol=mol2b, refMol=mol1b,)
+    pyO3A = rdMolAlign.GetO3A(
+        prbMol=mol2b,
+        refMol=mol1b,
+    )
     score = pyO3A.Align()
-    logging.debug("alignment score: "+str(score))
+    logging.debug(f"alignment score: {score}")
 
     mol._rdkit = mol2b
     return mol
