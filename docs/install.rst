@@ -29,6 +29,6 @@ following example, allowing modification of the code live in the package::
     mamba env create -f environment.yml
 
     mamba activate kartograf
-    pip install -e .
+    python -m pip install -e .
 
 Happy coding! :)
