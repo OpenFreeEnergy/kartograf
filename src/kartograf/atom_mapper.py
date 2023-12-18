@@ -18,7 +18,6 @@ from scipy.sparse.csgraph import connected_components
 from typing import Callable, Dict, Iterable, List, Optional, Set, Tuple, Union
 
 from gufe import SmallMoleculeComponent
-from gufe import LigandAtomMapping
 from gufe import AtomMapping, AtomMapper
 
 from numpy.typing import NDArray
@@ -858,7 +857,7 @@ class KartografAtomMapper(AtomMapper):
         Iterator[AtomMapping]
             returns an interator of possible atom mappings.
         """
-        yield LigandAtomMapping(
+        yield AtomMapping(
             A,
             B,
             self.suggest_mapping_from_rdmols(
