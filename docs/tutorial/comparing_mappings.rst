@@ -9,8 +9,13 @@ Kartograf and Lomap, you can of course always compare the number of mapped atoms
 
 This will give you insights how many atoms get mapped by your mapping
 approaches. But this will not tell you how similar actually the mapped atoms
-are. For that we added the Jaccard Score (jcs) to the Kartograf repository,
-allowing to calculate the atom pair diversity of the mappings::
+are. For that we added the Jaccard Score (jcs) to the Kartograf repository.
+The jcs is calculated as follows
+
+.. math:: s_{jaccard} = |A \cap B| / |A \cup B|
+   :label: jaccard_score
+
+The score can be used to calculate the atom pair diversity of the mapping A and mapping B::
 
     # an atom mapping - atom_mapping
     from kartograf.metrics_mapping_comparisons import jaccard_score
