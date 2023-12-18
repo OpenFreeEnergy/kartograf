@@ -8,7 +8,7 @@ which don't map ring size changes, ring breaks, or flexibility changes in
 rings, might not be enough for you. For example, you might want to
 additionally avoid element changes in your mapping. Then you can customize
 the filter rules and employ your own rules. The general signature of the
-Filters is::
+Filters uses a molecule `molA` and a molecule `molB`, that were provided to generate a `mapping`. In the function, the `mapping` is filtered by the implemented rule resulting in a returned 'filtered_mappig`::
 
     def custom_filter(
         molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
