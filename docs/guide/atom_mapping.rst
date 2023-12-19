@@ -1,16 +1,41 @@
+===============================
 Atom Mapping
 ===============================
-The Atom mapper in Kartograf is can be used for hybrid topology approaches in relative free energy calculations.
-The focus of this algorithm is, to use the given input coordinates and use them a given truth, that shall only be minimally modified.
-This allows users to give pre-modelled ligand alignments to the mapping algorithm and always getting a mapping of the molecules,
-that is not changing the input structures significantly.
 
-This approach is very robust, but critically depends on the input structures of course.
+Atom mappings can have a large variety of different use cases. The general
+the goal of atom mapping is to find an assignment between two sets of atoms
+based on a certain motivation. A very common approach is to find an
+assignment of atoms, between two molecules, which are considered similar/equal
+leading to an MCS estimation.
 
-Additionally can rules be applied during the mapping algorithm, such that for example hydrogens are only mapped on hydrogens or no ring breakage happens in the mappped core.
+For finding such atom mappings multiple different approaches were described
+in the literature. One is to use 2D isomorphic graph problem-solving in order to
+estimate the MCS. Alternatively one can use the 3D geometry information of
+the atoms in order to find such a mapping, like Kartograf does with its atom
+mapper. Kartograf assumes that the input coordinates of the molecules are
+highly overlapping due to prior alignment or modeling approaches before the
+mapping stage is performed. This allows Kartograf to find very efficiently an
+atom mapping with a minimal atom displacement.
 
-(More here soon)
+In the case of classical atom mappings for hybrid topology free energy
+calculations, a core region of the molecules is required. That region is
+actually, a sub-space of the actual atom mapping and it ensures, that all
+mapped atoms are connected via covalent bonds in their original molecule, as
+this might lead to problems in the sampling during the simulations
+(communicating mapped regions).
 
 Approach:
 
 .. image:: ../_static/img/Kartograf_mapping_approach.png
+
+
+Atom Mapping Filters
+---------------------
+
+Additionally, can rules be applied during Kartograf's mapping algorithm,
+such that for example hydrogens are only mapped on hydrogens or no ring
+breakage occurs. Such rules might be necessary in order to
+ensure sampling of physically relevant configurations or serve other purposes.
+
+
+
