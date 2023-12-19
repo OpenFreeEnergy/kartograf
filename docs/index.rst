@@ -1,5 +1,3 @@
-.. image:: ../_static/img/logo/kartograf_logo_fancy_dark.png
-
 Welcome to Kartograf's documentation!
 =========================================
 Kartograf is a packgage for atom mappings focussing on 3D geometries.
