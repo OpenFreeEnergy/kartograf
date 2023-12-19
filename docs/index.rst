@@ -1,5 +1,4 @@
 .. image:: ../_static/img/logo/kartograf_logo_fancy_dark.png
-   :align: right
 
 Welcome to Kartograf's documentation!
 =========================================
