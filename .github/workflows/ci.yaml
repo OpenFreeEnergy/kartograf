@@ -60,6 +60,8 @@ jobs:
         run: |
           # openfe is a dep for the notebooks example, but not the package
           micromamba install openfe
+          # another dep I don't want to include in the env
+          pip install --no-deps git+https://github.com/OpenFreeEnergy/openfe-benchmarks.git
           pytest --nbval-lax 
       - name: codecov
         if: ${{ github.repository == 'OpenFreeEnergy/kartograf' && github.event != 'schedule'}}
