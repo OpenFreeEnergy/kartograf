@@ -56,7 +56,12 @@ jobs:
           micromamba list
       - name: "Run tests"
         run: |
-          pytest -n 2 -v --cov=kartograf --cov-report=xml
+          pytest -n auto -v --cov=kartograf --cov-report=xml
+      - name: "Test Notebooks"
+        run: |
+          # openfe is a dep for the notebooks example, but not the package
+          micromambaa install openfe
+          pytest --nbval-lax 
       - name: codecov
         if: ${{ github.repository == 'OpenFreeEnergy/kartograf' && github.event != 'schedule'}}
         uses: codecov/codecov-action@v3
