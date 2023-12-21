@@ -11,7 +11,7 @@ dependencies:
   - coverage
   - mypy
   #Typing
-  - gufe>=0.8.0
+  - gufe>=0.9.5
   - typing-extensions
   # Sci
   - numpy
