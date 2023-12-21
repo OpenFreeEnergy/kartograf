@@ -59,7 +59,7 @@ jobs:
       - name: "Test Notebooks"
         run: |
           # openfe is a dep for the notebooks example, but not the package
-          micromambaa install openfe
+          micromamba install openfe
           pytest --nbval-lax 
       - name: codecov
         if: ${{ github.repository == 'OpenFreeEnergy/kartograf' && github.event != 'schedule'}}
