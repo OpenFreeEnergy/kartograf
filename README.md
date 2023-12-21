@@ -62,7 +62,7 @@ kartograf_mapping = next(mapper.suggest_mappings(molA, a_molB))
 
 # Score Mapping
 rmsd_scorer = MappingRMSDScorer()
-score = rmsd_scorer(mapping=atom_mapping)
+score = rmsd_scorer(mapping=kartograf_mapping)
 print(f"RMSD Score: {score}")
 
 kartograf_mapping
