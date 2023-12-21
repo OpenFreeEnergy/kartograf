@@ -51,7 +51,7 @@ jobs:
           python -Ic "import kartograf"
       - name: "Environment Information"
         run: |
-          micromamba info -a
+          micromamba info 
           micromamba list
       - name: "Run tests"
         run: |
