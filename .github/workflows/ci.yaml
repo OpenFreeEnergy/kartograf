@@ -13,7 +13,7 @@ concurrency:
 
 defaults:
   run:
-    shell: bash -l {0}
+    shell: bash -leo pipefail {0}
 
 jobs:
   tests:
@@ -22,21 +22,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu', 'macos']
+        os: ['ubuntu',]
         python-version:
-          - 3.9
+          - "3.9"
+          - "3.10"
+          - "3.11"
+        include:
+          - os: 'macos'
+            python-version: "3.11" 
 
     steps:
-      - uses: actions/checkout@v2
-
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: actions/checkout@v4
+      - uses: mamba-org/setup-micromamba@v1
         with:
-            auto-update-conda: true
-            use-mamba: true
-            python-version: ${{ matrix.python-version }}
-            miniforge-variant: Mambaforge
-            environment-file: environment.yml
-            activate-environment: kartograf
+          environment-file: environment.yml
+          environment-name: kartograf
+          cache-environment: true
+          cache-downloads: true
+          create-args: >-
+            python=${{ matrix.python-version }}
 
       - name: "Install"
         run: pip install --no-deps -e .
@@ -47,11 +51,19 @@ jobs:
           python -Ic "import kartograf"
       - name: "Environment Information"
         run: |
-          mamba info -a
-          mamba list
+          micromamba info 
+          micromamba list
       - name: "Run tests"
         run: |
-          pytest -n 2 -v --cov=kartograf --cov-report=xml
+          pytest -n auto -v --cov=kartograf --cov-report=xml
+      - name: "Test Notebooks"
+        run: |
+          # openfe is a dep for the notebooks example, but not the package
+          micromamba install openfe=0.15
+          # another dep I don't want to include in the env
+          pip install --no-deps git+https://github.com/OpenFreeEnergy/openfe-benchmarks.git
+          # Only need to test the notebook(s) in examples/
+          pytest -v --nbval-lax examples/
       - name: codecov
         if: ${{ github.repository == 'OpenFreeEnergy/kartograf' && github.event != 'schedule'}}
         uses: codecov/codecov-action@v3
