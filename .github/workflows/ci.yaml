@@ -62,7 +62,8 @@ jobs:
           micromamba install openfe=0.15
           # another dep I don't want to include in the env
           pip install --no-deps git+https://github.com/OpenFreeEnergy/openfe-benchmarks.git
-          pytest --nbval-lax 
+          # Only need to test the notebook(s) in examples/
+          pytest -v --nbval-lax examples/
       - name: codecov
         if: ${{ github.repository == 'OpenFreeEnergy/kartograf' && github.event != 'schedule'}}
         uses: codecov/codecov-action@v3
