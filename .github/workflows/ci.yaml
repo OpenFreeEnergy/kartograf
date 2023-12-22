@@ -59,7 +59,7 @@ jobs:
       - name: "Test Notebooks"
         run: |
           # openfe is a dep for the notebooks example, but not the package
-          micromamba install openfe
+          micromamba install openfe=0.15
           # another dep I don't want to include in the env
           pip install --no-deps git+https://github.com/OpenFreeEnergy/openfe-benchmarks.git
           pytest --nbval-lax 
