@@ -33,7 +33,11 @@ Finally, there is a visualization function `display_mappings_3d` that can be use
 You can find our Preprint on [ChemRxiv](https://doi.org/10.26434/chemrxiv-2023-0n1pq) 
 
 
+Try our interactive demo: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/OpenFreeEnergy/kartograf/blob/main/examples/kartograf_example.ipynb)
+
+
 ## Usage
+
 ```python3
 from rdkit import Chem
 from kartograf.atom_aligner import align_mol_shape
