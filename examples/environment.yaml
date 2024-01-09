@@ -3,6 +3,7 @@ channels:
 dependencies:
   - kartograf >=1
   - openfe >=0.15
+  - rdkit
   - pip
   - pip:
     - git+https://github.com/OpenFreeEnergy/openfe-benchmarks.git#egg=openfe-benchmarks --no-deps
