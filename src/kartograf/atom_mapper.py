@@ -480,7 +480,7 @@ class KartografAtomMapper(AtomMapper):
 
     @staticmethod
     def _mask_atoms(
-            mol, mol_pos, map_hydrogens: bool = False, masked_atoms: list = [],
+            mol, mol_pos, map_hydrogens: bool, masked_atoms: list[int],
     ) -> tuple[dict, list]:
         """Mask atoms such they are not considered during the mapping.
 
