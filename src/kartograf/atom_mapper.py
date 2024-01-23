@@ -139,12 +139,34 @@ class KartografAtomMapper(AtomMapper):
         return {}
 
     def _to_dict(self) -> dict:
-        # currently only serialise some filter functions
-
+        # currently only serialise built-in filter functions
+        # so check that we don't have any custom filters
+        allowed = {
+            filter_atoms_h_only_h_mapped,
+            filter_whole_rings_only,
+            filter_ringsize_changes,
+            filter_ringbreak_changes,
+        }
+        present = set(self._filter_funcs)
+        if remaining := present - allowed:
+            raise NotImplementedError("Can't (yet) serialise arbitrary functions, "
+                                      f"got: {remaining}")
+        # rather than serialise _filter_funcs, we serialise the arguments
+        # that lead to the correct _filter_funcs being added
+        #
+        # then reverse engineer the _mapping_algorithm argument
+        # this avoids serialising the function directly
+        map_arg = {
+            self._linearSumAlgorithm_map: mapping_algorithm.linear_sum_assignment,
+            self._minimalSpanningTree_map: mapping_algorithm.minimal_spanning_tree,
+        }[self.mapping_algorithm]
 
         return {
             'atom_max_distance': self.atom_max_distance,
             'atom_map_hydrogens': self.atom_map_hydrogens,
+            'map_hydrogens_on_hydrogens_only': self._map_hydrogens_on_hydrogens_only,
+            'map_exact_ring_matches_only': self._map_exact_ring_matches_only,
+            '_mapping_algorithm': map_arg,
         }
 
     @classmethod
@@ -180,40 +202,6 @@ class KartografAtomMapper(AtomMapper):
                 self._filter_funcs.append(f)
             elif f in self._filter_funcs:
                 self._filter_funcs.remove(f)
-
-    """
-        Privat - Serialize
-    """
-
-    @classmethod
-    def _from_dict(cls, d: dict):
-        """Deserialize from dict representation"""
-        if any(k not in cls._defaults() for k in d):
-            keys = list(filter(lambda k: k in cls._defaults(), d.keys()))
-            raise ValueError(f"I don't know about all the keys here: {keys}")
-        return cls(**d)
-
-    def _to_dict(self) -> dict:
-        d = {}
-        for key in self._defaults():
-            if hasattr(self, key):
-                d[key] = getattr(self, key)
-        return d
-
-    @classmethod
-    def _defaults(cls):
-        """This method should be overridden to provide the dict of defaults
-        appropriate for the `GufeTokenizable` subclass.
-        """
-        sig = inspect.signature(cls.__init__)
-
-        defaults = {
-            param.name: param.default
-            for param in sig.parameters.values()
-            if param.default is not inspect.Parameter.empty
-        }
-
-        return defaults
 
     """
        Private - Set Operations
