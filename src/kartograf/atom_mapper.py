@@ -46,6 +46,9 @@ class mapping_algorithm(Enum):
     minimal_spanning_tree = "MST"
 
 
+_mapping_alg_type = Callable[[NDArray, float], dict[int, int]]
+
+
 # Helper:
 vector_eucledean_dist = calculate_edge_weight = lambda x, y: np.sqrt(
     np.sum(np.square(y - x), axis=1)
@@ -57,7 +60,7 @@ class KartografAtomMapper(AtomMapper):
     atom_max_distance: float
     _map_exact_ring_matches_only: bool
     atom_map_hydrogens: bool
-    mapping_algorithm: mapping_algorithm
+    mapping_algorithm: _mapping_alg_type
 
     _filter_funcs: list[
         Callable[[Chem.Mol, Chem.Mol, dict[int, int]], dict[int, int]]
@@ -72,7 +75,7 @@ class KartografAtomMapper(AtomMapper):
             map_exact_ring_matches_only: bool = True,
             additional_mapping_filter_functions: Optional[Iterable[Callable[[
                 Chem.Mol, Chem.Mol, dict[int, int]], dict[int, int]]]] = None,
-            _mapping_algorithm: mapping_algorithm =
+            _mapping_algorithm: str =
             mapping_algorithm.linear_sum_assignment,
     ):
         """ Geometry Based Atom Mapper
@@ -120,12 +123,10 @@ class KartografAtomMapper(AtomMapper):
         if additional_mapping_filter_functions is not None:
             self._filter_funcs.extend(additional_mapping_filter_functions)
 
-        if _mapping_algorithm is not None and _mapping_algorithm == \
-                _mapping_algorithm.linear_sum_assignment:
+        if _mapping_algorithm == mapping_algorithm.linear_sum_assignment:
             self._map_hydrogens_on_hydrogens_only = True
             self.mapping_algorithm = self._linearSumAlgorithm_map
-        elif _mapping_algorithm is not None and _mapping_algorithm == \
-                _mapping_algorithm.minimal_spanning_tree:
+        elif _mapping_algorithm == mapping_algorithm.minimal_spanning_tree:
             self.mapping_algorithm = self._minimalSpanningTree_map
         else:
             raise ValueError(
@@ -133,9 +134,22 @@ class KartografAtomMapper(AtomMapper):
                 f"or LSA). got key: {_mapping_algorithm}"
             )
 
-    """
-        Properties
-    """
+    @classmethod
+    def _defaults(cls):
+        return {}
+
+    def _to_dict(self) -> dict:
+        # currently only serialise some filter functions
+
+
+        return {
+            'atom_max_distance': self.atom_max_distance,
+            'atom_map_hydrogens': self.atom_map_hydrogens,
+        }
+
+    @classmethod
+    def _from_dict(cls, d: dict):
+        return cls(**d)
 
     @property
     def map_hydrogens_on_hydrogens_only(self) -> bool:
