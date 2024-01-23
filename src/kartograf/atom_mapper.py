@@ -15,7 +15,7 @@ from scipy.sparse import csr_matrix
 from scipy.optimize import linear_sum_assignment
 from scipy.sparse.csgraph import connected_components
 
-from typing import Callable, Dict, Iterable, List, Optional, Set, Tuple, Union
+from typing import Callable, Iterable, Optional, Union
 
 from gufe import SmallMoleculeComponent
 from gufe import LigandAtomMapping
@@ -210,8 +210,8 @@ class KartografAtomMapper(AtomMapper):
             cls,
             moleculeA: Chem.Mol,
             moleculeB: Chem.Mol,
-            atom_mapping: Dict[int, int],
-    ) -> Dict[int, int]:
+            atom_mapping: dict[int, int],
+    ) -> dict[int, int]:
         """ Find connected core region from raw mapping
             This algorithm finds the maximal overlapping connected  set of
             two molecules and a given mapping. In order to accomplish this
@@ -265,8 +265,8 @@ class KartografAtomMapper(AtomMapper):
 
     @staticmethod
     def _get_connected_atom_subsets(
-            mol: Chem.Mol, to_be_searched: List[int]
-    ) -> List[Set[int]]:
+            mol: Chem.Mol, to_be_searched: list[int]
+    ) -> list[set[int]]:
         """ find connected sets in mappings
         Get the connected sets of all to_be_searched atom indices in mol.
         Connected means the atoms in a resulting connected set are connected
@@ -357,9 +357,9 @@ class KartografAtomMapper(AtomMapper):
 
     @staticmethod
     def _get_maximal_mapping_set_overlap(
-            sets_a: Iterable[Set], sets_b: Iterable[Set],
-            mapping: Dict[int, int]
-    ) -> Tuple[Set, Set]:
+            sets_a: Iterable[set], sets_b: Iterable[set],
+            mapping: dict[int, int]
+    ) -> tuple[set, set]:
         """get the largest set overlaps in the mapping of set_a and set_b.
 
         Parameters
@@ -411,8 +411,8 @@ class KartografAtomMapper(AtomMapper):
 
     @staticmethod
     def _filter_mapping_for_set_overlap(
-            set_a: Set[int], set_b: Set[int], mapping: Dict[int, int]
-    ) -> Dict[int, int]:
+            set_a: set[int], set_b: set[int], mapping: dict[int, int]
+    ) -> dict[int, int]:
         """This filter reduces the mapping dict to only in the sets contained
         atom IDs
 
@@ -480,8 +480,8 @@ class KartografAtomMapper(AtomMapper):
 
     @staticmethod
     def _mask_atoms(
-            mol, mol_pos, map_hydrogens: bool = False, masked_atoms: List = [],
-    ) -> Tuple[Dict, List]:
+            mol, mol_pos, map_hydrogens: bool = False, masked_atoms: list = [],
+    ) -> tuple[dict, list]:
         """Mask atoms such they are not considered during the mapping.
 
         Parameters
@@ -516,7 +516,7 @@ class KartografAtomMapper(AtomMapper):
 
     def _minimalSpanningTree_map(
             self, distance_matrix: NDArray, max_dist: float
-    ) -> Dict[int, int]:
+    ) -> dict[int, int]:
         """MST Mapping
         This function is a numpy graph based implementation to build up an
         Atom Mapping purely on 3D criteria.
@@ -562,7 +562,7 @@ class KartografAtomMapper(AtomMapper):
     @staticmethod
     def _linearSumAlgorithm_map(
             distance_matrix: NDArray, max_dist: float
-    ) -> Dict[int, int]:
+    ) -> dict[int, int]:
         """ LSA mapping
         This function is a LSA based implementation to build up an Atom
         Mapping purely on 3D criteria.
@@ -590,7 +590,7 @@ class KartografAtomMapper(AtomMapper):
 
     def _additional_filter_rules(
             self, molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
-    ) -> Dict[int, int]:
+    ) -> dict[int, int]:
         """apply additional filter rules to the given mapping.
 
         Parameters
