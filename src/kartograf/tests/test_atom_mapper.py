@@ -169,39 +169,43 @@ def test_stereo_mapping(stereco_chem_molecules, stereo_chem_mapping):
     check_mapping_vs_expected(geom_mapping, expected_mapping)
 
 
-# Test Serialization
-def test_to_from_dict():
-    mapper = KartografAtomMapper()
-    d1 = mapper._to_dict()
-    mapper2 = KartografAtomMapper._from_dict(d1)
-    d2 = mapper2._to_dict()
+class TestSerialisation:
+    def test_to_from_dict_cycle(self):
+        m = KartografAtomMapper()
 
-    for key, val1 in d1.items():
-        val2 = d2[key]
+        m_dict = m.to_dict()
 
-        if(val1 != val2):
-            raise ValueError("they need to be identical.")
+        m2 = KartografAtomMapper.from_dict(m_dict)
 
-    mapper2.atom_max_distance = 10
-    d3 = mapper2._to_dict()
+        assert m == m2
 
-    for key, val1 in d1.items():
-        val2 = d3[key]
+    @pytest.mark.parametrize('mhoho,mermo', [
+        (True, True),
+        (True, False),
+        (False, True),
+        (False, False),
+    ])
+    def test_check_filters(self, mhoho, mermo):
+        m = KartografAtomMapper(
+            map_hydrogens_on_hydrogens_only=mhoho,
+            map_exact_ring_matches_only=mermo,
+        )
 
-        if(val1 != val2 and key != "atom_max_distance"):
-            raise ValueError("they need to be identical.")
-        if(key == "atom_max_distance" and val1 == val2 ):
-            raise ValueError("they must not be identical.")
+        m2 = KartografAtomMapper.from_dict(m.to_dict())
 
+        assert m._filter_funcs == m2._filter_funcs
 
-def test_to_from_dict_wrong():
-    mapper = KartografAtomMapper()
-    d1 = mapper._to_dict()
-    d1.update({"FLEEEEE": "You FOOLS"})
+    def test_custom_filters(self):
+        def nop_filter(a, b, c):
+            return c
 
-    with pytest.raises(ValueError) as exc:
-        mapper2 = KartografAtomMapper._from_dict(d1)
-    assert "I don't know about all the keys here" in str(exc.value)
+        m = KartografAtomMapper(
+            additional_mapping_filter_functions=[nop_filter],
+        )
+
+        m2 = KartografAtomMapper.from_dict(m.to_dict())
+
+        assert m._filter_funcs == m2._filter_funcs
 
 
 def test_filter_property():

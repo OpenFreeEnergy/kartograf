@@ -2,6 +2,7 @@
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
 import copy
+import dill
 import inspect
 import numpy as np
 from enum import Enum
@@ -75,8 +76,7 @@ class KartografAtomMapper(AtomMapper):
             map_exact_ring_matches_only: bool = True,
             additional_mapping_filter_functions: Optional[Iterable[Callable[[
                 Chem.Mol, Chem.Mol, dict[int, int]], dict[int, int]]]] = None,
-            _mapping_algorithm: str =
-            mapping_algorithm.linear_sum_assignment,
+            _mapping_algorithm: str = mapping_algorithm.linear_sum_assignment,
     ):
         """ Geometry Based Atom Mapper
         This mapper is a homebrew, that utilises rdkit in order
@@ -139,26 +139,25 @@ class KartografAtomMapper(AtomMapper):
         return {}
 
     def _to_dict(self) -> dict:
-        # currently only serialise built-in filter functions
-        # so check that we don't have any custom filters
-        allowed = {
+        built_in_filters = {
             filter_atoms_h_only_h_mapped,
             filter_whole_rings_only,
             filter_ringsize_changes,
             filter_ringbreak_changes,
         }
-        present = set(self._filter_funcs)
-        if remaining := present - allowed:
-            raise NotImplementedError("Can't (yet) serialise arbitrary functions, "
-                                      f"got: {remaining}")
+        additional_filters = [
+            dill.dumps(f) for f in self._filter_funcs
+            if f not in built_in_filters
+        ]
+
         # rather than serialise _filter_funcs, we serialise the arguments
         # that lead to the correct _filter_funcs being added
         #
         # then reverse engineer the _mapping_algorithm argument
         # this avoids serialising the function directly
         map_arg = {
-            self._linearSumAlgorithm_map: mapping_algorithm.linear_sum_assignment,
-            self._minimalSpanningTree_map: mapping_algorithm.minimal_spanning_tree,
+            self._linearSumAlgorithm_map: 'LSA',
+            self._minimalSpanningTree_map: 'MST',
         }[self.mapping_algorithm]
 
         return {
@@ -167,10 +166,25 @@ class KartografAtomMapper(AtomMapper):
             'map_hydrogens_on_hydrogens_only': self._map_hydrogens_on_hydrogens_only,
             'map_exact_ring_matches_only': self._map_exact_ring_matches_only,
             '_mapping_algorithm': map_arg,
+            'filters': additional_filters,
         }
 
     @classmethod
     def _from_dict(cls, d: dict):
+        # replace _mapping_algorithm key to enum
+        map_arg = d.pop('_mapping_algorithm', 'LSA')
+
+        map_alg = {
+            'LSA': mapping_algorithm.linear_sum_assignment,
+            'MSR': mapping_algorithm.minimal_spanning_tree,
+        }[map_arg]
+
+        d['_mapping_algorithm'] = map_alg
+
+        d['additional_mapping_filter_functions'] = [
+            dill.loads(f) for f in d.pop('filters', [])
+        ]
+
         return cls(**d)
 
     @property
