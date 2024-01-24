@@ -1,2 +1,3 @@
+gufe
 myst-parser
 ofe_sphinx_theme @ git+https://github.com/OpenFreeEnergy/ofe-sphinx-theme@main
