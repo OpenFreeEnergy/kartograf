@@ -2,6 +2,7 @@ name: kartograf
 channels:
   - conda-forge
 dependencies:
+  - dill
   - python
   - pip
   #Test
