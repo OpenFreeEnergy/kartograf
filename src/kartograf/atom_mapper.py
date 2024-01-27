@@ -1089,7 +1089,7 @@ class KartografAtomMapper(AtomMapper):
         return mappings
 
     def _merge_mappings_to_multistate_mapping(self, mappings, _only_all_state_mappings: bool = True) -> Iterable[
-        Dict[str, int]]:
+        dict[str, int]]:
         # reformat mappings
         components = []
         found_mappings = []
