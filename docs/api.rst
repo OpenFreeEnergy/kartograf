@@ -3,9 +3,13 @@ API docs
 
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 4
    :caption: API Contents:
 
-   api/atom_mapping
-   api/atom_aligner
+   api/kartograf.mappers
+   api/kartograf.filters
+   api/kartograf.scorers
+   api/kartograf.metrics
+   api/kartograf.aligners
+   api/kartograf.utils
 
