@@ -38,3 +38,18 @@ def test_element_change(reverse):
     newmapping = filters.filter_element_changes(m1, m2, mapping)
 
     assert newmapping == {i: i for i in range(5)}
+
+@pytest.mark.parametrize('reverse', [False, True])
+def test_element_hybridization_change(reverse):
+    # benzene to pyridine, has heteroatom change
+    # will result in non-whole ring, but that isn't the job of this filter
+    m1 = Chem.MolFromSmiles('CCC')
+    m2 = Chem.MolFromSmiles('CC=C')
+    if reverse:
+        m1, m2 = m2, m1
+
+    mapping = {i: i for i in range(3)}
+
+    newmapping = filters.filter_hybridization_changes(m1, m2, mapping)
+
+    assert newmapping == {i: i for i in range(1)}
