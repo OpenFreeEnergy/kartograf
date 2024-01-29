@@ -39,6 +39,7 @@ def test_element_change(reverse):
 
     assert newmapping == {i: i for i in range(5)}
 
+
 @pytest.mark.parametrize('reverse', [False, True])
 def test_element_hybridization_change(reverse):
     # benzene to pyridine, has heteroatom change
