@@ -967,15 +967,16 @@ class KartografAtomMapper(AtomMapper):
                 mol = comp.to_rdkit()
                 conf = mol.GetConformer()
                 pos = conf.GetPositions()
-                m, mpos = self._mask_atoms(mol, pos, map_hydrogens=map_hydrogens)
+                m, mpos = self._mask_atoms(mol, pos,
+                                           map_hydrogens=map_hydrogens,
+                                           masked_atoms=[])
 
                 masks.append(m)
                 positions.append(mpos)
 
             multi_state_mapping = self._multi_state_greedy_dist_approach(components=molecules, positions=positions, masks=masks)
-            print(multi_state_mapping)
         else:
-            # calculate all mappings:
+            # calculate all mappings: - not working atm
             mappings = []
             for cA in molecules:
                 for cB in molecules:
@@ -988,18 +989,46 @@ class KartografAtomMapper(AtomMapper):
             #merge mappings:
             multi_state_mapping = self._merge_mappings_to_multistate_mapping(mappings=mappings)
             multi_state_mapping = list(filter(lambda x: len(x) == len(molecules), multi_state_mapping))
+        print("raw map", multi_state_mapping)
+
+        #Filter Mappings
+        '''
+            Filter all pairs
+        '''
+        filtered_raw_mapping = copy.deepcopy(multi_state_mapping)
+        tmp_filtered_raw_mapping = []
+        for ligA in molecules:
+            for ligB in molecules:
+                if(ligA == ligB):
+                        continue
+                else:
+                    mappingAB = {m[ligA.name]:m[ligB.name] for m in
+                                 multi_state_mapping}
+                    mapping = self._additional_filter_rules(ligA.to_rdkit(),
+                                                            ligB.to_rdkit(),
+                                                            mappingAB)
+
+                    ligA_present = list(mapping.keys())
+
+                    for m in filtered_raw_mapping:
+                        if(m[ligA.name] in ligA_present):
+                            tmp_filtered_raw_mapping.append(m)
+                    filtered_raw_mapping = tmp_filtered_raw_mapping
+                    tmp_filtered_raw_mapping = []
+        print("filtered map", multi_state_mapping)
 
 
+        # Get Core Region
         # get all connected sets
         connected_sets = {}
         for component in molecules:
-            map_atom_ids = [m[component.name] for m in multi_state_mapping]
+            map_atom_ids = [m[component.name] for m in filtered_raw_mapping]
             connected_set = self._get_connected_atom_subsets(component.to_rdkit(), map_atom_ids)
             connected_sets[component.name] = connected_set
 
         # translate mappings into mapping set - tuples
         mapping_connected_sets = defaultdict(dict)
-        for i, m in enumerate(multi_state_mapping):
+        for i, m in enumerate(filtered_raw_mapping):
             mapping_connected_sets[i] = []
             mid = 0
             for k, (lig, aid) in enumerate(m.items()):
@@ -1009,7 +1038,7 @@ class KartografAtomMapper(AtomMapper):
                     if (aid in s):
                         mapping_connected_sets[i].append(mid)
                         break
-        print(mapping_connected_sets)
+        print("Connected Set", mapping_connected_sets)
 
         # max overlap
         tup = [tuple(m) for m in mapping_connected_sets.values()]
@@ -1017,13 +1046,15 @@ class KartografAtomMapper(AtomMapper):
         max_overlap_tuple = tuple(combinations[list(counts).index(max(counts))])
         print(max_overlap_tuple)
 
-        # Filter Mappings
+        # FIlter for max overlap
         filter_map = []
         for mid, mapping_sets in mapping_connected_sets.items():
             if (max_overlap_tuple == tuple(mapping_sets)):
-                filter_map.append(multi_state_mapping[mid])
+                filter_map.append(filtered_raw_mapping[mid])
 
         print(filter_map)
+
+
         return filter_map
 
 
@@ -1031,12 +1062,13 @@ class KartografAtomMapper(AtomMapper):
         # build ndDistmatrix
         euclidean_dist = lambda v: np.sqrt(np.sum(np.square(v), axis=1))
 
+        # Pre filter long distances
         dist_matrix = []
-        for i, pos1 in enumerate(positions):
+        for i, pos1 in enumerate(positions): #MolA
             mol_dist = []
-            for a1 in pos1:
+            for a1 in pos1: #Atom of MolA
                 a1_d = []
-                for j, pos2 in enumerate(positions):
+                for j, pos2 in enumerate(positions): #MolB
                     if (i == j):
                         continue
                     else:
@@ -1047,11 +1079,11 @@ class KartografAtomMapper(AtomMapper):
                 mol_dist.append(a1_d)
             dist_matrix.append(mol_dist)
 
-        # convolute distance:
+        # Calculate raw mappings in N Dimensions, collect tuples and all dists
         dist_tuples = defaultdict(list)
         for mid, mol1 in enumerate(dist_matrix):
             for i, a1 in enumerate(mol1):
-                # all inf dist in mol2s? - no mapping possible
+                # all inf dist in mols? - no mapping possible
                 if (any([np.all(np.inf == m_dist) for m_dist in a1])):
                     continue
                 else:
@@ -1061,7 +1093,8 @@ class KartografAtomMapper(AtomMapper):
                         a_i = np.where(mol2 != np.inf)
                         possible_atoms.append(np.vstack([a_i, mol2[a_i]]).T)
 
-                    # calculate all possible tuples and their sum dist.
+                    # calculate all possible tuples and their sum dist for
+                    # atom a1.
                     indices = [list(map(int, a[:, 0])) for a in possible_atoms]
                     for tup in product(*indices):
                         sum_d = 0
@@ -1073,6 +1106,8 @@ class KartografAtomMapper(AtomMapper):
                         tup.insert(mid, i)
                         tup = tuple(tup)
                         dist_tuples[tup].append(sum_d)
+
+        # convolute all distances of mutli atom tuple selection
         dist_tuples = {tuple(k): np.sum(v) for k, v in dist_tuples.items()}
 
         # select mapping
