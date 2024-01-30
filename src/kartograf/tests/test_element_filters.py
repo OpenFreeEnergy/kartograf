@@ -42,8 +42,8 @@ def test_element_change(reverse):
 
 @pytest.mark.parametrize('reverse', [False, True])
 def test_element_hybridization_change(reverse):
-    # benzene to pyridine, has heteroatom change
-    # will result in non-whole ring, but that isn't the job of this filter
+    # check if atom hybridization is changing 
+    # for the example propane to propylene
     m1 = Chem.MolFromSmiles('CCC')
     m2 = Chem.MolFromSmiles('CC=C')
     if reverse:
