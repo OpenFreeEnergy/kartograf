@@ -955,12 +955,12 @@ class KartografAtomMapper(AtomMapper):
     def suggest_multistate_mapping(self, molecules: Iterable[SmallMoleculeComponent],
                                    max_d: float = 0.95,
                                    map_hydrogens: bool = True,
-                                   alternative = True
+                                   greedy = True
                                    ):
 
         #Todo: ensure unique mol names
 
-        if(alternative==True):
+        if(greedy==True):
             masks = []
             positions = []
             for comp in molecules:
