@@ -54,7 +54,8 @@ def filter_element_changes(
 def filter_hybridization_changes(
     molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
 ) -> dict[int, int]:
-    """Forces a mapping to exclude any alchemical hybridization changes."""
+    """Forces a mapping to exclude any alchemical atom hybridization changes. 
+        Such a change could be for example -C-C >> -C=C ."""
     filtered_mapping = {}
 
     for i, j in mapping.items():
