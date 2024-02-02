@@ -97,3 +97,59 @@ def filter_whole_rings_only(
         proposed_mapping = {v: k for k, v in filtered_mapping.items()}
 
     return proposed_mapping
+
+
+def filter_hybridization_rings(
+    molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
+) -> dict[int, int]:
+    """Ensure that any mapped rings are either both aromatic or aliphatic"""
+
+    def get_atom_ring_hybridization_map(rdmol: Chem.Mol):
+        """
+        Helper function, getting molecule information about ring hybridizations.
+
+        Parameters
+        ----------
+        rdmol: Chem.Mol
+
+        Returns
+        -------
+        dict[int, list[bool]]:
+            returns a dict, that maps each atom to a list of ring
+            hybridizations it is in. (If True the ring is aromatic, if False
+            it is not entirely aromatic and therefore not necessarily
+            sterically restraint by a pi-orbital-system.)
+        """
+        riInf = rdmol.GetRingInfo()
+
+        # get_ring_hybridization
+        is_ring_aromatic = {}
+        for i, ring in enumerate(riInf.BondRings()):
+            is_ring_aromatic[i] = all(
+                rdmol.GetBondWithIdx(atomI).GetIsAromatic()
+                for atomI in ring)
+
+        # map atoms to rings:
+        atom_ring_map = defaultdict(list)
+        [atom_ring_map[a].append(is_ring_aromatic[ri]) for ri, r in
+         enumerate(riInf.AtomRings()) for a
+         in r]
+
+        return atom_ring_map
+
+    atomA_ring_hyb_map = get_atom_ring_hybridization_map(molA)
+    atomB_ring_hyb_map = get_atom_ring_hybridization_map(
+        molB)
+    print(atomA_ring_hyb_map)
+    print(atomB_ring_hyb_map)
+
+    # Filtering Mapping
+    filtered_mapping = {}
+    for ai, aj in mapping.items():
+        ai_only_arom_sys = all(atomA_ring_hyb_map[ai])
+        aj_only_arom_sys = all(atomB_ring_hyb_map[aj])
+
+        if (not ai_only_arom_sys ^ aj_only_arom_sys):
+            filtered_mapping[ai] = aj
+
+    return filtered_mapping

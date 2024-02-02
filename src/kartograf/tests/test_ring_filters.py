@@ -85,3 +85,26 @@ def test_whole_rings_safe():
     newmapping = filters.filter_whole_rings_only(m1, m2, mapping)
 
     assert newmapping == mapping
+
+
+@pytest.mark.parametrize('molA_B_exp_mapping', [
+    (Chem.MolFromSmiles("C1CCCC2C1CCCC2"), Chem.MolFromSmiles(
+        "C1CCCC2C1CCCC2"), {i:i for i in range(10)}),
+    (Chem.MolFromSmiles("c1cccc2c1cccc2"), Chem.MolFromSmiles(
+        "c1cccc2c1cccc2"), {i: i for i in range(10)}),
+    (Chem.MolFromSmiles("C1CCCc2c1cccc2"), Chem.MolFromSmiles(
+        "C1CCCC2C1CCCC2"), {i: i for i in range(6)}),
+    (Chem.MolFromSmiles("C1CCCC2C1cccc2"), Chem.MolFromSmiles(
+        "C1CCCC2C1CCCC2"), {i: i for i in range(10)}),
+    (Chem.MolFromSmiles("c1cccc2c1CCCC2"), Chem.MolFromSmiles(
+        "C1CCCC2C1CCCC2"), {i: i for i in range(4,10)}),
+])
+def test_ring_hybridization(molA_B_exp_mapping):
+    molA, molB, expected_mapping = molA_B_exp_mapping
+    initial_mapping = {i: i for i in range(molA.GetNumAtoms())}
+
+    newmapping = filters.filter_hybridization_rings(molA, molB, initial_mapping)
+
+    assert newmapping != {}
+    assert len(newmapping) == len(expected_mapping)
+    assert newmapping == expected_mapping
