@@ -30,8 +30,9 @@ Additionally, rule based filter functions can be provided to demap atoms, that d
 Several mapping scoring metrics are provided, that evaluate geometric properties of your mapping, from `atom_mapping_scorer`, which might be useful for checking quality of your mappings.
 Finally, there is a visualization function `display_mappings_3d` that can be used to check out the mappings with a jupyter notebook widget.
 
-You can find our Preprint on [ChemRxiv](https://doi.org/10.26434/chemrxiv-2023-0n1pq) 
+Checkout our article on Kartograf in the Journal of Chemical Theory and Computation [*Kartograf: A Geometrically Accurate Atom Mapper for Hybrid-Topology Relative Free Energy Calculations* - Benjamin Ries*, Irfan Alibay, David W. H. Swenson, Hannah M. Baumann, Michael M. Henry, James R. B. Eastwood, and Richard J. Gowers](https://doi.org/10.1021/acs.jctc.3c01206).
 
+You can find a preprint on [ChemRxiv](https://doi.org/10.26434/chemrxiv-2023-0n1pq).
 
 Try our interactive demo: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/OpenFreeEnergy/kartograf/blob/main/examples/kartograf_example.ipynb)
 
