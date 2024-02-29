@@ -131,10 +131,11 @@ def filter_hybridization_rings(
 
         # map atoms to rings:
         atom_ring_map = defaultdict(list)
-        [atom_ring_map[a].append(is_ring_aromatic[ri]) for ri, r in
-         enumerate(riInf.AtomRings()) for a
-         in r]
 
+        for ri, r in enumerate(riInf.AtomRings()):
+            for a in r:
+                atom_ring_map[a].append(is_ring_aromatic[ri])    
+                
         return atom_ring_map
 
     atomA_ring_hyb_map = get_atom_ring_hybridization_map(molA)
