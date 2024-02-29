@@ -141,8 +141,6 @@ def filter_hybridization_rings(
     atomA_ring_hyb_map = get_atom_ring_hybridization_map(molA)
     atomB_ring_hyb_map = get_atom_ring_hybridization_map(
         molB)
-    print(atomA_ring_hyb_map)
-    print(atomB_ring_hyb_map)
 
     # Filtering Mapping
     filtered_mapping = {}
