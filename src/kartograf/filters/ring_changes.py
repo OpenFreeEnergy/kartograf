@@ -102,7 +102,7 @@ def filter_whole_rings_only(
 def filter_hybridization_rings(
     molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
 ) -> dict[int, int]:
-    """Ensure that any mapped rings are either both aromatic or aliphatic"""
+    """Ensure that any mapped rings are either both aromatic or aliphatic - e.g. would unmap hexane to benzene type transformations"""
 
     def get_atom_ring_hybridization_map(rdmol: Chem.Mol):
         """
