@@ -150,8 +150,8 @@ def filter_hybridization_rings(
     # Filtering Mapping
     filtered_mapping = {}
     for ai, aj in mapping.items():
-        ai_only_arom_sys = all(atomA_ring_hyb_map[ai])
-        aj_only_arom_sys = all(atomB_ring_hyb_map[aj])
+        ai_only_arom_sys = atomA_ring_hyb_map[ai]
+        aj_only_arom_sys = atomB_ring_hyb_map[aj]
 
         if (not ai_only_arom_sys ^ aj_only_arom_sys):
             filtered_mapping[ai] = aj
