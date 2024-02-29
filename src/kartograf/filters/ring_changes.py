@@ -135,8 +135,13 @@ def filter_hybridization_rings(
         for ri, r in enumerate(riInf.AtomRings()):
             for a in r:
                 atom_ring_map[a].append(is_ring_aromatic[ri])    
-                
-        return atom_ring_map
+
+        atom_aromatic={}
+        for a,v in atom_ring_map.items():
+            atom_aromatic[a] = all(v)
+            
+        
+        return atom_aromatic
 
     atomA_ring_hyb_map = get_atom_ring_hybridization_map(molA)
     atomB_ring_hyb_map = get_atom_ring_hybridization_map(
