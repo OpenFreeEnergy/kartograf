@@ -17,8 +17,8 @@ def filter_atoms_h_only_h_mapped(
         atomA = molA.GetAtomWithIdx(atomA_idx)
         atomB = molB.GetAtomWithIdx(atomB_idx)
 
-        if (atomA.GetAtomicNum() == atomB.GetAtomicNum() == 1) or (
-            atomA.GetAtomicNum() == atomB.GetAtomicNum() != 1
+        if (atomA.GetAtomicNum() == 1 and atomB.GetAtomicNum() == 1) or (
+            atomA.GetAtomicNum() != 1 and atomB.GetAtomicNum() != 1
         ):
             filtered_mapping[atomA_idx] = atomB_idx
             logger.debug(
