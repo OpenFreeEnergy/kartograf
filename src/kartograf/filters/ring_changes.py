@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 def filter_ringsize_changes(
-    molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
+        molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
 ) -> dict[int, int]:
     """Prevents mutating the size of rings in the mapping"""
     riA = molA.GetRingInfo()
@@ -41,7 +41,7 @@ def filter_ringsize_changes(
 
 
 def filter_ringbreak_changes(
-    molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
+        molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
 ) -> dict[int, int]:
     """Prevent any ring cleaving transformations in the mapping
 
@@ -61,7 +61,7 @@ def filter_ringbreak_changes(
 
 
 def filter_whole_rings_only(
-    molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
+        molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
 ) -> dict[int, int]:
     """Ensure that any mapped rings are wholly mapped"""
     proposed_mapping = {**mapping}
@@ -100,7 +100,7 @@ def filter_whole_rings_only(
 
 
 def filter_hybridization_rings(
-    molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
+        molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
 ) -> dict[int, int]:
     """Ensure that any mapped rings are either both aromatic or aliphatic
 
@@ -143,10 +143,10 @@ def filter_hybridization_rings(
 
         # then with all rings traversed, crush this information down to a single bool per atom
         # maps atom index to all ring aromaticity
-        atom_aromatic={}
-        for a,v in atom_ring_map.items():
+        atom_aromatic = {}
+        for a, v in atom_ring_map.items():
             atom_aromatic[a] = all(v)
-        
+
         return atom_aromatic
 
     atomA_ring_hyb_map = get_atom_ring_hybridization_map(molA)
