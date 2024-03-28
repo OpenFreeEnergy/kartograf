@@ -93,8 +93,8 @@ def test_whole_rings_safe():
      {i: i for i in range(10)},  # initial_mapping
      {i: i for i in range(10)}),  # expected: map all atoms
 
-    (Chem.MolFromSmiles("c1cccc2c1cccc2"),  # 2rings: aromatic/aromatic 
-     Chem.MolFromSmiles("c1cccc2c1cccc2"),  # 2rings: aromatic/aromatic 
+    (Chem.MolFromSmiles("c1cccc2c1cccc2"),  # 2rings: aromatic/aromatic
+     Chem.MolFromSmiles("c1cccc2c1cccc2"),  # 2rings: aromatic/aromatic
      {i: i for i in range(10)},  # initial_mapping
      {i: i for i in range(10)}),  # expected: map all atoms
 
