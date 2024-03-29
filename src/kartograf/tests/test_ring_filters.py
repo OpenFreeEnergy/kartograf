@@ -85,3 +85,37 @@ def test_whole_rings_safe():
     newmapping = filters.filter_whole_rings_only(m1, m2, mapping)
 
     assert newmapping == mapping
+
+
+@pytest.mark.parametrize('molA,molB,initial_mapping,expected_mapping', [
+    (Chem.MolFromSmiles("C1CCCC2C1CCCC2"),  # 2rings: aliphatic/aliphatic
+     Chem.MolFromSmiles("C1CCCC2C1CCCC2"),  # 2rings: aliphatic/aliphatic
+     {i: i for i in range(10)},  # initial_mapping
+     {i: i for i in range(10)}),  # expected: map all atoms
+
+    (Chem.MolFromSmiles("c1cccc2c1cccc2"),  # 2rings: aromatic/aromatic
+     Chem.MolFromSmiles("c1cccc2c1cccc2"),  # 2rings: aromatic/aromatic
+     {i: i for i in range(10)},  # initial_mapping
+     {i: i for i in range(10)}),  # expected: map all atoms
+
+    (Chem.MolFromSmiles("C1CCCc2c1cccc2"),  # 2rings: aliphatic/aromatic
+     Chem.MolFromSmiles("C1CCCC2C1CCCC2"),  # 2rings: aliphatic/aliphatic
+     {i: i for i in range(10)},  # initial_mapping
+     {i: i for i in range(6)}),  # expected: map aliphatic rings onto each other
+
+    (Chem.MolFromSmiles("C1CCCC2C1cccc2"),  # 2rings: aliphatic/aromatic
+     Chem.MolFromSmiles("C1CCCC2C1CCCC2"),  # 2rings: aliphatic/aliphatic
+     {i: i for i in range(10)},  # initial_mapping
+     {i: i for i in range(10)}),  # expected: map all atoms
+
+    (Chem.MolFromSmiles("c1cccc2c1CCCC2"),  # 2rings: aromatic/aliphatic
+     Chem.MolFromSmiles("C1CCCC2C1CCCC2"),  # 2rings: aliphatic/aliphatic
+     {i: i for i in range(10)},  # initial_mapping
+     {i: i for i in range(4, 10)}),  # expected: map the aliphatic rings ontoeach other
+])
+def test_ring_hybridization(molA, molB, initial_mapping, expected_mapping):
+    newmapping = filters.filter_hybridization_rings(molA, molB, initial_mapping)
+
+    assert newmapping != {}
+    assert len(newmapping) == len(expected_mapping)
+    assert newmapping == expected_mapping
