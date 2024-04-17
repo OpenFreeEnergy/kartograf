@@ -100,6 +100,13 @@ from openfe.setup.atom_mapping import kartograf
 ### Developement version
 The developing setup of Kartograf works like this:
 
+you want to use the current main branch:
+```shell
+python -m pip install git+https://github.com/OpenFreeEnergy/gufe.git
+python -m pip install git+https://github.com/OpenFreeEnergy/kartograf.git
+```
+
+you want to develop kartograf:
 ```shell
 git clone https://github.com/OpenFreeEnergy/kartograf.git
 
@@ -107,9 +114,11 @@ cd kartograf
 mamba env create -f environment.yml
 
 mamba activate kartograf
+
 pip install -e .
 
 ```
+
 
 ## License
 This library is made available under the MIT open source license.
