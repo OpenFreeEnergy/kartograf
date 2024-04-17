@@ -33,6 +33,7 @@ def test_score_norm_mapping_rmsd(stereo_chem_mapping):
     score = scorer.get_rmsd_p(stereo_chem_mapping)
     print(score)
 
+
 def test_score_mapping_volume_ratio(stereo_chem_mapping):
     """
     Currently a smoke test
@@ -50,6 +51,7 @@ def test_score_shape_dist(stereo_chem_mapping):
     score = scorer(stereo_chem_mapping)
     print(score)
 
+
 def test_score_shape_overlap(stereo_chem_mapping):
     """
     Currently a smoke test
@@ -57,6 +59,7 @@ def test_score_shape_overlap(stereo_chem_mapping):
     scorer = MappingShapeOverlapScorer()
     score = scorer(stereo_chem_mapping)
     print(score)
+
 
 def test_score_shape_mismatch(stereo_chem_mapping):
     """
@@ -66,12 +69,14 @@ def test_score_shape_mismatch(stereo_chem_mapping):
     score = scorer(stereo_chem_mapping)
     print(score)
 
-@pytest.mark.parametrize("scorer_class", [ MappingRMSDScorer,
-    _MappingShapeDistanceScorer,
-    MappingShapeMismatchScorer,
-    MappingShapeOverlapScorer,
-    MappingVolumeRatioScorer,
-    MappingRatioMappedAtomsScorer,])
+
+@pytest.mark.parametrize("scorer_class", [MappingRMSDScorer,
+                                          _MappingShapeDistanceScorer,
+                                          MappingShapeMismatchScorer,
+                                          MappingShapeOverlapScorer,
+                                          MappingVolumeRatioScorer,
+                                          MappingRatioMappedAtomsScorer,
+                                          ])
 def test_scorer_identical_molecules(scorer_class, benzene_benzene_mapping):
     """
     Currently a smoke test
@@ -88,7 +93,7 @@ def test_scorer_identical_molecules(scorer_class, benzene_benzene_mapping):
                                                (MappingShapeMismatchScorer, 0),
                                                (MappingShapeOverlapScorer, 0),
                                                (MappingRatioMappedAtomsScorer, 0)])
-def test_scorer_empty_mapping(scorer_class, exp:float, benzene_benzene_empty_mapping):
+def test_scorer_empty_mapping(scorer_class, exp: float, benzene_benzene_empty_mapping):
     """
     Currently a smoke test
     """
@@ -96,12 +101,13 @@ def test_scorer_empty_mapping(scorer_class, exp:float, benzene_benzene_empty_map
     score = scorer(benzene_benzene_empty_mapping)
 
     assert isinstance(score, float)
-    assert score == exp, "Score of non-Mapping should be "+str(exp)+" for "+str(scorer_class.__name__)+" but is: "+str(score)
+    assert score == exp, "Score of non-Mapping should be " + str(exp) + " for " + str(
+        scorer_class.__name__) + " but is: " + str(score)
 
 
 @pytest.mark.parametrize("scorer_class, exp", [(MappingVolumeRatioScorer, 1),
                                                ])
-def test_scorer_empty_mapping_err(scorer_class, exp:float, benzene_benzene_empty_mapping):
+def test_scorer_empty_mapping_err(scorer_class, exp: float, benzene_benzene_empty_mapping):
     """
     Currently a smoke test
     """
