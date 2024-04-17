@@ -32,7 +32,7 @@ class MappingVolumeRatioScorer(_AbstractAtomMappingScorer):
             normalized score between 0 and 1.
         """
         r = self.get_volume_ratio(mapping)
-        return 0.0 if (r < 0) else 1-r
+        return 0.0 if (r < 0) else r
 
     def get_volume_ratio(self, mapping: AtomMapping) -> float:
         """ Calculate volume ratio

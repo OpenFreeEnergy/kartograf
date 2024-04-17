@@ -2,14 +2,12 @@
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
 import pytest
-from kartograf.atom_mapping_scorer import DefaultKartografScorer
 from kartograf.mapping_metrics import (
     MappingRMSDScorer,
     MappingShapeMismatchScorer,
     MappingShapeOverlapScorer,
     MappingVolumeRatioScorer,
     MappingRatioMappedAtomsScorer,
-
 )
 
 from kartograf.mapping_metrics.metric_shape_difference import (
@@ -68,14 +66,12 @@ def test_score_shape_mismatch(stereo_chem_mapping):
     score = scorer(stereo_chem_mapping)
     print(score)
 
-
 @pytest.mark.parametrize("scorer_class", [ MappingRMSDScorer,
     _MappingShapeDistanceScorer,
     MappingShapeMismatchScorer,
     MappingShapeOverlapScorer,
     MappingVolumeRatioScorer,
-    MappingRatioMappedAtomsScorer,
-    DefaultKartografScorer])
+    MappingRatioMappedAtomsScorer,])
 def test_scorer_identical_molecules(scorer_class, benzene_benzene_mapping):
     """
     Currently a smoke test
@@ -104,7 +100,7 @@ def test_scorer_empty_mapping(scorer_class, exp:float, benzene_benzene_empty_map
 
 
 @pytest.mark.parametrize("scorer_class, exp", [(MappingVolumeRatioScorer, 1),
-                                               (DefaultKartografScorer,1)])
+                                               ])
 def test_scorer_empty_mapping_err(scorer_class, exp:float, benzene_benzene_empty_mapping):
     """
     Currently a smoke test

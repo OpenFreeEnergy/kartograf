@@ -11,4 +11,3 @@ from .mapping_metrics import (
 from .mapping_metrics import MappingVolumeRatioScorer
 
 logger = logging.getLogger(__name__)
-
