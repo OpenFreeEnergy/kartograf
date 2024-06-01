@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 def filter_ringsize_changes(
-    molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
+        molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
 ) -> dict[int, int]:
     """Prevents mutating the size of rings in the mapping"""
     riA = molA.GetRingInfo()
@@ -41,7 +41,7 @@ def filter_ringsize_changes(
 
 
 def filter_ringbreak_changes(
-    molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
+        molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
 ) -> dict[int, int]:
     """Prevent any ring cleaving transformations in the mapping
 
@@ -61,7 +61,7 @@ def filter_ringbreak_changes(
 
 
 def filter_whole_rings_only(
-    molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
+        molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
 ) -> dict[int, int]:
     """Ensure that any mapped rings are wholly mapped"""
     proposed_mapping = {**mapping}
@@ -97,3 +97,68 @@ def filter_whole_rings_only(
         proposed_mapping = {v: k for k, v in filtered_mapping.items()}
 
     return proposed_mapping
+
+
+def filter_hybridization_rings(
+        molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
+) -> dict[int, int]:
+    """Ensure that any mapped rings are either both aromatic or aliphatic
+
+    e.g. this filter would unmap hexane to benzene type transformations
+    """
+
+    def get_atom_ring_hybridization_map(rdmol: Chem.Mol) -> dict[int, bool]:
+        """
+        For each atom, determines information about ring hybridization
+
+        Parameters
+        ----------
+        rdmol: Chem.Mol
+
+        Returns
+        -------
+        dict[int, bool]:
+            returns a dict, that maps each atom's index to if it is always in aromatic rings
+            (If True this atom exists entirely in aromatic rings, if False it is
+            not entirely aromatic and therefore not necessarily sterically restraint
+            by a pi-orbital-system.)
+        """
+        riInf = rdmol.GetRingInfo()
+
+        # get_ring_hybridization
+        # for each ring, the ring is aromatic if all atoms within are aromatic
+        # maps ring index to aromaticity as bool
+        is_ring_aromatic = {}
+        for i, ring in enumerate(riInf.BondRings()):
+            is_ring_aromatic[i] = all(
+                rdmol.GetBondWithIdx(atomI).GetIsAromatic()
+                for atomI in ring)
+
+        # first iterate over all rings and determine if they are aromatic
+        # map atoms to ring aromaticities
+        atom_ring_map = defaultdict(list)
+        for ri, r in enumerate(riInf.AtomRings()):
+            for a in r:
+                atom_ring_map[a].append(is_ring_aromatic[ri])
+
+        # then with all rings traversed, crush this information down to a single bool per atom
+        # maps atom index to all ring aromaticity
+        atom_aromatic = {}
+        for a, v in atom_ring_map.items():
+            atom_aromatic[a] = all(v)
+
+        return atom_aromatic
+
+    atomA_ring_hyb_map = get_atom_ring_hybridization_map(molA)
+    atomB_ring_hyb_map = get_atom_ring_hybridization_map(molB)
+
+    # Filtering Mapping
+    filtered_mapping = {}
+    for ai, aj in mapping.items():
+        ai_only_arom_sys = atomA_ring_hyb_map[ai]
+        aj_only_arom_sys = atomB_ring_hyb_map[aj]
+
+        if ai_only_arom_sys == aj_only_arom_sys:
+            filtered_mapping[ai] = aj
+
+    return filtered_mapping
