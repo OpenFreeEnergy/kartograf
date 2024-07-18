@@ -73,7 +73,7 @@ jobs:
           # install openfe for the notebook
           micromamba install openfe
           # another dep I don't want to include in the env
-          pip install --no-deps git+https://github.com/OpenFreeEnergy/openfe-benchmarks.git
+          python -m pip install --no-deps git+https://github.com/OpenFreeEnergy/openfe-benchmarks.git
           # Only need to test the notebook(s) in examples/
           pytest -v --nbval-lax examples/
 
