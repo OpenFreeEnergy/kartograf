@@ -68,6 +68,9 @@ jobs:
 
       - name: "Run tests"
         run: |
+          # add openfe-benchmarks
+          pip install --no-deps git+https://github.com/OpenFreeEnergy/openfe-benchmarks.git
+          # run tests
           pytest -n auto -v --cov=kartograf --cov-report=xml
 
       - name: "Test Notebooks"
