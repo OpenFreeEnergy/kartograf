@@ -13,7 +13,7 @@ dependencies:
   - mypy
   - nbval
   #Typing
-  - gufe>=0.9.5
+  - gufe>=1.0
   - typing-extensions
   # Sci
   - numpy
@@ -29,3 +29,4 @@ dependencies:
   # docs
   - pip:
     - git+https://github.com/OpenFreeEnergy/ofe-sphinx-theme@main
+    - git+https://github.com/OpenFreeEnergy/openfe-benchmarks@main

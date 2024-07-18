@@ -50,6 +50,9 @@ jobs:
           cache-downloads-key: downloads-${{ steps.date.outputs.date }}
           create-args: >-
             python=${{ matrix.python-version }}
+            lomap2
+            openfe
+
       - name: "Install"
         run: pip install --no-deps -e .
 
@@ -70,10 +73,6 @@ jobs:
       - name: "Test Notebooks"
         if: ${{ matrix.os != 'macos' }}
         run: |
-          # install openfe for the notebook
-          micromamba install openfe
-          # another dep I don't want to include in the env
-          python -m pip install --no-deps git+https://github.com/OpenFreeEnergy/openfe-benchmarks.git
           # Only need to test the notebook(s) in examples/
           pytest -v --nbval-lax examples/
 
