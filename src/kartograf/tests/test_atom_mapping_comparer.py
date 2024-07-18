@@ -31,11 +31,11 @@ def test_mapping_comparison_jcs_diverse(benzene_benzene_mapping):
     mappingA = LigandAtomMapping(componentA=mapping.componentA,
                                  componentB=mapping.componentB,
                                  componentA_to_componentB={v: v for v in
-                                                           range(1, 12)})
+                                                           range(0, 6)})
     mappingB = LigandAtomMapping(componentA=mapping.componentA,
                                  componentB=mapping.componentB,
                                  componentA_to_componentB={v: v for v in
-                                                           range(12, 20)})
+                                                           range(6, 12)})
 
     score = jaccard_score(mappingA=mappingA,
                           mappingB=mappingB)
@@ -43,8 +43,8 @@ def test_mapping_comparison_jcs_diverse(benzene_benzene_mapping):
     assert score == 0
 
     # Check index order change
-    r1 = list(range(1, 12))
-    r2 = list(range(12, 20))
+    r1 = list(range(0, 6))
+    r2 = list(range(6, 12))
     index_mixing = list(zip(r1, r2))
 
     mappingA = LigandAtomMapping(componentA=mapping.componentA,
