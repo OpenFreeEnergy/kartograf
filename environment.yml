@@ -13,7 +13,7 @@ dependencies:
   - mypy
   - nbval
   #Typing
-  - gufe>=0.9.5
+  - gufe>=1.0
   - typing-extensions
   # Sci
   - numpy
