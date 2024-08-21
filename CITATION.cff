@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Ries"
+  given-names: "Benjamin"
+  orcid: "https://orcid.org/0000-0002-0945-8304"
+- family-names: "Alibay"
+  given-names: "Irfan"
+  orcid: "https://orcid.org/0000-0001-5787-9130"
+- family-names: "Swenson"
+  given-names: "David W.H."
+  orcid: "https://orcid.org/0000-0001-9922-7923"
+- family-names: "Baumann"
+  given-names: "Hannah M."
+  orcid: "https://orcid.org/0000-0002-1736-7744"
+- family-names: "Henry"
+  given-names: "Michael M."
+  orcid: "https://orcid.org/0000-0002-3870-9993"
+- family-names: "Eastwood"
+  given-names: "James R. B."
+  orcid: "https://orcid.org/0000-0003-3895-5227"
+- family-names: "Gowers"
+  given-names: "Richard J."
+  orcid: "https://orcid.org/0000-0002-3241-1846"
+title: "Kartograf: A Geometrically Accurate Atom Mapper for Hybrid-Topology Relative Free Energy Calculations"
+version: 1.0
+date-released: 2024-02-08
+url: "https://openfree.energy/"
+repository-code: "https://github.com/OpenFreeEnergy/kartograf"
+doi: 10.1021/acs.jctc.3c01206
