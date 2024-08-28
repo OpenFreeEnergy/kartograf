@@ -3,7 +3,6 @@
 
 import copy
 import dill
-import inspect
 import numpy as np
 from enum import Enum
 
@@ -18,7 +17,7 @@ from scipy.sparse.csgraph import connected_components
 
 from typing import Callable, Iterable, Optional, Union
 
-from gufe import SmallMoleculeComponent
+from gufe import SmallMoleculeComponent, ProteinComponent
 from gufe import AtomMapping, AtomMapper, LigandAtomMapping
 
 from numpy.typing import NDArray
@@ -855,6 +854,20 @@ class KartografAtomMapper(AtomMapper):
 
         return mapping
 
+    def _split_protein_component_chains(self, protein: ProteinComponent)->list[ProteinComponent]:
+        chain_components = []
+        rdmol = protein.to_rdkit()
+        # TODO: Implement splitting up A into chain components
+
+        return chain_components
+
+    def _merge_protein_component_chain_mappings(self, A:ProteinComponent, B:ProteinComponent,
+                                                sub_mappings: list[AtomMapping])->AtomMapping:
+        merged_mapping = {}
+        # TODO: Implement finding largest mapped overlaps in all possible chains
+        # TODO: return merged mapping
+
+        return AtomMapping(componentA=A, componentB=B, mapping=merged_mapping)
     def suggest_mappings(
             self, A: SmallMoleculeComponent, B: SmallMoleculeComponent
     ) -> Iterator[AtomMapping]:
@@ -873,10 +886,36 @@ class KartografAtomMapper(AtomMapper):
         Iterator[AtomMapping]
             returns an interator of possible atom mappings.
         """
-        yield LigandAtomMapping(
-            A,
-            B,
-            self.suggest_mapping_from_rdmols(
-                molA=A.to_rdkit(), molB=B.to_rdkit()
-            ),
-        )
+
+        if isinstance(A, ProteinComponent) or  isinstance(B, ProteinComponent):
+            # 1. identify Component Chains
+            if  isinstance(A, ProteinComponent):
+                componentA_chains = self._split_protein_component_chains(A)
+
+            if  isinstance(B, ProteinComponent):
+                componentB_chains = self._split_protein_component_chains(B)
+
+            # 2. calculate all possible mappings
+            chain_mappings = []
+            for A_chain in componentA_chains:
+                for B_chain in componentB_chains:
+                    chain_map = LigandAtomMapping(
+                        A_chain,
+                        B_chain,
+                        self.suggest_mapping_from_rdmols(
+                            molA=A_chain.to_rdkit(), molB=B_chain.to_rdkit()
+                        ),
+                    )
+                    chain_mappings.append(chain_map)
+
+            # 3. find largest overlap of chain mappings and return a merge.
+            yield self._merge_protein_component_chain_mappings(chain_mappings)
+
+        else: # SmallMoleculeComponent case
+            yield LigandAtomMapping(
+                A,
+                B,
+                self.suggest_mapping_from_rdmols(
+                    molA=A.to_rdkit(), molB=B.to_rdkit()
+                ),
+            )
