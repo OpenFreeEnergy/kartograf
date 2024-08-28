@@ -1062,66 +1062,71 @@ class KartografAtomMapper(AtomMapper):
         # build ndDistmatrix
         euclidean_dist = lambda v: np.sqrt(np.sum(np.square(v), axis=1))
 
-        # Pre filter long distances
-        dist_matrix = []
-        for i, pos1 in enumerate(positions): #MolA
-            mol_dist = []
-            for a1 in pos1: #Atom of MolA
-                a1_d = []
-                for j, pos2 in enumerate(positions): #MolB
-                    if (i == j):
+        # Calculate and pre-filter long distances
+        # mol_distance_matrix[molA][atomI][molB_pos]
+        # = distance between MolA_atomI to molB_atomJ
+
+        mol_distance_matrix = []
+        for molA_atomI_id, molA_pos in enumerate(positions): #MolA
+            molA_distances = []
+            for molA_atomI in molA_pos: #Atom of MolA
+                molA_atomI_distances = []
+                for molB_id, molB_pos in enumerate(positions): #MolB
+                    if (molA_atomI_id == molB_id):
                         continue
                     else:
-                        d = euclidean_dist(pos2 - a1)
-                        d[d > 0.95] = np.inf
-                        a1_d.append(d)
-                a1_d = np.array(a1_d)
-                mol_dist.append(a1_d)
-            dist_matrix.append(mol_dist)
+                        molAB_atomI_distances = euclidean_dist(molB_pos - molA_atomI)
+                        molAB_atomI_distances[molAB_atomI_distances > 0.95] = np.inf
+                        molA_atomI_distances.append(molAB_atomI_distances)
+                molA_distances.append(np.array(molA_atomI_distances))
+            mol_distance_matrix.append(molA_distances)
 
         # Calculate raw mappings in N Dimensions, collect tuples and all dists
-        dist_tuples = defaultdict(list)
-        for mid, mol1 in enumerate(dist_matrix):
-            for i, a1 in enumerate(mol1):
+        distance_tuples = defaultdict(list)
+        for molA_id, molA in enumerate(mol_distance_matrix):
+            for molA_atomI_id, molA_atomI in enumerate(molA):
                 # all inf dist in mols? - no mapping possible
-                if (any([np.all(np.inf == m_dist) for m_dist in a1])):
+                if (any([np.all(np.inf == m_dist) for m_dist in molA_atomI])):
                     continue
                 else:
                     # Filter only for possible atoms -  sparse graph
-                    possible_atoms = []
-                    for mol2 in a1:
-                        a_i = np.where(mol2 != np.inf)
-                        possible_atoms.append(np.vstack([a_i, mol2[a_i]]).T)
+                    possible_mappings = []
+                    for molB_distances in molA_atomI:
+                        possible_molB_atom_ids = np.where(molB_distances != np.inf)
+                        possible_mappings.append(np.vstack([possible_molB_atom_ids, molB_distances[possible_molB_atom_ids]]).T)
 
                     # calculate all possible tuples and their sum dist for
-                    # atom a1.
-                    indices = [list(map(int, a[:, 0])) for a in possible_atoms]
-                    for tup in product(*indices):
-                        sum_d = 0
-                        for k, t in enumerate(tup):
-                            ti = np.squeeze(np.where(possible_atoms[k][:, 0] == t))
-                            d = np.squeeze(possible_atoms[k][ti, 1])
-                            sum_d = d if (isinstance(d, float)) else np.mean(d)
-                        tup = list(tup)
-                        tup.insert(mid, i)
-                        tup = tuple(tup)
-                        dist_tuples[tup].append(sum_d)
+                    # atom molA_atomI.
+                    possible_mappings_id = [list(map(int, a[:, 0])) for a in possible_mappings]
+                    for multi_mapping_atom_ids in product(*possible_mappings_id):
+                        multi_mapping_distance = 0
+                        for k, t in enumerate(multi_mapping_atom_ids):
+                            ti = np.squeeze(np.where(possible_mappings[k][:, 0] == t))
+                            molAB_atomI_distances = np.squeeze(possible_mappings[k][ti, 1])
+                            if isinstance(molAB_atomI_distances, float):
+                                multi_mapping_distance = molAB_atomI_distances
+                            else:
+                                multi_mapping_distance = np.mean(molAB_atomI_distances)
+                        multi_mapping_atom_ids = list(multi_mapping_atom_ids)
+                        multi_mapping_atom_ids.insert(molA_id, molA_atomI_id)
+                        multi_mapping_atom_ids = tuple(multi_mapping_atom_ids)
+                        distance_tuples[multi_mapping_atom_ids].append(multi_mapping_distance)
 
         # convolute all distances of mutli atom tuple selection
-        dist_tuples = {tuple(k): np.sum(v) for k, v in dist_tuples.items()}
+        distance_tuples = {tuple(k): np.sum(v) for k, v in distance_tuples.items()}
 
         # select mapping
-        found_tup_coords = []
-        mappings = []
-        for tup, dist in sorted(dist_tuples.items(), key=lambda x: x[1]):
-            check_tup = [(i, t) for i, t in enumerate(tup)]
-            if (any([ct in found_tup_coords for ct in check_tup])):
+        already_selected_atoms = []
+        multistate_atom_mapping = []
+        for multi_mapping_atom_ids, dist in sorted(distance_tuples.items(), key=lambda x: x[1]):
+            check_atomIDs = [(i, t) for i, t in enumerate(multi_mapping_atom_ids)]
+            if (any([ct in already_selected_atoms for ct in check_atomIDs])):
                 continue
             else:
-                mappings.append({components[i].name: masks[i][t] for i, t in check_tup})
-                found_tup_coords.extend(check_tup)
+                multistate_atom_mapping.append({components[i].name: masks[i][t] for i, t in check_atomIDs})
+                already_selected_atoms.extend(check_atomIDs)
 
-        return mappings
+        return multistate_atom_mapping
 
     def _merge_mappings_to_multistate_mapping(self, mappings, _only_all_state_mappings: bool = True) -> Iterable[
         dict[str, int]]:
