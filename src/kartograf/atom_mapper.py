@@ -855,11 +855,35 @@ class KartografAtomMapper(AtomMapper):
         return mapping
 
     def _split_protein_component_chains(self, protein: ProteinComponent)->list[ProteinComponent]:
-        chain_components = []
-        rdmol = protein.to_rdkit()
-        # TODO: Implement splitting up A into chain components
+        # TODO: WARNING NOT TESTED - This is an implementation suggestion.
 
-        return chain_components
+        rdmol = protein.to_rdkit()
+        omm_t = protein.to_openmm_topology()
+
+        protein_chain_components = []
+        for c in omm_t.chains():
+            rd_protein_chain_aids = [int(a.id) for a in c.atoms()]
+        
+            e_rdmol_chain = Chem.EditableMol(rdmol)
+            remove_atoms = []
+            for atom in rdmol.GetAtoms():
+                if atom.GetIdx() in rd_protein_chain_aids:
+                    continue
+                else:
+                    remove_atoms.append(atom.GetIdx())
+        
+            for atom in sorted(remove_atoms, reverse=True):
+                e_rdmol_chain.RemoveAtom(atom)
+            
+            rdmolrotein_chain = e_rdmol_chain.GetMol()
+            Chem.SanitizeMol(rdmolrotein_chain)
+            if(not rdmolrotein_chain.HasProp("_Name") or rdmolrotein_chain.GetProp("_Name") == ""):
+                rdmolrotein_chain.SetProp("_Name", str(c.index)+"_"+c.id)
+            else:
+                rdmolrotein_chain.SetProp("_Name", rdmolrotein_chain.GetProp("_Name")+"_"+c.id)
+            protein_chain_components.append(ProteinComponent(rdmolrotein_chain, name = rdmolrotein_chain.GetProp("_Name")))
+            
+        return protein_chain_components
 
     def _merge_protein_component_chain_mappings(self, A:ProteinComponent, B:ProteinComponent,
                                                 sub_mappings: list[AtomMapping])->AtomMapping:
