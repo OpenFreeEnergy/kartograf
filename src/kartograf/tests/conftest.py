@@ -2,10 +2,10 @@
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
 import pytest
+from importlib.resources import files
 from rdkit import Chem
-from gufe import SmallMoleculeComponent
 from kartograf.atom_aligner import align_mol_skeletons
-from gufe import SmallMoleculeComponent, LigandAtomMapping
+from gufe import SmallMoleculeComponent, LigandAtomMapping, ProteinComponent
 
 
 def mol_from_smiles(smiles: str):
@@ -108,3 +108,20 @@ def benzene_benzene_empty_mapping():
     mol = benzene_mol()
     expected_mapping = {}
     return LigandAtomMapping(mol, mol, expected_mapping)
+
+
+@pytest.fixture(scope="session")
+def trimer_2wtk_component():
+    """Protein component for modelled trimer of protein with PDB ID 2wtk"""
+    input_pdb = files("kartograf.tests.data").joinpath("2wtk_trimer.pdb")
+    protein_comp = ProteinComponent.from_pdb_file(str(input_pdb))
+    return protein_comp
+
+
+@pytest.fixture(scope="session")
+def trimer_2wtk_mutated_component():
+    """Protein component obtained by applying ALA-76-TYR mutation to trimer of 2wtk,
+    to residue in chain 'C'."""
+    input_pdb = files("kartograf.tests.data").joinpath("2wtk_trimer_mutated.pdb")
+    protein_comp = ProteinComponent.from_pdb_file(str(input_pdb))
+    return protein_comp

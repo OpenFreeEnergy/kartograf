@@ -911,18 +911,19 @@ class KartografAtomMapper(AtomMapper):
             returns an interator of possible atom mappings.
         """
 
-        if isinstance(A, ProteinComponent) or  isinstance(B, ProteinComponent):
+        if isinstance(A, ProteinComponent) or isinstance(B, ProteinComponent):
             # 1. identify Component Chains
-            if  isinstance(A, ProteinComponent):
+            if isinstance(A, ProteinComponent):
                 componentA_chains = self._split_protein_component_chains(A)
 
-            if  isinstance(B, ProteinComponent):
+            if isinstance(B, ProteinComponent):
                 componentB_chains = self._split_protein_component_chains(B)
 
             # 2. calculate all possible mappings
             chain_mappings = []
             for A_chain in componentA_chains:
                 for B_chain in componentB_chains:
+                    # TODO: Do we need a better suited object here instead of LigandAtomMapping?
                     chain_map = LigandAtomMapping(
                         A_chain,
                         B_chain,

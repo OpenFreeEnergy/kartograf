@@ -2,6 +2,7 @@
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
 import pytest
+from importlib.resources import files
 from kartograf import KartografAtomMapper
 from kartograf.atom_mapper import (filter_atoms_h_only_h_mapped,
                                    filter_whole_rings_only)
@@ -271,3 +272,60 @@ def test_ring_matches_property():
         map_exact_ring_matches_only=True
     )
     assert any(f == filter_whole_rings_only for f in geom_mapper._filter_funcs)
+
+
+def test_split_chains():
+    """
+    Test splitting chains of 2wtk multimer is done correctly
+    """
+    from openmm.app import PDBFile
+    from kartograf.atom_mapper import KartografAtomMapper
+    from gufe import ProteinComponent
+
+    input_pdb = str(files("kartograf.tests.data").joinpath("2wtk_trimer.pdb"))
+    pdb = PDBFile(input_pdb)
+    omm_topology = pdb.topology
+    # Create the data structure we want to compare to: list[Dict]
+    omm_data = []
+    expected_n_chains = len(list(omm_topology.chains()))
+    for chain in omm_topology.chains():
+        omm_data.append({"residues": len(list(chain.residues())),
+                         "atoms": len(list(chain.atoms()))})
+
+    mapper = KartografAtomMapper(atom_map_hydrogens=True)
+    protein_comp = ProteinComponent.from_pdb_file(input_pdb)
+    chain_comps = mapper._split_protein_component_chains(protein_comp)
+
+    assert len(chain_comps) == expected_n_chains, f"Expected {expected_n_chains} chain components."
+    for idx, comp in enumerate(chain_comps):
+        rdmol = comp.to_rdkit()
+        # TODO: Use MonomerInfo from rdkit to get number of residues. Seems tedious.
+        # Make sure the number of atoms in the chain is the same
+        n_atoms = rdmol.GetNumAtoms()
+        expected_n_atoms = omm_data[idx]["atoms"]
+        assert n_atoms == expected_n_atoms, f"Expected {expected_n_atoms}. Received {n_atoms}."
+    
+    
+def test_mapping_multimer_components(trimer_2wtk_component,
+                                     trimer_2wtk_mutated_component):
+    """
+    Test we can properly map ProteinComponents generated from 2wtk trimers.
+
+    The final/target component is the same original component but with a ALA-76-TYR mutation.
+    """
+    from kartograf import KartografAtomMapper
+    mapper = KartografAtomMapper(atom_map_hydrogens=True)
+    mapping = next(mapper.suggest_mappings(trimer_2wtk_component,
+                                           trimer_2wtk_mutated_component))
+    # It comes from ALA to TYR mutation, n mapped atoms must be 21
+    expected_mapped_atoms = 21
+    mapped_atoms = len(mapping.componentA_to_componentB)
+    assert mapped_atoms == expected_mapped_atoms, f"Mapped atoms do not match. Expected {expected_mapped_atoms}, received {mapped_atoms}."
+    # We expect the unique atoms in initial/ALA to be only 1 hydrogen
+    expected_unique_initial = 1
+    unique_initial = len(list(mapping.componentA_unique))
+    assert unique_initial == expected_unique_initial, f"Unique atoms in initial molecule do not match."
+    # We expect the unique atoms in final/TYR to be 12 atoms
+    expected_unique_final = 12
+    unique_final = len(list(mapping.componentB_unique))
+    assert unique_final == expected_unique_final, f"Unique atoms in final molecule do not match."
