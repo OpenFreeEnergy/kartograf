@@ -854,7 +854,7 @@ class KartografAtomMapper(AtomMapper):
 
         return mapping
 
-    def _split_protein_component_chains(self, protein: ProteinComponent)->list[ProteinComponent]:
+    def _split_protein_component_chains(self, protein: ProteinComponent) -> list[ProteinComponent]:
         # TODO: WARNING NOT TESTED - This is an implementation suggestion.
 
         rdmol = protein.to_rdkit()
@@ -884,6 +884,22 @@ class KartografAtomMapper(AtomMapper):
             protein_chain_components.append(ProteinComponent(rdmolrotein_chain, name = rdmolrotein_chain.GetProp("_Name")))
             
         return protein_chain_components
+
+    def _split_protein_components_molecules(self, protein: ProteinComponent) -> list[ProteinComponent]:
+        """
+        Aims at splitting a protein component into different protein components based on the
+        connectivity of the molecules that compose it. Useful for mapping multimer components
+        or proteins with structural waters or similarly.
+        """
+        from rdkit.Chem.rdmolops import GetMolFrags
+        rdmol = protein.to_rdkit()
+        fragments_indices = GetMolFrags(rdmol)
+        for index_tuple in fragments_indices:
+            edit_rdmol_frag = Chem.EditableMol(rdmol)
+            atoms_in_frag = []
+            # TODO: navigate atoms and remove everything that's not in index tuple
+            #  Create component with the remaining molecule
+            #  Append component to list
 
     def _merge_protein_component_chain_mappings(self, A:ProteinComponent, B:ProteinComponent,
                                                 sub_mappings: list[AtomMapping])->AtomMapping:

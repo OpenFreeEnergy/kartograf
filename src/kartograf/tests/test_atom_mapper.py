@@ -274,7 +274,7 @@ def test_ring_matches_property():
     assert any(f == filter_whole_rings_only for f in geom_mapper._filter_funcs)
 
 
-def test_split_chains():
+def test_split_multimeric_component():
     """
     Test splitting chains of 2wtk multimer is done correctly
     """
@@ -282,12 +282,13 @@ def test_split_chains():
     from kartograf.atom_mapper import KartografAtomMapper
     from gufe import ProteinComponent
 
-    input_pdb = str(files("kartograf.tests.data").joinpath("2wtk_trimer.pdb"))
+    input_pdb = str(files("kartograf.tests.data").joinpath("2wtk_trimer_with_mols.pdb"))
     pdb = PDBFile(input_pdb)
     omm_topology = pdb.topology
     # Create the data structure we want to compare to: list[Dict]
     omm_data = []
-    expected_n_chains = len(list(omm_topology.chains()))
+    # It so happens that the number of components is the number of chains, but doesn't have to
+    expected_n_comps = len(list(omm_topology.chains()))
     for chain in omm_topology.chains():
         omm_data.append({"residues": len(list(chain.residues())),
                          "atoms": len(list(chain.atoms()))})
@@ -296,7 +297,7 @@ def test_split_chains():
     protein_comp = ProteinComponent.from_pdb_file(input_pdb)
     chain_comps = mapper._split_protein_component_chains(protein_comp)
 
-    assert len(chain_comps) == expected_n_chains, f"Expected {expected_n_chains} chain components."
+    assert len(chain_comps) == expected_n_comps, f"Expected {expected_n_comps} chain components."
     for idx, comp in enumerate(chain_comps):
         rdmol = comp.to_rdkit()
         # TODO: Use MonomerInfo from rdkit to get number of residues. Seems tedious.
@@ -305,7 +306,7 @@ def test_split_chains():
         expected_n_atoms = omm_data[idx]["atoms"]
         assert n_atoms == expected_n_atoms, f"Expected {expected_n_atoms}. Received {n_atoms}."
     
-    
+
 def test_mapping_multimer_components(trimer_2wtk_component,
                                      trimer_2wtk_mutated_component):
     """
