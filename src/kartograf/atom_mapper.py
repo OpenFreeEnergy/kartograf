@@ -910,28 +910,32 @@ class KartografAtomMapper(AtomMapper):
 
         if isinstance(A, ProteinComponent) or isinstance(B, ProteinComponent):
             # 1. identify Component Chains
-            if isinstance(A, ProteinComponent):
-                componentA_chains = self._split_protein_component_chains(A)
-
-            if isinstance(B, ProteinComponent):
-                componentB_chains = self._split_protein_component_chains(B)
+            componentA_chains = self._split_protein_components_molecules(A)
+            componentB_chains = self._split_protein_components_molecules(B)
 
             # 2. calculate all possible mappings
-            chain_mappings = []
+            largest_mappings = []
             for A_chain in componentA_chains:
+                largest_overlap_map = {}  # Initialize to empty map
+                largest_overlap_component = componentB_chains[0]  # Initialization
                 for B_chain in componentB_chains:
-                    # TODO: Do we need a better suited object here instead of LigandAtomMapping?
-                    chain_map = LigandAtomMapping(
-                        A_chain,
-                        B_chain,
-                        self.suggest_mapping_from_rdmols(
-                            molA=A_chain.to_rdkit(), molB=B_chain.to_rdkit()
-                        ),
+                    # FIXME: This probably doesn't work since it reinitializes indices for the rdmols.
+                    current_map = self.suggest_mapping_from_rdmols(
+                        molA=A_chain.to_rdkit(), molB=B_chain.to_rdkit()
                     )
-                    chain_mappings.append(chain_map)
+                    if len(largest_overlap_map) < len(current_map):
+                        largest_overlap_component = B_chain
+                        largest_overlap_map = current_map
+                    # TODO: Do we need a better suited object here instead of LigandAtomMapping?
+                    mapping_obj = LigandAtomMapping(A_chain, largest_overlap_component, largest_overlap_map)
+                    # At the end of the loop mapping_obj should have the largest map overlap
+                    largest_mappings.append(mapping_obj)
 
-            # 3. find largest overlap of chain mappings and return a merge.
-            yield self._merge_protein_component_chain_mappings(chain_mappings)
+            # TODO: We just need to merge all the mappings objs in largest_mappings into a single one
+            merged_map = {}
+            for mapping_obj in largest_mappings:
+                merged_map.update(mapping_obj.componentA_to_componentB)
+            yield LigandAtomMapping(A, B, merged_map)
 
         else: # SmallMoleculeComponent case
             yield LigandAtomMapping(
