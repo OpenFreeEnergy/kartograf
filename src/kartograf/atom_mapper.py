@@ -854,37 +854,6 @@ class KartografAtomMapper(AtomMapper):
 
         return mapping
 
-    def _split_protein_component_chains(self, protein: ProteinComponent) -> list[ProteinComponent]:
-        # TODO: WARNING NOT TESTED - This is an implementation suggestion.
-
-        rdmol = protein.to_rdkit()
-        omm_t = protein.to_openmm_topology()
-
-        protein_chain_components = []
-        for c in omm_t.chains():
-            rd_protein_chain_aids = [int(a.id) for a in c.atoms()]
-        
-            e_rdmol_chain = Chem.EditableMol(rdmol)
-            remove_atoms = []
-            for atom in rdmol.GetAtoms():
-                if atom.GetIdx() in rd_protein_chain_aids:
-                    continue
-                else:
-                    remove_atoms.append(atom.GetIdx())
-        
-            for atom in sorted(remove_atoms, reverse=True):
-                e_rdmol_chain.RemoveAtom(atom)
-            
-            rdmolrotein_chain = e_rdmol_chain.GetMol()
-            Chem.SanitizeMol(rdmolrotein_chain)
-            if(not rdmolrotein_chain.HasProp("_Name") or rdmolrotein_chain.GetProp("_Name") == ""):
-                rdmolrotein_chain.SetProp("_Name", str(c.index)+"_"+c.id)
-            else:
-                rdmolrotein_chain.SetProp("_Name", rdmolrotein_chain.GetProp("_Name")+"_"+c.id)
-            protein_chain_components.append(ProteinComponent(rdmolrotein_chain, name = rdmolrotein_chain.GetProp("_Name")))
-            
-        return protein_chain_components
-
     def _split_protein_components_molecules(self, protein: ProteinComponent) -> list[ProteinComponent]:
         """
         Aims at splitting a protein component into different protein components based on the
@@ -894,12 +863,24 @@ class KartografAtomMapper(AtomMapper):
         from rdkit.Chem.rdmolops import GetMolFrags
         rdmol = protein.to_rdkit()
         fragments_indices = GetMolFrags(rdmol)
+        components = []
         for index_tuple in fragments_indices:
             edit_rdmol_frag = Chem.EditableMol(rdmol)
-            atoms_in_frag = []
-            # TODO: navigate atoms and remove everything that's not in index tuple
+            remove_indices = []
+            for atom in rdmol.GetAtoms():
+                atom_index = atom.GetIdx()
+                if not (atom_index in index_tuple):
+                    remove_indices.append(atom_index)
+            # Need to remove separately https://github.com/rdkit/rdkit/issues/1366
+            for atom_idx in sorted(remove_indices, reverse=True):
+                edit_rdmol_frag.RemoveAtom(atom_idx)
             #  Create component with the remaining molecule
-            #  Append component to list
+            frag_rdmol = edit_rdmol_frag.GetMol()
+            Chem.SanitizeMol(frag_rdmol)
+            protein_comp = ProteinComponent(frag_rdmol)
+            components.append(protein_comp)
+
+        return components
 
     def _merge_protein_component_chain_mappings(self, A:ProteinComponent, B:ProteinComponent,
                                                 sub_mappings: list[AtomMapping])->AtomMapping:

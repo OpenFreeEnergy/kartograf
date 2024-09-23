@@ -287,7 +287,7 @@ def test_split_multimeric_component():
     omm_topology = pdb.topology
     # Create the data structure we want to compare to: list[Dict]
     omm_data = []
-    # It so happens that the number of components is the number of chains, but doesn't have to
+    # It happens that number of components is the number of chains for this pdb, but doesn't have to
     expected_n_comps = len(list(omm_topology.chains()))
     for chain in omm_topology.chains():
         omm_data.append({"residues": len(list(chain.residues())),
@@ -295,7 +295,7 @@ def test_split_multimeric_component():
 
     mapper = KartografAtomMapper(atom_map_hydrogens=True)
     protein_comp = ProteinComponent.from_pdb_file(input_pdb)
-    chain_comps = mapper._split_protein_component_chains(protein_comp)
+    chain_comps = mapper._split_protein_components_molecules(protein_comp)
 
     assert len(chain_comps) == expected_n_comps, f"Expected {expected_n_comps} chain components."
     for idx, comp in enumerate(chain_comps):
