@@ -319,13 +319,16 @@ def test_mapping_multimer_components(trimer_2wtk_component,
     mapping = next(mapper.suggest_mappings(trimer_2wtk_component,
                                            trimer_2wtk_mutated_component))
     # It comes from ALA to TYR mutation, n mapped atoms must be 21
-    expected_mapped_atoms = 21
-    mapped_atoms = len(mapping.componentA_to_componentB)
-    assert mapped_atoms == expected_mapped_atoms, f"Mapped atoms do not match. Expected {expected_mapped_atoms}, received {mapped_atoms}."
-    # We expect the unique atoms in initial/ALA to be only 1 hydrogen
+    n_atoms_comp_a = trimer_2wtk_component.to_rdkit().GetNumAtoms()
     expected_unique_initial = 1
+    expected_mapped_atoms = n_atoms_comp_a - expected_unique_initial
+    mapped_atoms = len(mapping.componentA_to_componentB)
+    assert mapped_atoms == expected_mapped_atoms, \
+        f"Mapped atoms do not match. Expected {expected_mapped_atoms}, received {mapped_atoms}."
+    # We expect the unique atoms in initial/ALA to be only 1 hydrogen
     unique_initial = len(list(mapping.componentA_unique))
-    assert unique_initial == expected_unique_initial, f"Unique atoms in initial molecule do not match."
+    assert unique_initial == expected_unique_initial, \
+        f"Unique atoms in initial molecule do not match."
     # We expect the unique atoms in final/TYR to be 12 atoms
     expected_unique_final = 12
     unique_final = len(list(mapping.componentB_unique))
