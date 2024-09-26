@@ -282,7 +282,7 @@ def test_split_multimeric_component():
     from kartograf.atom_mapper import KartografAtomMapper
     from gufe import ProteinComponent
 
-    input_pdb = str(files("kartograf.tests.data").joinpath("2wtk_trimer_with_mols.pdb"))
+    input_pdb = str(files("kartograf.tests.data").joinpath("2wtk_trimer_with_extra_mols.pdb"))
     pdb = PDBFile(input_pdb)
     omm_topology = pdb.topology
     # Create the data structure we want to compare to: list[Dict]
