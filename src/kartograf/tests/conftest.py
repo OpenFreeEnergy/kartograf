@@ -120,7 +120,7 @@ def trimer_2wtk_component():
 
 @pytest.fixture(scope="session")
 def trimer_2wtk_mutated_component():
-    """Protein component obtained by applying ALA-76-TYR mutation to trimer of 2wtk,
+    """Protein component obtained by applying ALA-53-TYR mutation to trimer of 2wtk,
     to residue in chain 'C'."""
     input_pdb = files("kartograf.tests.data").joinpath("2wtk_mutated_with_extra_mols.pdb")
     protein_comp = ProteinComponent.from_pdb_file(str(input_pdb))
