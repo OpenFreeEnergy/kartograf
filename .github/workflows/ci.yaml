@@ -80,7 +80,7 @@ jobs:
           pytest -v --nbval-lax examples/
 
       - name: codecov
-        if: ${{ github.repository == 'OpenFreeEnergy/kartograf' && github.event != 'schedule'}}
+        if: ${{ github.repository == 'OpenFreeEnergy/kartograf' && github.event_name != 'schedule'}}
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
