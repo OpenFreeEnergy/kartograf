@@ -8,7 +8,7 @@
 
 
 Kartograf: A Geometry-Based Atom Mapper
-========================================
+==================================
 
 [//]: # (Badges)
 [![Logo](https://img.shields.io/badge/OSMF-OpenFreeEnergy-%23002f4a)](https://openfree.energy/)
