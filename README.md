@@ -8,7 +8,7 @@
 
 
 Kartograf: A Geometry-Based Atom Mapper
-==================================
+========================================
 
 [//]: # (Badges)
 [![Logo](https://img.shields.io/badge/OSMF-OpenFreeEnergy-%23002f4a)](https://openfree.energy/)
@@ -100,13 +100,6 @@ from openfe.setup.atom_mapping import kartograf
 ### Developement version
 The developing setup of Kartograf works like this:
 
-you want to use the current main branch:
-```shell
-mamba install -c conda-forge gufe
-python -m pip install git+https://github.com/OpenFreeEnergy/kartograf.git
-```
-
-you want to develop kartograf:
 ```shell
 git clone https://github.com/OpenFreeEnergy/kartograf.git
 
@@ -114,11 +107,9 @@ cd kartograf
 mamba env create -f environment.yml
 
 mamba activate kartograf
-
 pip install -e .
 
 ```
-
 
 ## License
 This library is made available under the MIT open source license.
