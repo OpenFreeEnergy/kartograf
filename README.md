@@ -102,7 +102,7 @@ The developing setup of Kartograf works like this:
 
 you want to use the current main branch:
 ```shell
-python -m pip install git+https://github.com/OpenFreeEnergy/gufe.git
+mamba install -c conda-forge gufe
 python -m pip install git+https://github.com/OpenFreeEnergy/kartograf.git
 ```
 
