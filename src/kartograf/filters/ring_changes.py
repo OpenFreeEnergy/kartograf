@@ -88,10 +88,23 @@ def filter_whole_rings_only(
                 filtered_mapping[i] = j
                 continue
 
-            # if in any rings, at least one must be ok
-            # e.g. if on edge of fused rings, one ring being completely mapped is ok
-            if any(ringok[r] for r in atom2ring[i]):
+            # all rings the atom is present must be in the mapping
+            # this will result in broken fused ring mappings
+            if all(ringok[r] for r in atom2ring[i]):
                 filtered_mapping[i] = j
+
+        # remove partial rings from the mapping which are fused
+        to_remove = []
+        for ring in ri:
+            # if every atom in each ring is not mapped remove the entire ring
+            if not all(r in filtered_mapping for r in ring):
+                to_remove.extend(ring)
+        for i in set(to_remove):
+            try:
+                # some of the ring atoms were not present as we are removing partial rings
+                del filtered_mapping[i]
+            except KeyError:
+                continue
 
         # reverse the mapping to check B->A (then reverse again)
         proposed_mapping = {v: k for k, v in filtered_mapping.items()}
