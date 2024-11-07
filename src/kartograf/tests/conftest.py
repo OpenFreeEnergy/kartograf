@@ -113,15 +113,15 @@ def benzene_benzene_empty_mapping():
 @pytest.fixture(scope="session")
 def trimer_2wtk_component():
     """Protein component for modelled trimer of protein with PDB ID 2wtk"""
-    input_pdb = files("kartograf.tests.data").joinpath("2wtk_trimer_with_extra_mols.pdb")
-    protein_comp = ProteinComponent.from_pdb_file(str(input_pdb))
-    return protein_comp
+    with files("kartograf.tests.data") as d:
+        protein_comp = ProteinComponent.from_pdb_file(str(d / "2wtk_trimer_with_extra_mols.pdb"))
+        return protein_comp
 
 
 @pytest.fixture(scope="session")
 def trimer_2wtk_mutated_component():
     """Protein component obtained by applying ALA-53-TYR mutation to trimer of 2wtk,
     to residue in chain 'C'."""
-    input_pdb = files("kartograf.tests.data").joinpath("2wtk_mutated_with_extra_mols.pdb")
-    protein_comp = ProteinComponent.from_pdb_file(str(input_pdb))
-    return protein_comp
+    with files("kartograf.tests.data") as d:
+        protein_comp = ProteinComponent.from_pdb_file(str(d / "2wtk_mutated_with_extra_mols.pdb"))
+        return protein_comp
