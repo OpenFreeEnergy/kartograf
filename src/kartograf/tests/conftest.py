@@ -3,8 +3,7 @@
 
 import pytest
 from rdkit import Chem
-from gufe import SmallMoleculeComponent
-from kartograf.atom_aligner import align_mol_skeletons
+from kartograf.atom_aligner import align_mol_skeletons, align_mol_shape
 from gufe import SmallMoleculeComponent, LigandAtomMapping
 
 
@@ -108,3 +107,12 @@ def benzene_benzene_empty_mapping():
     mol = benzene_mol()
     expected_mapping = {}
     return LigandAtomMapping(mol, mol, expected_mapping)
+
+@pytest.fixture(scope="session")
+def fused_ring_mols() -> tuple[SmallMoleculeComponent, SmallMoleculeComponent]:
+    """Return two biaryl molecules one with a fused ring which are aligned for mapping"""
+    smiles = ["c1ccccc1-c2ccccc2", "C1Cc2cc(-c3ccccc3)ccc2C1"]
+    mols = mol_from_smiles(smiles)
+    mol_a, mol_b = [SmallMoleculeComponent.from_rdkit(m) for m in mols]
+    mol_b_to_a = align_mol_shape(mol_b, ref_mol=mol_a)
+    return mol_a, mol_b_to_a

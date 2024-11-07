@@ -7,10 +7,11 @@ from rdkit import Chem
 
 logger = logging.getLogger(__name__)
 
+ATOM_MAPPING = dict[int, int]
 
 def filter_ringsize_changes(
-        molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
-) -> dict[int, int]:
+        molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING
+) -> ATOM_MAPPING:
     """Prevents mutating the size of rings in the mapping"""
     riA = molA.GetRingInfo()
     riB = molB.GetRingInfo()
@@ -41,8 +42,8 @@ def filter_ringsize_changes(
 
 
 def filter_ringbreak_changes(
-        molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
-) -> dict[int, int]:
+        molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING
+) -> ATOM_MAPPING:
     """Prevent any ring cleaving transformations in the mapping
 
     This filter prevents any non-ring atom turning into a ring atom (or
@@ -61,8 +62,8 @@ def filter_ringbreak_changes(
 
 
 def filter_whole_rings_only(
-        molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
-) -> dict[int, int]:
+        molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING
+) -> ATOM_MAPPING:
     """Ensure that any mapped rings are wholly mapped"""
     proposed_mapping = {**mapping}
 
@@ -88,23 +89,10 @@ def filter_whole_rings_only(
                 filtered_mapping[i] = j
                 continue
 
-            # all rings the atom is present must be in the mapping
-            # this will result in broken fused ring mappings
-            if all(ringok[r] for r in atom2ring[i]):
+            # if in any rings, at least one must be ok
+            # e.g. if on edge of fused rings, one ring being completely mapped is ok
+            if any(ringok[r] for r in atom2ring[i]):
                 filtered_mapping[i] = j
-
-        # remove partial rings from the mapping which are fused
-        to_remove = []
-        for ring in ri:
-            # if every atom in each ring is not mapped remove the entire ring
-            if not all(r in filtered_mapping for r in ring):
-                to_remove.extend(ring)
-        for i in set(to_remove):
-            try:
-                # some of the ring atoms were not present as we are removing partial rings
-                del filtered_mapping[i]
-            except KeyError:
-                continue
 
         # reverse the mapping to check B->A (then reverse again)
         proposed_mapping = {v: k for k, v in filtered_mapping.items()}
@@ -113,8 +101,8 @@ def filter_whole_rings_only(
 
 
 def filter_hybridization_rings(
-        molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
-) -> dict[int, int]:
+        molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING
+) -> ATOM_MAPPING:
     """Ensure that any mapped rings are either both aromatic or aliphatic
 
     e.g. this filter would unmap hexane to benzene type transformations
@@ -175,3 +163,55 @@ def filter_hybridization_rings(
             filtered_mapping[ai] = aj
 
     return filtered_mapping
+
+def filter_fused_ring_changes(molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING) -> ATOM_MAPPING:
+    """
+    Remove cases where a fused ring is partially mapped and could be considered broken
+    see <https://github.com/OpenFreeEnergy/kartograf/pull/56> for more details.
+    """
+    proposed_mapping = {**mapping}
+
+    for mol in [molA, molB]:  # loop over A->B and B->A directions
+        ri = (
+            mol.GetRingInfo().AtomRings()
+        )  # gives list of tuple of atom indices
+        # for each ring, are we fully present?
+        ringok: dict[frozenset[int], bool] = {}
+        # for each atom, which (maybe unmapped) rings is it present in?
+        atom2ring: dict[int, list[frozenset[int]]] = defaultdict(list)
+        for ring in ri:
+            ringset = frozenset(ring)
+
+            ringok[ringset] = all(atom in proposed_mapping for atom in ring)
+            for atom in ring:
+                atom2ring[atom].append(ringset)
+
+        filtered_mapping = {}
+        for i, j in proposed_mapping.items():
+            # if not in any rings, we're ok
+            if i not in atom2ring:
+                filtered_mapping[i] = j
+                continue
+
+            # all rings the atom is present must be in the mapping
+            # this will result in broken fused ring mappings
+            if all(ringok[r] for r in atom2ring[i]):
+                filtered_mapping[i] = j
+
+        # remove partial rings from the mapping which are fused
+        to_remove = []
+        for ring in ri:
+            # if every atom in each ring is not mapped remove the entire ring
+            if not all(r in filtered_mapping for r in ring):
+                to_remove.extend(ring)
+        for i in set(to_remove):
+            try:
+                # some of the ring atoms were not present as we are removing partial rings
+                del filtered_mapping[i]
+            except KeyError:
+                continue
+
+        # reverse the mapping to check B->A (then reverse again)
+        proposed_mapping = {v: k for k, v in filtered_mapping.items()}
+
+    return proposed_mapping
