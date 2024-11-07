@@ -293,9 +293,8 @@ def test_split_multimeric_component():
         omm_data.append({"residues": len(list(chain.residues())),
                          "atoms": len(list(chain.atoms()))})
 
-    mapper = KartografAtomMapper(atom_map_hydrogens=True)
     protein_comp = ProteinComponent.from_pdb_file(input_pdb)
-    chain_comps = mapper._split_protein_components_molecules(protein_comp)
+    chain_comps = KartografAtomMapper._split_protein_components_molecules(protein_comp)
 
     assert len(chain_comps) == expected_n_comps, f"Expected {expected_n_comps} chain components."
     for idx, comp in enumerate(chain_comps):

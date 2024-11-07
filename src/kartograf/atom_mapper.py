@@ -854,41 +854,76 @@ class KartografAtomMapper(AtomMapper):
 
         return mapping
 
-    def _split_protein_components_molecules(self, protein: ProteinComponent) -> list[ProteinComponent]:
+    @staticmethod
+    def _split_protein_components_molecules(protein: ProteinComponent) -> list[ProteinComponent]:
         """
         Aims at splitting a protein component into different protein components based on the
         connectivity of the molecules that compose it. Useful for mapping multimer components
         or proteins with structural waters or similarly.
 
-        This returns a ``ProteinComponent`` object with the name attribute indicating the starting
+        This returns a list of ``ProteinComponent`` objects with the name attribute indicating the starting
         index in the original component.
         """
         from rdkit.Chem.rdmolops import GetMolFrags
         rdmol = protein.to_rdkit()
-        fragments_indices = GetMolFrags(rdmol)
-        components = []
-        for index_tuple in fragments_indices:
-            edit_rdmol_frag = Chem.EditableMol(rdmol)
-            remove_indices = []
-            for atom in rdmol.GetAtoms():
-                atom_index = atom.GetIdx()
-                if not (atom_index in index_tuple):
-                    remove_indices.append(atom_index)
-            # Need to remove separately https://github.com/rdkit/rdkit/issues/1366
-            for atom_idx in sorted(remove_indices, reverse=True):
-                edit_rdmol_frag.RemoveAtom(atom_idx)
-            #  Create component with the remaining molecule
-            frag_rdmol = edit_rdmol_frag.GetMol()
-            Chem.SanitizeMol(frag_rdmol)
-            # FIXME: We are storing the starting index in name, this is super hacky :/
-            protein_comp = ProteinComponent(frag_rdmol, name=f"frag_{index_tuple[0]}")
-            components.append(protein_comp)
+        index_tuples = []
+        fragments = GetMolFrags(rdmol, asMols=True, sanitizeFrags=True, fragsMolAtomMapping=index_tuples)
+        components = [ProteinComponent(fragment, name=f"frag_{index_tuple[0]}") for fragment, index_tuple in zip(fragments, index_tuples)]
 
         return components
 
+    def suggest_protein_mapping(self, protein_a: ProteinComponent, protein_b: ProteinComponent) -> LigandAtomMapping:
+        """
+        Generate mappings for protein components.
+
+        Parameters
+        ----------
+        protein_a: ProteinComponent
+            The first protein component which should be mapped.
+        protein_b: ProteinComponent
+            The second protein component which should be mapped.
+
+        Returns
+        -------
+            An iterator of suggested mappings between the two components.
+        """
+        # 1. identify Component Chains
+        component_a_chains = KartografAtomMapper._split_protein_components_molecules(protein_a)
+        component_b_chains = KartografAtomMapper._split_protein_components_molecules(protein_b)
+
+        # 2. calculate all possible mappings
+        largest_mappings = []
+        for A_chain in component_a_chains:
+            largest_overlap_map = {}  # Initialize to empty map
+            largest_overlap_component = component_b_chains[0]  # Initialization
+            for B_chain in component_b_chains:
+                # This reinitializes indices, that's why we need the index information from
+                #  split components.
+                current_map = self.suggest_mapping_from_rdmols(
+                    molA=A_chain.to_rdkit(), molB=B_chain.to_rdkit()
+                )
+                if len(largest_overlap_map) < len(current_map):
+                    largest_overlap_component = B_chain
+                    largest_overlap_map = current_map
+            # TODO: Do we need a better suited object here instead of LigandAtomMapping?
+            mapping_obj = LigandAtomMapping(A_chain, largest_overlap_component, largest_overlap_map)
+            # At the end of the loop mapping_obj should have the largest map overlap
+            largest_mappings.append(mapping_obj)
+
+        # Merge all the largest mappings for each component into a single mapping
+        merged_map = {}
+        for mapping_obj in largest_mappings:
+            start_a = int(mapping_obj.componentA.name.split("_")[-1])
+            start_b = int(mapping_obj.componentB.name.split("_")[-1])
+            shifted_map = {a_idx + start_a: b_idx + start_b for a_idx, b_idx in
+                           mapping_obj.componentA_to_componentB.items()}
+            merged_map.update(shifted_map)
+
+        return LigandAtomMapping(protein_a, protein_b, merged_map)
+
     def suggest_mappings(
             self, A: SmallMoleculeComponent, B: SmallMoleculeComponent
-    ) -> Iterator[AtomMapping]:
+    ) -> Iterator[LigandAtomMapping]:
         """ Mapping generator - Gufe
         return a generator for atom mappings.
 
@@ -904,40 +939,8 @@ class KartografAtomMapper(AtomMapper):
         Iterator[AtomMapping]
             returns an interator of possible atom mappings.
         """
-        # TODO: We probably want to modularize the following in methods
         if isinstance(A, ProteinComponent) or isinstance(B, ProteinComponent):
-            # 1. identify Component Chains
-            componentA_chains = self._split_protein_components_molecules(A)
-            componentB_chains = self._split_protein_components_molecules(B)
-
-            # 2. calculate all possible mappings
-            largest_mappings = []
-            for A_chain in componentA_chains:
-                largest_overlap_map = {}  # Initialize to empty map
-                largest_overlap_component = componentB_chains[0]  # Initialization
-                for B_chain in componentB_chains:
-                    # This reinitializes indices, that's why we need the index information from
-                    #  split components.
-                    current_map = self.suggest_mapping_from_rdmols(
-                        molA=A_chain.to_rdkit(), molB=B_chain.to_rdkit()
-                    )
-                    if len(largest_overlap_map) < len(current_map):
-                        largest_overlap_component = B_chain
-                        largest_overlap_map = current_map
-                # TODO: Do we need a better suited object here instead of LigandAtomMapping?
-                mapping_obj = LigandAtomMapping(A_chain, largest_overlap_component, largest_overlap_map)
-                # At the end of the loop mapping_obj should have the largest map overlap
-                largest_mappings.append(mapping_obj)
-
-            # Merge all the largest mappings for each component into a single mapping
-            merged_map = {}
-            for mapping_obj in largest_mappings:
-                start_a = int(mapping_obj.componentA.name.split("_")[-1])
-                start_b = int(mapping_obj.componentB.name.split("_")[-1])
-                shifted_map = {a_idx + start_a: b_idx + start_b for a_idx, b_idx in
-                               mapping_obj.componentA_to_componentB.items()}
-                merged_map.update(shifted_map)
-            yield LigandAtomMapping(A, B, merged_map)
+            yield self.suggest_protein_mapping(protein_a=A, protein_b=B)
 
         else:  # SmallMoleculeComponent case
             yield LigandAtomMapping(
