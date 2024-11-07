@@ -15,6 +15,7 @@ dependencies:
   #Typing
   - gufe>=1.0
   - typing-extensions
+  - openff-units != 0.2.3
   # Sci
   - numpy
   - scipy
