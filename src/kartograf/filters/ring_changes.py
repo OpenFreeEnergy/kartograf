@@ -166,11 +166,19 @@ def filter_hybridization_rings(
 
 def filter_fused_ring_changes(molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING) -> ATOM_MAPPING:
     """
-    Remove cases where a fused ring is partially mapped and could be considered broken
-    see <https://github.com/OpenFreeEnergy/kartograf/pull/56> for more details.
+    Remove cases where a fused ring is partially mapped and could be considered broken, the entire fused ring system
+    is then to be considered unique resulting in larger alchemical regions following the recomended best practices
+    <https://livecomsjournal.org/index.php/livecoms/article/view/v2i1e18378>.
+
+    See <https://github.com/OpenFreeEnergy/kartograf/pull/56> for more details.
+
+    See Also
+    --------
+    filter_whole_rings_only
     """
     proposed_mapping = {**mapping}
-
+    # do not change the order of the mapping this will be done at the
+    # end of each loop
     for mol in [molA, molB]:  # loop over A->B and B->A directions
         ri = (
             mol.GetRingInfo().AtomRings()

@@ -74,10 +74,10 @@ class KartografAtomMapper(AtomMapper):
             atom_map_hydrogens: bool = True,
             map_hydrogens_on_hydrogens_only: bool = False,
             map_exact_ring_matches_only: bool = True,
+            allow_partial_fused_rings: bool = True,
             additional_mapping_filter_functions: Optional[Iterable[Callable[[
                 Chem.Mol, Chem.Mol, dict[int, int]], dict[int, int]]]] = None,
             _mapping_algorithm: str = mapping_algorithm.linear_sum_assignment,
-            allow_partial_fused_rings: bool = True
     ):
         """ Geometry Based Atom Mapper
         This mapper is a homebrew, that utilises rdkit in order
