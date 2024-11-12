@@ -279,7 +279,6 @@ def test_split_multimeric_component():
     Test splitting chains of 2wtk multimer is done correctly
     """
     from openmm.app import PDBFile
-    from kartograf.atom_mapper import KartografAtomMapper
     from gufe import ProteinComponent
 
     input_pdb = str(files("kartograf.tests.data") / "2wtk_trimer_with_extra_mols.pdb")
@@ -312,7 +311,6 @@ def test_mapping_multimer_components(trimer_2wtk_component,
 
     The final/target component is the same original component but with a ALA-76-TYR mutation.
     """
-    from kartograf import KartografAtomMapper
     from gufe import ProteinComponent
     mapper = KartografAtomMapper(atom_map_hydrogens=True)
     mapping = next(mapper.suggest_mappings(trimer_2wtk_component,
@@ -332,8 +330,19 @@ def test_mapping_multimer_components(trimer_2wtk_component,
     expected_unique_final = 12
     unique_final = len(list(mapping.componentB_unique))
     assert unique_final == expected_unique_final, f"Unique atoms in final molecule do not match."
-    # make sure the types have not changed
+    # make sure the types and objects have not changed
     assert isinstance(mapping.componentA, ProteinComponent)
     assert isinstance(mapping.componentB, ProteinComponent)
     assert mapping.componentA is trimer_2wtk_component
     assert mapping.componentB is trimer_2wtk_mutated_component
+
+
+def test_atom_mapping_different_component_types(trimer_2wtk_component, naphtalene_benzene_molecules):
+    """Make sure an error is rasied if we try and create a mapping between two different component types."""
+    mapper = KartografAtomMapper()
+
+    with pytest.raises(ValueError, match="were not of the same type, please check the inputs."):
+        next(mapper.suggest_mappings(
+            trimer_2wtk_component,
+            naphtalene_benzene_molecules[0]
+        ))

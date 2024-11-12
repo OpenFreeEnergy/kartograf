@@ -874,7 +874,7 @@ class KartografAtomMapper(AtomMapper):
 
 
     def suggest_mappings(
-            self, A: Uniom[SmallMoleculeComponent, ProteinComponent], B: Union[SmallMoleculeComponent, ProteinComponent]
+            self, A: Union[SmallMoleculeComponent, ProteinComponent], B: Union[SmallMoleculeComponent, ProteinComponent]
     ) -> Iterator[LigandAtomMapping]:
         """ Mapping generator - Gufe
         return a generator for atom mappings.
@@ -891,6 +891,8 @@ class KartografAtomMapper(AtomMapper):
         Iterator[AtomMapping]
             returns an interator of possible atom mappings.
         """
+        if type(A) != type(B):
+            raise ValueError(f"The components {A} and {B} were not of the same type, please check the inputs.")
         # 1. identify Component Chains if present
         component_a_chains = KartografAtomMapper._split_component_molecules(A)
         component_b_chains = KartografAtomMapper._split_component_molecules(B)
