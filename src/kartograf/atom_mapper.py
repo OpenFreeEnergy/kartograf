@@ -855,7 +855,7 @@ class KartografAtomMapper(AtomMapper):
         return mapping
 
     @staticmethod
-    def _split_component_molecules(component: SmallMoleculeComponent | ProteinComponent) -> list[Chem.Mol]:
+    def _split_component_molecules(component: Union[SmallMoleculeComponent, ProteinComponent]) -> list[Chem.Mol]:
         """
         Aims at splitting a component into its disconected components based on the
         connectivity of the molecules that compose it. Useful for mapping multimer components
@@ -874,16 +874,16 @@ class KartografAtomMapper(AtomMapper):
 
 
     def suggest_mappings(
-            self, A: SmallMoleculeComponent | ProteinComponent, B: SmallMoleculeComponent | ProteinComponent
+            self, A: Uniom[SmallMoleculeComponent, ProteinComponent], B: Union[SmallMoleculeComponent, ProteinComponent]
     ) -> Iterator[LigandAtomMapping]:
         """ Mapping generator - Gufe
         return a generator for atom mappings.
 
         Parameters
         ----------
-        A : SmallMoleculeComponent | ProteinComponent
+        A : Union[SmallMoleculeComponent, ProteinComponent]
             molecule A to be mapped.
-        B : SmallMoleculeComponent | ProteinComponent
+        B : Union[SmallMoleculeComponent, ProteinComponent]
             molecule B to be mapped.
 
         Returns
