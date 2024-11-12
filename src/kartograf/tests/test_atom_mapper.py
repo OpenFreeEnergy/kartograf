@@ -294,11 +294,10 @@ def test_split_multimeric_component():
                          "atoms": len(list(chain.atoms()))})
 
     protein_comp = ProteinComponent.from_pdb_file(input_pdb)
-    chain_comps = KartografAtomMapper._split_protein_components_molecules(protein_comp)
+    chain_comps = KartografAtomMapper._split_component_molecules(protein_comp)
 
     assert len(chain_comps) == expected_n_comps, f"Expected {expected_n_comps} chain components."
-    for idx, comp in enumerate(chain_comps):
-        rdmol = comp.to_rdkit()
+    for idx, rdmol in enumerate(chain_comps):
         # TODO: Use MonomerInfo from rdkit to get number of residues. Seems tedious.
         # Make sure the number of atoms in the chain is the same
         n_atoms = rdmol.GetNumAtoms()
@@ -314,6 +313,7 @@ def test_mapping_multimer_components(trimer_2wtk_component,
     The final/target component is the same original component but with a ALA-76-TYR mutation.
     """
     from kartograf import KartografAtomMapper
+    from gufe import ProteinComponent
     mapper = KartografAtomMapper(atom_map_hydrogens=True)
     mapping = next(mapper.suggest_mappings(trimer_2wtk_component,
                                            trimer_2wtk_mutated_component))
@@ -332,3 +332,8 @@ def test_mapping_multimer_components(trimer_2wtk_component,
     expected_unique_final = 12
     unique_final = len(list(mapping.componentB_unique))
     assert unique_final == expected_unique_final, f"Unique atoms in final molecule do not match."
+    # make sure the types have not changed
+    assert isinstance(mapping.componentA, ProteinComponent)
+    assert isinstance(mapping.componentB, ProteinComponent)
+    assert mapping.componentA is trimer_2wtk_component
+    assert mapping.componentB is trimer_2wtk_mutated_component
