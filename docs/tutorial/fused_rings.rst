@@ -25,8 +25,8 @@ for this special case, first lets start by creating our example molecules and al
     # Align the mols first
     a_molB = align_mol_shape(molB, ref_mol=molA)
 
-The first type of mapping would be to keep the common rings fixed and grow the second fused ring using dummy atoms,
-this approach would involve transforming fewer atoms but can lead to errors in the calculated free energies [1]_.
+The first type of mapping keeps the common rings fixed and grows the second fused ring using dummy atoms.
+This approach would involve transforming fewer atoms but can lead to systematic errors in the calculated free energies [1]_.
 This is the default behaviour of the ``KartografAtomMapper``:
 
 .. code-block::
