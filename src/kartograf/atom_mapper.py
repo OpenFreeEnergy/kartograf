@@ -104,7 +104,7 @@ class KartografAtomMapper(AtomMapper):
             mapping_algorithm.linear_sum_assignment - this allows to swap the
             optimization algorithm. Not recommended.
         allow_partial_fused_rings: bool
-            If we should allow partially mapped fused rings `True` or not `False`, default `True`.
+            If we should allow partially mapped fused rings (True) or not (False). Default True.
 
         """
         self.atom_max_distance = atom_max_distance
