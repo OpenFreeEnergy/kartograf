@@ -30,6 +30,7 @@ from .filters import (
     filter_ringbreak_changes,
     filter_ringsize_changes,
     filter_whole_rings_only,
+    filter_fused_ring_changes,
 )
 
 logger = logging.getLogger(__name__)
@@ -73,6 +74,7 @@ class KartografAtomMapper(AtomMapper):
             atom_map_hydrogens: bool = True,
             map_hydrogens_on_hydrogens_only: bool = False,
             map_exact_ring_matches_only: bool = True,
+            allow_partial_fused_rings: bool = True,
             additional_mapping_filter_functions: Optional[Iterable[Callable[[
                 Chem.Mol, Chem.Mol, dict[int, int]], dict[int, int]]]] = None,
             _mapping_algorithm: str = mapping_algorithm.linear_sum_assignment,
@@ -101,12 +103,15 @@ class KartografAtomMapper(AtomMapper):
         _mapping_algorithm : str, optional
             mapping_algorithm.linear_sum_assignment - this allows to swap the
             optimization algorithm. Not recommended.
+        allow_partial_fused_rings: bool
+            If we should allow partially mapped fused rings (True) or not (False). Default True.
 
         """
         self.atom_max_distance = atom_max_distance
         self.atom_map_hydrogens = atom_map_hydrogens
         self._map_exact_ring_matches_only = map_exact_ring_matches_only
         self._map_hydrogens_on_hydrogens_only = map_hydrogens_on_hydrogens_only
+        self.allow_partial_fused_rings = allow_partial_fused_rings
 
         self._filter_funcs = []
         if map_hydrogens_on_hydrogens_only:
@@ -119,6 +124,8 @@ class KartografAtomMapper(AtomMapper):
                     filter_whole_rings_only,
                 ]
             )
+        if not self.allow_partial_fused_rings:
+            self._filter_funcs.append(filter_fused_ring_changes)
         if additional_mapping_filter_functions is not None:
             self._filter_funcs.extend(additional_mapping_filter_functions)
 
@@ -166,6 +173,7 @@ class KartografAtomMapper(AtomMapper):
             'map_exact_ring_matches_only': self._map_exact_ring_matches_only,
             '_mapping_algorithm': map_arg,
             'filters': additional_filters,
+            'allow_partial_fused_rings': self.allow_partial_fused_rings
         }
 
     @classmethod
