@@ -4,7 +4,7 @@ Atom Mapping and Fused Rings
 Creating atom mappings between two ring systems where only one is fused can be difficult as there are two possible
 options. ``Kartograf`` is able to create both possible mappings and the user can select which via the use of the
 ``allow_partial_fused_rings`` flag. In this short tutorial we will demonstrate how to use this flag to generate the desired mappings
-for this special case, first lets start by creating our example molecules and aligning them, we will be following the
+for this special case. First, lets start by creating our example molecules and aligning them. We will be following the
 :ref:`mapping tutorial <mapping_tutorial>` for this part.
 
 .. code-block::
