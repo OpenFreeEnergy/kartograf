@@ -39,7 +39,7 @@ This is the default behaviour of the ``KartografAtomMapper``:
 
 .. image:: ../_static/img/fused_ring_partial.png
 
-The second option considers the entire fused ring system as a unique set of atoms and is normally preferred however,
+The second option considers the entire fused ring system as a unique set of atoms and is preferred in many hybrid topology schemes however,
 this generally involves a larger alchemical region resulting in a larger statistical error and may require more sampling
 to converge the results to sufficient accuracy. This type of mapping can be created by using ``allow_partial_fused_rings=False``:
 
