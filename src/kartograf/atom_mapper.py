@@ -99,7 +99,7 @@ class KartografAtomMapper(AtomMapper):
             with this optional parameter you can further filter the distance
             based mappings with your own custom filters, provided as iterables.
             as default we suggest to avoid ring size/breaking changes and only
-            allow whole rings to be mapped
+            allow whole rings to be mapped. These filters will be applied before any defaults
         _mapping_algorithm : str, optional
             mapping_algorithm.linear_sum_assignment - this allows to swap the
             optimization algorithm. Not recommended.
@@ -114,6 +114,8 @@ class KartografAtomMapper(AtomMapper):
         self.allow_partial_fused_rings = allow_partial_fused_rings
 
         self._filter_funcs = []
+        if additional_mapping_filter_functions is not None:
+            self._filter_funcs.extend(additional_mapping_filter_functions)
         if map_hydrogens_on_hydrogens_only:
             self._filter_funcs.append(filter_atoms_h_only_h_mapped)
         if self._map_exact_ring_matches_only:
@@ -126,8 +128,6 @@ class KartografAtomMapper(AtomMapper):
             )
         if not self.allow_partial_fused_rings:
             self._filter_funcs.append(filter_fused_ring_changes)
-        if additional_mapping_filter_functions is not None:
-            self._filter_funcs.extend(additional_mapping_filter_functions)
 
         if _mapping_algorithm == mapping_algorithm.linear_sum_assignment:
             self._map_hydrogens_on_hydrogens_only = True
