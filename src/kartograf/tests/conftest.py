@@ -119,3 +119,9 @@ def fused_ring_mols() -> tuple[SmallMoleculeComponent, SmallMoleculeComponent]:
         mol_a, mol_b = [SmallMoleculeComponent.from_rdkit(m) for m in rd_mols]
         mol_b_to_a = align_mol_shape(mol_b, ref_mol=mol_a)
         return mol_a, mol_b_to_a
+
+@pytest.fixture(scope="session")
+def shp2_hybridization_ligands() -> tuple[SmallMoleculeComponent, SmallMoleculeComponent]:
+    with resources.files("kartograf.tests.data") as d:
+        mols = [SmallMoleculeComponent.from_sdf_file(str(f)) for f in [d / "lig_E6.sdf", d / "lig_E29.sdf"]]
+        return mols[0], mols[1]
