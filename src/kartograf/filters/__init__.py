@@ -9,4 +9,5 @@ from .ring_changes import (
     filter_ringbreak_changes,
     filter_whole_rings_only,
     filter_hybridization_rings,
+    filter_fused_ring_changes,
 )

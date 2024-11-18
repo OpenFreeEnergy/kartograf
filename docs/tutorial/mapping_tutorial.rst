@@ -1,3 +1,4 @@
+.. _mapping_tutorial:
 
 Atom Mapping of two Molecules for finding a common core region
 ---------------------------------------------------------------
@@ -69,3 +70,4 @@ other::
     print(f"RMSD Score: {score}")
 
 This will print the calculated score.
+

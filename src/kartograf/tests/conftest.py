@@ -3,9 +3,10 @@
 
 import pytest
 from importlib.resources import files
+from importlib import resources
 from rdkit import Chem
-from kartograf.atom_aligner import align_mol_skeletons
 from gufe import SmallMoleculeComponent, LigandAtomMapping, ProteinComponent
+from kartograf.atom_aligner import align_mol_skeletons, align_mol_shape
 
 
 def mol_from_smiles(smiles: str):
@@ -125,3 +126,15 @@ def trimer_2wtk_mutated_component():
     with files("kartograf.tests.data") as d:
         protein_comp = ProteinComponent.from_pdb_file(str(d / "2wtk_mutated_with_extra_mols.pdb"))
         return protein_comp
+
+
+@pytest.fixture(scope="session")
+def fused_ring_mols() -> tuple[SmallMoleculeComponent, SmallMoleculeComponent]:
+    """
+    Return two biaryl molecules one with a fused ring which are aligned for mapping, we use files to ensure consistent
+    atom ordering."""
+    with resources.files("kartograf.tests.data") as d:
+        rd_mols = [Chem.MolFromMolFile(str(f), removeHs=False) for f in  [d / "biphenyl.sdf", d / "biaryl-indene.sdf"]]
+        mol_a, mol_b = [SmallMoleculeComponent.from_rdkit(m) for m in rd_mols]
+        mol_b_to_a = align_mol_shape(mol_b, ref_mol=mol_a)
+        return mol_a, mol_b_to_a

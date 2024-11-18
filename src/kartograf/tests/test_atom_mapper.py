@@ -346,3 +346,21 @@ def test_atom_mapping_different_component_types(trimer_2wtk_component, naphtalen
             trimer_2wtk_component,
             naphtalene_benzene_molecules[0]
         ))
+
+
+@pytest.mark.parametrize("allow_partial_fused_rings, expected_mapping", [
+    pytest.param(True, {12: 20, 13: 21, 14: 22, 15: 23, 16: 24, 17: 19, 20: 26, 21: 25, 0: 6, 1: 7, 2: 8, 3: 9, 4: 10, 5: 5, 6: 4, 7: 3, 8: 2, 9: 13, 10: 12, 11: 11}, id="Allow partial"),
+    pytest.param(False, {12: 20, 13: 21, 14: 22, 15: 23, 16: 24, 0: 6, 1: 7, 2: 8, 3: 9, 4: 10, 5: 5}, id="Remove partial")
+])
+def test_partial_fused_rings(fused_ring_mols, allow_partial_fused_rings, expected_mapping):
+    """Make sure that partial mappings of fused rings are correctly handled depending on if the flag is set."""
+    geom_mapper = KartografAtomMapper(
+        allow_partial_fused_rings=allow_partial_fused_rings
+    )
+    geom_mapping = next(
+        geom_mapper.suggest_mappings(
+            fused_ring_mols[0],
+            fused_ring_mols[1],
+        )
+    )
+    check_mapping_vs_expected(mapping=geom_mapping, expected_mapping=expected_mapping)
