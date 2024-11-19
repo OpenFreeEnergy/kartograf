@@ -1,5 +1,7 @@
 # This code is part of kartograf and is licensed under the MIT license.
 # For details, see https://github.com/OpenFreeEnergy/kartograf
+from collections import defaultdict
+from itertools import product
 
 import copy
 import dill
@@ -888,3 +890,280 @@ class KartografAtomMapper(AtomMapper):
                 molA=A.to_rdkit(), molB=B.to_rdkit()
             ),
         )
+
+    def _raw_mapping(self,
+        molA: Chem.Mol,
+        molB: Chem.Mol,
+        max_d: float = 0.95,
+        masked_atoms_molA: Optional[list[int]] = None,
+        masked_atoms_molB: Optional[list[int]] = None,
+        pre_mapped_atoms: Optional[dict[int, int]] = None,
+        map_hydrogens: bool = True,):
+
+        if masked_atoms_molA is None:
+            masked_atoms_molA = []
+        if masked_atoms_molB is None:
+            masked_atoms_molB = []
+        if pre_mapped_atoms is None:
+            pre_mapped_atoms = dict()
+
+
+        molA_pos = molA.GetConformer().GetPositions()
+        molB_pos = molB.GetConformer().GetPositions()
+        masked_atoms_molA = copy.deepcopy(masked_atoms_molA)
+        masked_atoms_molB = copy.deepcopy(masked_atoms_molB)
+        pre_mapped_atoms = copy.deepcopy(pre_mapped_atoms)
+
+        if len(pre_mapped_atoms) > 0:
+            masked_atoms_molA.extend(pre_mapped_atoms.keys())
+            masked_atoms_molB.extend(pre_mapped_atoms.values())
+
+        molA_masked_atomMapping, molA_pos = self._mask_atoms(
+            mol=molA,
+            mol_pos=molA_pos,
+            masked_atoms=masked_atoms_molA,
+            map_hydrogens=map_hydrogens,
+        )
+        molB_masked_atomMapping, molB_pos = self._mask_atoms(
+            mol=molB,
+            mol_pos=molB_pos,
+            masked_atoms=masked_atoms_molB,
+            map_hydrogens=map_hydrogens,
+        )
+
+        # Calculate mapping
+        # distance matrix:  - full graph
+        distance_matrix = self._get_full_distance_matrix(molA_pos, molB_pos)
+
+        # Mask distance matrix with max_d
+        # np.inf is considererd as not possible in lsa implementation - therefore use a high value
+        self.mask_dist_val = max_d * 10**6
+        masked_dmatrix = np.array(
+            np.ma.where(distance_matrix < max_d, distance_matrix, self.mask_dist_val)
+        )
+
+        # solve atom mappings
+        mapping = self.mapping_algorithm(
+            distance_matrix=masked_dmatrix, max_dist=self.mask_dist_val
+        )
+
+        # reverse any prior masking:
+        mapping = {
+            molA_masked_atomMapping[k]: molB_masked_atomMapping[v]
+            for k, v in mapping.items()
+        }
+
+        # filter mapping for rules:
+        if self._filter_funcs is not None:
+            mapping = self._additional_filter_rules(molA, molB, mapping)
+
+        return mapping
+
+
+    def suggest_multistate_mapping(self, molecules: Iterable[SmallMoleculeComponent],
+                                   max_d: float = 0.95,
+                                   map_hydrogens: bool = True,
+                                   greedy = True
+                                   ):
+
+        #Todo: ensure unique mol names
+
+        if(greedy==True):
+            masks = []
+            positions = []
+            for comp in molecules:
+                mol = comp.to_rdkit()
+                conf = mol.GetConformer()
+                pos = conf.GetPositions()
+                m, mpos = self._mask_atoms(mol, pos,
+                                           map_hydrogens=map_hydrogens,
+                                           masked_atoms=[])
+
+                masks.append(m)
+                positions.append(mpos)
+
+            multi_state_mapping = self._multi_state_greedy_dist_approach(components=molecules, positions=positions, masks=masks)
+        else:
+            # calculate all mappings: - not working atm
+            mappings = []
+            for cA in molecules:
+                for cB in molecules:
+                    if (cA != cB):
+                        mapping = self._raw_mapping(cA.to_rdkit(), cB.to_rdkit(),
+                                                    max_d=max_d, map_hydrogens=map_hydrogens)
+                        mappings.append(LigandAtomMapping(componentA=cA, componentB=cB,
+                                                          componentA_to_componentB=mapping))
+
+            #merge mappings:
+            multi_state_mapping = self._merge_mappings_to_multistate_mapping(mappings=mappings)
+            multi_state_mapping = list(filter(lambda x: len(x) == len(molecules), multi_state_mapping))
+        print("raw map", multi_state_mapping)
+
+        #Filter Mappings
+        '''
+            Filter all pairs
+        '''
+        filtered_raw_mapping = copy.deepcopy(multi_state_mapping)
+        tmp_filtered_raw_mapping = []
+        for ligA in molecules:
+            for ligB in molecules:
+                if(ligA == ligB):
+                        continue
+                else:
+                    mappingAB = {m[ligA.name]:m[ligB.name] for m in
+                                 multi_state_mapping}
+                    mapping = self._additional_filter_rules(ligA.to_rdkit(),
+                                                            ligB.to_rdkit(),
+                                                            mappingAB)
+
+                    ligA_present = list(mapping.keys())
+
+                    for m in filtered_raw_mapping:
+                        if(m[ligA.name] in ligA_present):
+                            tmp_filtered_raw_mapping.append(m)
+                    filtered_raw_mapping = tmp_filtered_raw_mapping
+                    tmp_filtered_raw_mapping = []
+        print("filtered map", multi_state_mapping)
+
+
+        # Get Core Region
+        # get all connected sets
+        connected_sets = {}
+        for component in molecules:
+            map_atom_ids = [m[component.name] for m in filtered_raw_mapping]
+            connected_set = self._get_connected_atom_subsets(component.to_rdkit(), map_atom_ids)
+            connected_sets[component.name] = connected_set
+
+        # translate mappings into mapping set - tuples
+        mapping_connected_sets = defaultdict(dict)
+        for i, m in enumerate(filtered_raw_mapping):
+            mapping_connected_sets[i] = []
+            mid = 0
+            for k, (lig, aid) in enumerate(m.items()):
+                connected = connected_sets[lig]
+                for j, s in enumerate(connected):
+                    mid += 1
+                    if (aid in s):
+                        mapping_connected_sets[i].append(mid)
+                        break
+        print("Connected Set", mapping_connected_sets)
+
+        # max overlap
+        tup = [tuple(m) for m in mapping_connected_sets.values()]
+        combinations, counts = np.unique(tup, return_counts=True, axis=0)
+        max_overlap_tuple = tuple(combinations[list(counts).index(max(counts))])
+        print(max_overlap_tuple)
+
+        # FIlter for max overlap
+        filter_map = []
+        for mid, mapping_sets in mapping_connected_sets.items():
+            if (max_overlap_tuple == tuple(mapping_sets)):
+                filter_map.append(filtered_raw_mapping[mid])
+
+        print(filter_map)
+
+
+        return filter_map
+
+
+    def _multi_state_greedy_dist_approach(self, components,  positions, masks):
+        # build ndDistmatrix
+        euclidean_dist = lambda v: np.sqrt(np.sum(np.square(v), axis=1))
+
+        # Calculate and pre-filter long distances
+        # mol_distance_matrix[molA][atomI][molB_pos]
+        # = distance between MolA_atomI to molB_atomJ
+
+        mol_distance_matrix = []
+        for molA_atomI_id, molA_pos in enumerate(positions): #MolA
+            molA_distances = []
+            for molA_atomI in molA_pos: #Atom of MolA
+                molA_atomI_distances = []
+                for molB_id, molB_pos in enumerate(positions): #MolB
+                    if (molA_atomI_id == molB_id):
+                        continue
+                    else:
+                        molAB_atomI_distances = euclidean_dist(molB_pos - molA_atomI)
+                        molAB_atomI_distances[molAB_atomI_distances > 0.95] = np.inf
+                        molA_atomI_distances.append(molAB_atomI_distances)
+                molA_distances.append(np.array(molA_atomI_distances))
+            mol_distance_matrix.append(molA_distances)
+
+        # Calculate raw mappings in N Dimensions, collect tuples and all dists
+        distance_tuples = defaultdict(list)
+        for molA_id, molA in enumerate(mol_distance_matrix):
+            for molA_atomI_id, molA_atomI in enumerate(molA):
+                # all inf dist in mols? - no mapping possible
+                if (any([np.all(np.inf == m_dist) for m_dist in molA_atomI])):
+                    continue
+                else:
+                    # Filter only for possible atoms -  sparse graph
+                    possible_mappings = []
+                    for molB_distances in molA_atomI:
+                        possible_molB_atom_ids = np.where(molB_distances != np.inf)
+                        possible_mappings.append(np.vstack([possible_molB_atom_ids, molB_distances[possible_molB_atom_ids]]).T)
+
+                    # calculate all possible tuples and their sum dist for
+                    # atom molA_atomI.
+                    possible_mappings_id = [list(map(int, a[:, 0])) for a in possible_mappings]
+                    for multi_mapping_atom_ids in product(*possible_mappings_id):
+                        multi_mapping_distance = 0
+                        for k, t in enumerate(multi_mapping_atom_ids):
+                            ti = np.squeeze(np.where(possible_mappings[k][:, 0] == t))
+                            molAB_atomI_distances = np.squeeze(possible_mappings[k][ti, 1])
+                            if isinstance(molAB_atomI_distances, float):
+                                multi_mapping_distance = molAB_atomI_distances
+                            else:
+                                multi_mapping_distance = np.mean(molAB_atomI_distances)
+                        multi_mapping_atom_ids = list(multi_mapping_atom_ids)
+                        multi_mapping_atom_ids.insert(molA_id, molA_atomI_id)
+                        multi_mapping_atom_ids = tuple(multi_mapping_atom_ids)
+                        distance_tuples[multi_mapping_atom_ids].append(multi_mapping_distance)
+
+        # convolute all distances of mutli atom tuple selection
+        distance_tuples = {tuple(k): np.sum(v) for k, v in distance_tuples.items()}
+
+        # select mapping
+        already_selected_atoms = []
+        multistate_atom_mapping = []
+        for multi_mapping_atom_ids, dist in sorted(distance_tuples.items(), key=lambda x: x[1]):
+            check_atomIDs = [(i, t) for i, t in enumerate(multi_mapping_atom_ids)]
+            if (any([ct in already_selected_atoms for ct in check_atomIDs])):
+                continue
+            else:
+                multistate_atom_mapping.append({components[i].name: masks[i][t] for i, t in check_atomIDs})
+                already_selected_atoms.extend(check_atomIDs)
+
+        return multistate_atom_mapping
+
+    def _merge_mappings_to_multistate_mapping(self, mappings, _only_all_state_mappings: bool = True) -> Iterable[
+        dict[str, int]]:
+        # reformat mappings
+        components = []
+        found_mappings = []
+        for m in mappings:
+            components.extend([m.componentA, m.componentB])
+            for aa, ab in m.componentA_to_componentB.items():
+                found_mappings.append({m.componentA.name: aa, m.componentB.name: ab})
+        components = list(set(components))
+
+        # convolute:
+        unique_ms_atom_mappings = []
+        for atom_mapping_tuple in found_mappings:
+            all_am_related_tuples = list(atom_mapping_tuple.items())
+            for mapTupB in found_mappings:
+                if any([k in mapTupB and mapTupB[k] == v for k, v in atom_mapping_tuple.items()]):
+                    all_am_related_tuples.extend(list(mapTupB.items()))
+
+            # unique and sorted:
+            unique_ms_map = tuple(sorted(set(all_am_related_tuples)))
+            unique_ms_atom_mappings.append(unique_ms_map)
+        unique_ms_atom_mappings = list(set(unique_ms_atom_mappings))
+
+        # Filter step: only all state mappings
+        if (_only_all_state_mappings):
+            multi_state_mapping = list(filter(lambda x: len(x) == len(components), unique_ms_atom_mappings))
+        else:
+            multi_state_mapping = unique_ms_atom_mappings
+
+        return list(map(dict, multi_state_mapping))
