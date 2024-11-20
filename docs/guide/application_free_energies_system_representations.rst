@@ -4,7 +4,7 @@ Application in Free Energy Calculations
 
 In recent literature, many ways have shown how a system can be represented
 during a free energy calculation. Here is a small taxonomy that tries to
-capture them and show benefits and disadvantages (more can be found in
+capture them and show benefits and disadvantages (more information can be found in
 [1]_ [2]_):
 
 .. image:: ../_static/img/Topology_types.png
