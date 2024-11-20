@@ -3,7 +3,7 @@ Application in Free Energy Calculations
 =======================================
 
 In recent literature, many ways have shown how a system can be represented
-during a free energy calculation. Here is a small Taxonomy that tries to
+during a free energy calculation. Here is a small taxonomy that tries to
 capture them and show benefits and disadvantages (more can be found in
 [1]_ [2]_):
 
