@@ -9,7 +9,7 @@ capture them and show benefits and disadvantages (more information can be found 
 
 .. image:: ../_static/img/Topology_types.png
 
-The hybrid and single topology approach depend heavily
+The hybrid and single topology approaches depend heavily
 on atom mappings. The mappings are used to find the shared core region of the
 molecules, such that the atoms part of this region can be represented as one.
 The single topology approach tries to maximize the number of mapped
