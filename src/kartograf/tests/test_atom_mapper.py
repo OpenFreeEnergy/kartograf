@@ -6,7 +6,11 @@ from kartograf import KartografAtomMapper
 from kartograf.atom_mapper import (filter_atoms_h_only_h_mapped,
                                    filter_whole_rings_only)
 from kartograf.filters.element_change import filter_hybridization_changes
-from kartograf.filters.ring_changes import filter_whole_rings_only
+from kartograf.filters.ring_changes import (
+    filter_whole_rings_only,
+    filter_hybridization_rings,
+)
+
 
 from .conftest import (
     naphtalene_benzene_molecules,
@@ -312,3 +316,21 @@ def test_hybridization_and_ring_breaks(shp2_hybridization_ligands):
     )
     # make sure there was no change in the mapping
     assert filtered_mapping == mapping.componentA_to_componentB
+
+
+def test_ring_hybridization_with_non_ring_atoms(shp2_hybridization_ligands):
+    """
+    Make sure this filter does not fail on non-ring atoms see
+    <https://github.com/OpenFreeEnergy/kartograf/issues/62>
+    """
+    mapper = KartografAtomMapper(
+        additional_mapping_filter_functions=[filter_hybridization_rings]
+    )
+    mapping = next(
+        mapper.suggest_mappings(
+            shp2_hybridization_ligands[0],
+            shp2_hybridization_ligands[1]
+        )
+    )
+    # make sure we have some mapping between the atoms
+    assert mapping.componentA_to_componentB

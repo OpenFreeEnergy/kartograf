@@ -11,7 +11,7 @@ distance of 0 angstroms to each other.
 
 A less trivial example is the atom mapping case for molecule transformations
 like in hybrid topology free energy calculation approaches. In such a case
-the atom quality depends on the likelihood of the transformation to converge
+the mapping quality depends on the likelihood of the transformation to converge
 well and to give a reasonable free energy. This in a way would 
 require the true and calculated result of the calculation and lead to a henn
 egg problem. To tackle this problem usually simplistic approaches
@@ -25,10 +25,10 @@ those ligands.
 
 Additionally one can start adding parameter-specific scores, that depend on
 force fields or other method-related aspects. However this might
-theoretically improve the method outcome, it could minders the
+theoretically improve the method outcome, it could hinder the
 transferability of the scorer from one method to another (overfitting).
 
 In Katograf we added some functionality, that can be used as an aspect of an
-atom mapping scorer, like the Mapping RSMD Scorer, checking the displacement
-of atoms by the scorers or the Volume Ratio Scorer, checking the volume overlap
+atom mapping scorer, like the :class:`.MappingRMSDScorer`, checking the displacement
+of atoms by the scorers or the :class:`.MappingVolumeRatioScorer`, checking the volume overlap
 of the two molecules.

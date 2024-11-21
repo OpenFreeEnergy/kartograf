@@ -52,13 +52,13 @@ visualization of the mapping:
 
 Note that Kartograf does first solve the geometry problem, by finding  atoms
 close to each other for the mapping. Next, it will apply a set of default
-rules, that will remove mappings, that cause a so-called `ring-break`, a
-`ring-size change`, and a `ring-flexibility change`. This default behavior can
-be turned off and/or customized to personal needs (see:ref:`custom-filter-label`).
+rules, that will remove mappings, that cause a so-called ``ring-break``, a
+``ring-size change``, and a ``ring-flexibility change``. This default behavior can
+be turned off and/or customized to personal needs see :ref:`the filtering tutorial <custom-filter-label>`.
 
 Additionally, we could assess the quality of our mapping, there are several
 metrics in Kartograf that can be used to investigate the mapping. Here we are
-going to use the MappingRMSDScorer, which gives insight into how far the atoms
+going to use the :class:`.MappingRMSDScorer`, which gives insight into how far the atoms
 need to travel from one state to the other, if they are mapped onto each
 other::
 
