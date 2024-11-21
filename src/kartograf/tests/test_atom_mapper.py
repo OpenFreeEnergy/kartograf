@@ -6,6 +6,12 @@ from importlib.resources import files
 from kartograf import KartografAtomMapper
 from kartograf.atom_mapper import (filter_atoms_h_only_h_mapped,
                                    filter_whole_rings_only)
+from kartograf.filters.element_change import filter_hybridization_changes
+from kartograf.filters.ring_changes import (
+    filter_whole_rings_only,
+    filter_hybridization_rings,
+)
+
 
 from .conftest import (
     naphtalene_benzene_molecules,
@@ -302,7 +308,7 @@ def test_split_multimeric_component():
         n_atoms = rdmol.GetNumAtoms()
         expected_n_atoms = omm_data[idx]["atoms"]
         assert n_atoms == expected_n_atoms, f"Expected {expected_n_atoms}. Received {n_atoms}."
-    
+
 
 def test_mapping_multimer_components(trimer_2wtk_component,
                                      trimer_2wtk_mutated_component):
@@ -364,3 +370,44 @@ def test_partial_fused_rings(fused_ring_mols, allow_partial_fused_rings, expecte
         )
     )
     check_mapping_vs_expected(mapping=geom_mapping, expected_mapping=expected_mapping)
+
+
+def test_hybridization_and_ring_breaks(shp2_hybridization_ligands):
+    """
+    Make sure rings are not broken when map_exact_ring_matches_only=True and a custom filter is used.
+    """
+    mapper = KartografAtomMapper(
+        map_exact_ring_matches_only=True,
+        additional_mapping_filter_functions=[filter_hybridization_changes]
+    )
+    mapping = next(mapper.suggest_mappings(
+        shp2_hybridization_ligands[0],
+        shp2_hybridization_ligands[1]
+    ))
+    # check the whole rings are mapped
+    filtered_mapping = filter_whole_rings_only(
+        mapping.componentA.to_rdkit(),
+        mapping.componentB.to_rdkit(),
+        mapping.componentA_to_componentB
+    )
+    # make sure there was no change in the mapping
+    assert filtered_mapping == mapping.componentA_to_componentB
+
+
+def test_ring_hybridization_with_non_ring_atoms(shp2_hybridization_ligands):
+    """
+    Make sure this filter does not fail on non-ring atoms see
+    <https://github.com/OpenFreeEnergy/kartograf/issues/62>
+    """
+    mapper = KartografAtomMapper(
+        additional_mapping_filter_functions=[filter_hybridization_rings]
+    )
+    mapping = next(
+        mapper.suggest_mappings(
+            shp2_hybridization_ligands[0],
+            shp2_hybridization_ligands[1]
+        )
+    )
+    # make sure we have some mapping between the atoms
+    assert mapping.componentA_to_componentB
+

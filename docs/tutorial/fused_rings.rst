@@ -27,7 +27,7 @@ for this special case. First, lets start by creating our example molecules and a
 
 The first type of mapping keeps the common rings fixed and grows the second fused ring using dummy atoms.
 This approach would involve transforming fewer atoms but can lead to systematic errors in the calculated free energies [1]_.
-This is the default behaviour of the ``KartografAtomMapper``:
+This is the default behaviour of the :class:`.KartografAtomMapper`:
 
 .. code-block::
 
