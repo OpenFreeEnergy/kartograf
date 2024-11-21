@@ -109,7 +109,7 @@ class KartografAtomMapper(AtomMapper):
         Notes
         -----
         The ``additional_mapping_filter_functions`` will be applied before any default filters, to change this
-        turn of all defaults and pass the full list of filters in the order they should be applied.
+        turn off all defaults and pass the full list of filters in the order they should be applied.
         """
         self.atom_max_distance = atom_max_distance
         self.atom_map_hydrogens = atom_map_hydrogens
