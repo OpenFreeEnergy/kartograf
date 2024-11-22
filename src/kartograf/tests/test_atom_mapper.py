@@ -3,6 +3,8 @@
 
 import pytest
 from importlib.resources import files
+
+from gufe import SmallMoleculeComponent
 from kartograf import KartografAtomMapper
 from kartograf.atom_mapper import (filter_atoms_h_only_h_mapped,
                                    filter_whole_rings_only)
@@ -350,6 +352,22 @@ def test_atom_mapping_different_component_types(trimer_2wtk_component, naphtalen
     with pytest.raises(ValueError, match="were not of the same type, please check the inputs."):
         next(mapper.suggest_mappings(
             trimer_2wtk_component,
+            naphtalene_benzene_molecules[0]
+        ))
+
+
+def test_atom_mapping_different_number_of_sub_components(trimer_2wtk_component, naphtalene_benzene_molecules):
+    """
+    Make sure an error is raised if we get a different number of disconected components in the two molecules
+    we want to map.
+    """
+    mapper = KartografAtomMapper()
+
+    # convert to be the same type to avoid the type check error
+    trimer_smc = SmallMoleculeComponent.from_rdkit(trimer_2wtk_component.to_rdkit(), trimer_2wtk_component.name)
+    with pytest.raises(RuntimeError, match="ontain a different number of sub components and so no mapping could be created"):
+        next(mapper.suggest_mappings(
+            trimer_smc,
             naphtalene_benzene_molecules[0]
         ))
 

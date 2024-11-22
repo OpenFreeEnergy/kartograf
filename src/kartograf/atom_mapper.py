@@ -17,7 +17,7 @@ from scipy.sparse.csgraph import connected_components
 
 from typing import Callable, Iterable, Optional, Union
 
-from gufe import SmallMoleculeComponent, ProteinComponent
+from gufe.components.explicitmoleculecomponent import ExplicitMoleculeComponent
 from gufe import AtomMapping, AtomMapper, LigandAtomMapping
 
 from numpy.typing import NDArray
@@ -867,7 +867,7 @@ class KartografAtomMapper(AtomMapper):
         return mapping
 
     @staticmethod
-    def _split_component_molecules(component: Union[SmallMoleculeComponent, ProteinComponent]) -> list[Chem.Mol]:
+    def _split_component_molecules(component: ExplicitMoleculeComponent) -> list[Chem.Mol]:
         """
         Aims at splitting a component into its disconected components based on the
         connectivity of the molecules that compose it. Useful for mapping multimer components
@@ -886,16 +886,16 @@ class KartografAtomMapper(AtomMapper):
 
 
     def suggest_mappings(
-            self, A: Union[SmallMoleculeComponent, ProteinComponent], B: Union[SmallMoleculeComponent, ProteinComponent]
+            self, A: ExplicitMoleculeComponent, B: ExplicitMoleculeComponent
     ) -> Iterator[LigandAtomMapping]:
         """ Mapping generator - Gufe
         return a generator for atom mappings.
 
         Parameters
         ----------
-        A : Union[SmallMoleculeComponent, ProteinComponent]
+        A : ExplicitMoleculeComponent
             molecule A to be mapped.
-        B : Union[SmallMoleculeComponent, ProteinComponent]
+        B : ExplicitMoleculeComponent
             molecule B to be mapped.
 
         Returns
@@ -908,6 +908,10 @@ class KartografAtomMapper(AtomMapper):
         # 1. identify Component Chains if present
         component_a_chains = KartografAtomMapper._split_component_molecules(A)
         component_b_chains = KartografAtomMapper._split_component_molecules(B)
+        if len(component_a_chains) != len(component_b_chains):
+            raise RuntimeError(f"ComponentA: {A}({len(component_a_chains)}) and ComponentB: "
+                               f"{B}({len(component_b_chains)}) contain a different number of sub components and so "
+                               f"no mapping could be created. If this was intentional please raise an issue.")
 
         # 2. calculate all possible mappings
         largest_mappings = []
