@@ -2,6 +2,9 @@
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
 import pytest
+from importlib.resources import files
+
+from gufe import SmallMoleculeComponent
 from kartograf import KartografAtomMapper
 from kartograf.atom_mapper import (filter_atoms_h_only_h_mapped,
                                    filter_whole_rings_only)
@@ -278,6 +281,97 @@ def test_ring_matches_property():
     )
     assert any(f == filter_whole_rings_only for f in geom_mapper._filter_funcs)
 
+
+def test_split_multimeric_component():
+    """
+    Test splitting chains of 2wtk multimer is done correctly
+    """
+    from openmm.app import PDBFile
+    from gufe import ProteinComponent
+
+    input_pdb = str(files("kartograf.tests.data") / "2wtk_trimer_with_extra_mols.pdb")
+    pdb = PDBFile(input_pdb)
+    omm_topology = pdb.topology
+    # Create the data structure we want to compare to: list[Dict]
+    omm_data = []
+    # It happens that number of components is the number of chains for this pdb, but doesn't have to
+    expected_n_comps = len(list(omm_topology.chains()))
+    for chain in omm_topology.chains():
+        omm_data.append({"residues": len(list(chain.residues())),
+                         "atoms": len(list(chain.atoms()))})
+
+    protein_comp = ProteinComponent.from_pdb_file(input_pdb)
+    chain_comps = KartografAtomMapper._split_component_molecules(protein_comp)
+
+    assert len(chain_comps) == expected_n_comps, f"Expected {expected_n_comps} chain components."
+    for idx, rdmol in enumerate(chain_comps):
+        # TODO: Use MonomerInfo from rdkit to get number of residues. Seems tedious.
+        # Make sure the number of atoms in the chain is the same
+        n_atoms = rdmol.GetNumAtoms()
+        expected_n_atoms = omm_data[idx]["atoms"]
+        assert n_atoms == expected_n_atoms, f"Expected {expected_n_atoms}. Received {n_atoms}."
+
+
+def test_mapping_multimer_components(trimer_2wtk_component,
+                                     trimer_2wtk_mutated_component):
+    """
+    Test we can properly map ProteinComponents generated from 2wtk trimers.
+
+    The final/target component is the same original component but with a ALA-76-TYR mutation.
+    """
+    from gufe import ProteinComponent
+    mapper = KartografAtomMapper(atom_map_hydrogens=True)
+    mapping = next(mapper.suggest_mappings(trimer_2wtk_component,
+                                           trimer_2wtk_mutated_component))
+    # It comes from ALA to TYR mutation, n mapped atoms must be 21
+    n_atoms_comp_a = trimer_2wtk_component.to_rdkit().GetNumAtoms()
+    expected_unique_initial = 1
+    expected_mapped_atoms = n_atoms_comp_a - expected_unique_initial
+    mapped_atoms = len(mapping.componentA_to_componentB)
+    assert mapped_atoms == expected_mapped_atoms, \
+        f"Mapped atoms do not match. Expected {expected_mapped_atoms}, received {mapped_atoms}."
+    # We expect the unique atoms in initial/ALA to be only 1 hydrogen
+    unique_initial = len(list(mapping.componentA_unique))
+    assert unique_initial == expected_unique_initial, \
+        f"Unique atoms in initial molecule do not match."
+    # We expect the unique atoms in final/TYR to be 12 atoms
+    expected_unique_final = 12
+    unique_final = len(list(mapping.componentB_unique))
+    assert unique_final == expected_unique_final, f"Unique atoms in final molecule do not match."
+    # make sure the types and objects have not changed
+    assert isinstance(mapping.componentA, ProteinComponent)
+    assert isinstance(mapping.componentB, ProteinComponent)
+    assert mapping.componentA is trimer_2wtk_component
+    assert mapping.componentB is trimer_2wtk_mutated_component
+
+
+def test_atom_mapping_different_component_types(trimer_2wtk_component, naphtalene_benzene_molecules):
+    """Make sure an error is rasied if we try and create a mapping between two different component types."""
+    mapper = KartografAtomMapper()
+
+    with pytest.raises(ValueError, match="were not of the same type, please check the inputs."):
+        next(mapper.suggest_mappings(
+            trimer_2wtk_component,
+            naphtalene_benzene_molecules[0]
+        ))
+
+
+def test_atom_mapping_different_number_of_sub_components(trimer_2wtk_component, naphtalene_benzene_molecules):
+    """
+    Make sure an error is raised if we get a different number of disconected components in the two molecules
+    we want to map.
+    """
+    mapper = KartografAtomMapper()
+
+    # convert to be the same type to avoid the type check error
+    trimer_smc = SmallMoleculeComponent.from_rdkit(trimer_2wtk_component.to_rdkit(), trimer_2wtk_component.name)
+    with pytest.raises(RuntimeError, match="ontain a different number of sub components and so no mapping could be created"):
+        next(mapper.suggest_mappings(
+            trimer_smc,
+            naphtalene_benzene_molecules[0]
+        ))
+
+
 @pytest.mark.parametrize("allow_partial_fused_rings, expected_mapping", [
     pytest.param(True, {12: 20, 13: 21, 14: 22, 15: 23, 16: 24, 17: 19, 20: 26, 21: 25, 0: 6, 1: 7, 2: 8, 3: 9, 4: 10, 5: 5, 6: 4, 7: 3, 8: 2, 9: 13, 10: 12, 11: 11}, id="Allow partial"),
     pytest.param(False, {12: 20, 13: 21, 14: 22, 15: 23, 16: 24, 0: 6, 1: 7, 2: 8, 3: 9, 4: 10, 5: 5}, id="Remove partial")
@@ -334,3 +428,4 @@ def test_ring_hybridization_with_non_ring_atoms(shp2_hybridization_ligands):
     )
     # make sure we have some mapping between the atoms
     assert mapping.componentA_to_componentB
+
