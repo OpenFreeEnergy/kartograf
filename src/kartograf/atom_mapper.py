@@ -3,7 +3,6 @@
 
 import copy
 import dill
-import inspect
 import numpy as np
 from enum import Enum
 
@@ -18,7 +17,7 @@ from scipy.sparse.csgraph import connected_components
 
 from typing import Callable, Iterable, Optional, Union
 
-from gufe import SmallMoleculeComponent
+from gufe.components.explicitmoleculecomponent import ExplicitMoleculeComponent
 from gufe import AtomMapping, AtomMapper, LigandAtomMapping
 
 from numpy.typing import NDArray
@@ -869,17 +868,36 @@ class KartografAtomMapper(AtomMapper):
 
         return mapping
 
+    @staticmethod
+    def _split_component_molecules(component: ExplicitMoleculeComponent) -> list[Chem.Mol]:
+        """
+        Aims at splitting a component into its disconected components based on the
+        connectivity of the molecules that compose it. Useful for mapping multimer components
+        or proteins with structural waters or similarly.
+
+        This returns a list of ``Chem.Mol`` objects with a prop named `Starting_index` indicating the starting
+        index in the original component.
+        """
+        from rdkit.Chem.rdmolops import GetMolFrags
+        rdmol = component.to_rdkit()
+        index_tuples = []
+        fragments = GetMolFrags(rdmol, asMols=True, sanitizeFrags=True, fragsMolAtomMapping=index_tuples)
+        for fragment, index_tuple in zip(fragments, index_tuples):
+            fragment.SetIntProp("Starting_index", index_tuple[0])
+        return fragments
+
+
     def suggest_mappings(
-            self, A: SmallMoleculeComponent, B: SmallMoleculeComponent
-    ) -> Iterator[AtomMapping]:
+            self, A: ExplicitMoleculeComponent, B: ExplicitMoleculeComponent
+    ) -> Iterator[LigandAtomMapping]:
         """ Mapping generator - Gufe
         return a generator for atom mappings.
 
         Parameters
         ----------
-        A : SmallMoleculeComponent
+        A : ExplicitMoleculeComponent
             molecule A to be mapped.
-        B : SmallMoleculeComponent
+        B : ExplicitMoleculeComponent
             molecule B to be mapped.
 
         Returns
@@ -887,10 +905,45 @@ class KartografAtomMapper(AtomMapper):
         Iterator[AtomMapping]
             returns an interator of possible atom mappings.
         """
-        yield LigandAtomMapping(
-            A,
-            B,
-            self.suggest_mapping_from_rdmols(
-                molA=A.to_rdkit(), molB=B.to_rdkit()
-            ),
-        )
+        if type(A) != type(B):
+            raise ValueError(f"The components {A} and {B} were not of the same type, please check the inputs.")
+        # 1. identify Component Chains if present
+        component_a_chains = KartografAtomMapper._split_component_molecules(A)
+        component_b_chains = KartografAtomMapper._split_component_molecules(B)
+        if len(component_a_chains) != len(component_b_chains):
+            raise RuntimeError(f"ComponentA: {A}({len(component_a_chains)}) and ComponentB: "
+                               f"{B}({len(component_b_chains)}) contain a different number of sub components and so "
+                               f"no mapping could be created. If this was intentional please raise an issue.")
+
+        # 2. calculate all possible mappings
+        largest_mappings = []
+        for A_chain in component_a_chains:
+            largest_overlap_map = {}  # Initialize to empty map
+            largest_overlap_component = component_b_chains[0]  # Initialization
+            for B_chain in component_b_chains:
+                # This reinitializes indices, that's why we need the index information from
+                #  split components.
+                current_map = self.suggest_mapping_from_rdmols(
+                    molA=A_chain, molB=B_chain
+                )
+                if len(largest_overlap_map) < len(current_map):
+                    largest_overlap_component = B_chain
+                    largest_overlap_map = current_map
+            mapping_obj = {
+                "starting_index_a": A_chain.GetIntProp("Starting_index"),
+                "starting_index_b": largest_overlap_component.GetIntProp("Starting_index"),
+                "mapping": largest_overlap_map
+            }
+            # At the end of the loop mapping_obj should have the largest map overlap
+            largest_mappings.append(mapping_obj)
+
+        # Merge all the largest mappings for each component into a single mapping
+        merged_map = {}
+        for mapping_obj in largest_mappings:
+            start_a = mapping_obj["starting_index_a"]
+            start_b = mapping_obj["starting_index_b"]
+            shifted_map = {a_idx + start_a: b_idx + start_b for a_idx, b_idx in
+                           mapping_obj["mapping"].items()}
+            merged_map.update(shifted_map)
+
+        yield LigandAtomMapping(A, B, merged_map)
