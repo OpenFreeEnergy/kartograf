@@ -1,6 +1,6 @@
 **Added:**
 
-* use rever to manage changelog `PR#77 <https://github.com/OpenFreeEnergy/kartograf/pull/77>`_
+* Added changelog `PR#77 <https://github.com/OpenFreeEnergy/kartograf/pull/77>`_
 * Support mapping multi chain components `PR#47 <https://github.com/OpenFreeEnergy/kartograf/pull/47>`_
 * Option to not break fused rings when creating mappings `PR#56 <https://github.com/OpenFreeEnergy/kartograf/pull/54>`_
 * Added a citation.cff `PR#45 <https://github.com/OpenFreeEnergy/kartograf/pull/45>`_
@@ -9,7 +9,6 @@
 
 * Update CI `PR#43 <https://github.com/OpenFreeEnergy/kartograf/pull/43>`_
 * Additional filters are now applied before defaults `PR#64 <https://github.com/OpenFreeEnergy/kartograf/pull/64>`_
-* Swap to from personal email `PR#48 <https://github.com/OpenFreeEnergy/kartograf/pull/48>`_
 * Docs clean up `PR#66 <https://github.com/OpenFreeEnergy/kartograf/pull/66>`_
 
 **Deprecated:**
