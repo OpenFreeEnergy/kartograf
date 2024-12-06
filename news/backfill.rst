@@ -7,7 +7,6 @@
 
 **Changed:**
 
-* Update CI `PR#43 <https://github.com/OpenFreeEnergy/kartograf/pull/43>`_
 * Additional filters are now applied before defaults `PR#64 <https://github.com/OpenFreeEnergy/kartograf/pull/64>`_
 * Docs clean up `PR#66 <https://github.com/OpenFreeEnergy/kartograf/pull/66>`_
 
