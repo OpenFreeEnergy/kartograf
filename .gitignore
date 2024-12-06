@@ -96,3 +96,6 @@ src/kartograf/_version.py
 #IDE
 .idea
 /src/kartograf/dev/
+
+# Rever
+rever/
