@@ -46,3 +46,13 @@ default-tag = "0.0.0"
 
 [tool.versioningit.write]
 file = "src/kartograf/_version.py"
+
+[tool.setuptools]
+include-package-data = true
+license-files = ["LICENSE"]
+
+[tool.setuptools.packages.find]
+where = ['src']
+
+[tool.setuptools.package-data]
+kartograf = ["tests/data/*.pdb", "tests/data/*.sdf"]
