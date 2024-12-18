@@ -16,7 +16,7 @@ dependencies = [
   'dill',
   'gufe',
 ]
-description="Kartograf is a package for mapping geometrically atoms of two molecules. (like you need it with hybrid topology)"
+description="Kartograf is a package for geometrically mapping atoms of two molecules."
 readme="README.md"
 requires-python = ">=3.10"
 classifiers = [
