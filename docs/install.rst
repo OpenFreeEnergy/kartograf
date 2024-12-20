@@ -12,8 +12,6 @@ Kartograf is packaged with OpenFE and can be directly imported from there with:
 Alternatively, you can install Kartograf also as a standalone package via pip
 or conda:
 
-``pip install kartograf``
-
 ``conda install -c conda-forge kartograf``
 
 

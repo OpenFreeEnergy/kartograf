@@ -78,12 +78,6 @@ kartograf_mapping
 ### Latest release
 Kartograf can be installed via the package following package managers:
 
-#### `pip` (PyPI)
-
-```shell
-pip install kartograf
-```
-
 #### `conda` (conda-forge)
 
 ```shell
