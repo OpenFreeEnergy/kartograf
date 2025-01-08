@@ -98,7 +98,8 @@ jobs:
 
     - uses: mamba-org/setup-micromamba@v1
       with:
-          python-version: 3.11
+          environment-file: environment.yml
+          environment-name: kartograf
 
     - name: install_deps
       run: |
