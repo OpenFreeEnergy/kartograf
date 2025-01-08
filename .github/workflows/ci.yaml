@@ -101,7 +101,7 @@ jobs:
           python-version: 3.11
 
     - name: install_deps
-      run: python -m pip install -U pip pipx wheel build
+      run: python -m pip install -U pip pipx wheel build pytest
 
     - name: build_package_sdist
       run: pipx run build --sdist
