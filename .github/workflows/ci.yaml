@@ -101,7 +101,9 @@ jobs:
           python-version: 3.11
 
     - name: install_deps
-      run: python -m pip install -U pip pipx wheel build pytest pytest-xdist
+      run: |
+        python -m pip install -U pip pipx wheel build pytest pytest-xdist
+        mamba install gufe
 
     - name: build_package_sdist
       run: pipx run build --sdist
@@ -116,6 +118,7 @@ jobs:
       run: |
         ls -a .
         python -m pip install kartograf-*.tar.gz
+        du -sh kartograf-*.tar.gz
 
     - name: check install
       run: pip list
