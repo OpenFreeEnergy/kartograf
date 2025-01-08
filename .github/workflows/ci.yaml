@@ -103,7 +103,7 @@ jobs:
     - name: install_deps
       run: |
         python -m pip install -U pip pipx wheel build pytest pytest-xdist
-        mamba install gufe
+        micromamba install gufe
 
     - name: build_package_sdist
       run: pipx run build --sdist
