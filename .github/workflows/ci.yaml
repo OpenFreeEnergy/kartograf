@@ -33,7 +33,7 @@ jobs:
           - "3.12"
         include:
           - os: 'macos'
-            python-version: "3.11" 
+            python-version: "3.11"
 
     steps:
       - uses: actions/checkout@v4
@@ -63,7 +63,7 @@ jobs:
 
       - name: "Environment Information"
         run: |
-          micromamba info 
+          micromamba info
           micromamba list
 
       - name: "Run tests"
@@ -88,3 +88,38 @@ jobs:
           env_vars: OS,PYTHON
           fail_ci_if_error: True
           verbose: True
+
+  check_packaging:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: mamba-org/setup-micromamba@v1
+        with:
+          python-version: 3.11
+
+    - name: install_deps
+      run: python -m pip install -U pip pipx wheel build
+
+    - name: build_package_sdist
+      run: pipx run build --sdist
+
+    - name: check_package_build
+      run: |
+        DISTRIBUTION=$(ls -t1 dist/kartograf-*.tar.gz | head -n1)
+        test -n "${DISTRIBUTION}" || { echo "no distribution dist/kartograf-*.tar.gz found"; exit 1; }
+
+    - name: install sdist
+      working-directory: ./dist
+      run: |
+        ls -a .
+        python -m pip install kartograf-*.tar.gz
+
+    - name: check install
+      run: pip list
+
+    - name: run tests
+      working-directory: ./dist
+      run: python -m pytest --timeout=200 -n logical --pyargs kartograf
