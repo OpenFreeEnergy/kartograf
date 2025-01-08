@@ -101,7 +101,7 @@ jobs:
           python-version: 3.11
 
     - name: install_deps
-      run: python -m pip install -U pip pipx wheel build pytest
+      run: python -m pip install -U pip pipx wheel build pytest pytest-xdist
 
     - name: build_package_sdist
       run: pipx run build --sdist
@@ -122,4 +122,4 @@ jobs:
 
     - name: run tests
       working-directory: ./dist
-      run: python -m pytest --timeout=200 -n logical --pyargs kartograf
+      run: python -m pytest -n logical --pyargs kartograf
