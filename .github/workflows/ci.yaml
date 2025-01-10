@@ -114,7 +114,6 @@ jobs:
         test -n "${DISTRIBUTION}" || { echo "no distribution dist/kartograf-*.tar.gz found"; exit 1; }
 
     - name: install sdist
-      working-directory: ./dist
       run: |
         ls -a .
         python -m pip install kartograf-*.tar.gz
