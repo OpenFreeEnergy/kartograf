@@ -14,7 +14,6 @@ dependencies = [
   'scipy',
   'numpy',
   'dill',
-  'gufe',
 ]
 description="Kartograf is a package for geometrically mapping atoms of two molecules."
 readme="README.md"
@@ -56,3 +55,4 @@ where = ['src']
 
 [tool.setuptools.package-data]
 kartograf = ["tests/data/*.pdb", "tests/data/*.sdf"]
+
