@@ -25,7 +25,7 @@ from copy import deepcopy
 
 
 def check_mapping_vs_expected(mapping, expected_mapping):
-    # assert len(expected_mapping) == len(mapping.componentA_to_componentB)
+    assert len(expected_mapping) == len(mapping.componentA_to_componentB)
 
     diff = []
     for exp_k, exp_v in expected_mapping.items():
@@ -428,4 +428,36 @@ def test_ring_hybridization_with_non_ring_atoms(shp2_hybridization_ligands):
     )
     # make sure we have some mapping between the atoms
     assert mapping.componentA_to_componentB
+
+
+@pytest.mark.parametrize("edge, expected_mapping", [
+    pytest.param(("47", "46"), {29: 32, 30: 31, 31: 33, 32: 34, 33: 38, 34: 37, 36: 35, 37: 36, 38: 39, 39: 40,
+                                40: 41, 41: 42, 42: 43, 43: 44, 0: 2, 1: 3, 2: 0, 3: 1, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8,
+                                9: 9, 10: 14, 11: 10, 12: 13, 13: 25, 14: 11, 15: 12, 16: 26, 17: 15, 18: 16, 19: 17,
+                                20: 18, 21: 19, 22: 20, 23: 21, 24: 23, 25: 22, 26: 24}, id="47->46"),
+    pytest.param(("48", "46"), {29: 31, 30: 32, 31: 33, 32: 34, 33: 37, 36: 35, 37: 38, 38: 39, 39: 40, 40: 41,
+                            41: 42, 42: 43, 43: 44, 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, 10: 10,
+                            11: 13, 12: 25, 13: 26, 14: 12, 15: 11, 16: 14, 17: 15, 18: 16, 19: 17, 20: 18, 21: 19,
+                            22: 20, 23: 21, 24: 23, 25: 22, 26: 24}, id="48->46")
+])
+def test_bond_break_transforms(pfkfb3_ligands, edge, expected_mapping):
+    """
+    Make sure that bond breaking transformations are always filtered, see
+    <https://github.com/OpenFreeEnergy/kartograf/issues/88>
+    """
+    ligand_a = pfkfb3_ligands[edge[0]]
+    ligand_b = pfkfb3_ligands[edge[1]]
+
+    mapper = KartografAtomMapper(
+        atom_map_hydrogens=True
+    )
+
+    mapping = next(
+        mapper.suggest_mappings(
+            ligand_a,
+            ligand_b
+        )
+    )
+    check_mapping_vs_expected(mapping=mapping, expected_mapping=expected_mapping)
+
 

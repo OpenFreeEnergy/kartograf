@@ -133,9 +133,6 @@ class KartografAtomMapper(AtomMapper):
         if not self.allow_partial_fused_rings:
             self._filter_funcs.append(filter_fused_ring_changes)
 
-        # always filter bond breaks
-        self._filter_funcs.append(filter_bond_breaks)
-
         if _mapping_algorithm == mapping_algorithm.linear_sum_assignment:
             self._map_hydrogens_on_hydrogens_only = True
             self.mapping_algorithm = self._linearSumAlgorithm_map
@@ -157,7 +154,6 @@ class KartografAtomMapper(AtomMapper):
             filter_whole_rings_only,
             filter_ringsize_changes,
             filter_ringbreak_changes,
-            filter_bond_breaks
         }
         additional_filters = [
             dill.dumps(f) for f in self._filter_funcs
@@ -640,7 +636,6 @@ class KartografAtomMapper(AtomMapper):
         """
         logger.debug(f"Before filters mapping is {mapping}")
         for filter_rule in self._filter_funcs:
-            print(filter_rule)
             mapping = filter_rule(molA, molB, mapping)
             logger.debug(f"After {filter_rule} mapping is {mapping}")
         return mapping
@@ -870,7 +865,8 @@ class KartografAtomMapper(AtomMapper):
                 map_hydrogens=self.atom_map_hydrogens,
             )
 
-        return mapping
+        # make sure to filter bond breaks from the final mapping
+        return filter_bond_breaks(mol_a=molA, mol_b=molB, mapping=mapping)
 
     @staticmethod
     def _split_component_molecules(component: ExplicitMoleculeComponent) -> list[Chem.Mol]:

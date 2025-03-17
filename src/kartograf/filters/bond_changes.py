@@ -1,8 +1,9 @@
 # This code is part of kartograf and is licensed under the MIT license.
 # For details, see https://github.com/OpenFreeEnergy/kartograf
-
+from jedi.plugins.django import mapping
 from rdkit import Chem
 import logging
+import networkx as nx
 
 logger = logging.getLogger(__name__)
 
@@ -28,23 +29,35 @@ def filter_bond_breaks(mol_a: Chem.Mol, mol_b: Chem.Mol, mapping: dict[int, int]
         A filtered mapping removing any entries which map a broken bond.
     """
 
-    to_remove = []
-    # generate a list of bonds in molecule b
+    # generate a list of bonds in molecule A and B
+    mol_a_bonds = [sorted((bond.GetBeginAtomIdx(), bond.GetEndAtomIdx())) for bond in mol_a.GetBonds()]
     mol_b_bonds = [sorted((bond.GetBeginAtomIdx(), bond.GetEndAtomIdx())) for bond in mol_b.GetBonds()]
+    broken_bonds = []
 
-    # loop over the bonds in molecule A and check they are connected in molecule B if they are in the mapping
-    for bond in mol_a.GetBonds():
-        atom_a = bond.GetBeginAtomIdx()
-        atom_b = bond.GetEndAtomIdx()
+    # create a graph to get the largest connected mapping if we have a bond break
+    graph = nx.Graph()
 
+    # loop over the bonds in molecule A and check they are connected in molecule B via the mapping
+    for atom_a, atom_b in mol_a_bonds:
         if atom_a in mapping and atom_b in mapping:
             # the bond is in the mapped section
             # make sure the mapped atoms are also bonded
             mapped_bond = sorted((mapping[atom_a], mapping[atom_b]))
-            if mapped_bond not in mol_b_bonds:
-                # if the bond is not in molecule b remove the bond atoms from the mapping
-                to_remove.extend([atom_a, atom_b])
+            if mapped_bond in mol_b_bonds:
+                # if the bond is conserved add it to the graph
+                graph.add_edge(atom_a, atom_b)
 
-    new_mapping = {k: v for k, v in mapping.items() if k not in to_remove}
+            else:
+                logger.debug(f"Bond {mapped_bond} is not preserved between molecule A and B possible broken bond.")
+                broken_bonds.append((atom_a, atom_b))
+                continue
 
-    return new_mapping
+    # if there is a broken bond try and find the largest submapping
+    if broken_bonds:
+        sub_graphs = [subgraph for subgraph in nx.connected_components(graph)]
+        # sort by length to get the largest one
+        sub_graphs.sort(key= lambda x: len(x), reverse=True)
+        largest_graph = sub_graphs[0]
+        mapping = {k: v for k, v in mapping.items() if k in largest_graph}
+
+    return mapping
