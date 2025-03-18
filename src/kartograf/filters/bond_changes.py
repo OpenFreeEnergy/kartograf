@@ -48,7 +48,7 @@ def filter_bond_breaks(mol_a: Chem.Mol, mol_b: Chem.Mol, mapping: dict[int, int]
                 graph.add_edge(atom_a, atom_b)
 
             else:
-                logger.debug(f"Bond {mapped_bond} is not preserved between molecule A and B possible broken bond.")
+                logger.debug(f"Bond {mapped_bond} is not preserved between molecule A and B possibly a broken bond.")
                 broken_bonds.append((atom_a, atom_b))
                 continue
 
