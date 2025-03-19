@@ -7,6 +7,7 @@ from importlib import resources
 from rdkit import Chem
 from gufe import SmallMoleculeComponent, LigandAtomMapping, ProteinComponent
 from kartograf.atom_aligner import align_mol_skeletons, align_mol_shape
+from rdkit import Chem
 
 
 def mol_from_smiles(smiles: str):
@@ -144,3 +145,13 @@ def shp2_hybridization_ligands() -> tuple[SmallMoleculeComponent, SmallMoleculeC
     with resources.files("kartograf.tests.data") as d:
         mols = [SmallMoleculeComponent.from_sdf_file(str(f)) for f in [d / "lig_E6.sdf", d / "lig_E29.sdf"]]
         return mols[0], mols[1]
+
+@pytest.fixture(scope="session")
+def pfkfb3_ligands() -> dict[str, SmallMoleculeComponent]:
+    with resources.files("kartograf.tests.data") as d:
+        supplier = Chem.SDMolSupplier(str(d / "pfkfb3_ligands.sdf"), removeHs=False)
+        mols = {}
+        for mol in supplier:
+            ofe_mol = SmallMoleculeComponent.from_rdkit(mol)
+            mols[ofe_mol.name] = ofe_mol
+        return mols

@@ -30,6 +30,7 @@ from .filters import (
     filter_ringsize_changes,
     filter_whole_rings_only,
     filter_fused_ring_changes,
+    filter_bond_breaks,
 )
 
 logger = logging.getLogger(__name__)
@@ -864,7 +865,8 @@ class KartografAtomMapper(AtomMapper):
                 map_hydrogens=self.atom_map_hydrogens,
             )
 
-        return mapping
+        # make sure to filter bond breaks from the final mapping
+        return filter_bond_breaks(mol_a=molA, mol_b=molB, mapping=mapping)
 
     @staticmethod
     def _split_component_molecules(component: ExplicitMoleculeComponent) -> list[Chem.Mol]:
