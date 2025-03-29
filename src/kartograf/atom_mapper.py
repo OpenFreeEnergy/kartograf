@@ -72,7 +72,7 @@ class KartografAtomMapper(AtomMapper):
             *,
             atom_max_distance: float = 0.95,
             atom_map_hydrogens: bool = True,
-            map_hydrogens_on_hydrogens_only: bool = False,
+            map_hydrogens_on_hydrogens_only: bool = True,
             map_exact_ring_matches_only: bool = True,
             allow_partial_fused_rings: bool = True,
             additional_mapping_filter_functions: Optional[Iterable[Callable[[
@@ -88,8 +88,10 @@ class KartografAtomMapper(AtomMapper):
         atom_max_distance : float, optional
             geometric criteria for two atoms, how far their distance
             can be maximal (in Angstrom). Default 0.95
+        atom_map_hydrogens : bool, optional
+            If hydrogens should be included in the atom mapping. Default True
         map_hydrogens_on_hydrogens_only : bool, optional
-            map hydrogens only on hydrogens. Default False
+            map hydrogens only on hydrogens. Default True
         map_exact_ring_matches_only : bool, optional
             if true, only rings with matching ringsize and same bond-orders
             will be mapped. Additionally no ring-breaking is permitted. default
