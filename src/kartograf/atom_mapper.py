@@ -75,6 +75,7 @@ class KartografAtomMapper(AtomMapper):
             map_hydrogens_on_hydrogens_only: bool = False,
             map_exact_ring_matches_only: bool = True,
             allow_partial_fused_rings: bool = True,
+            allow_bond_breaks: bool = False,
             additional_mapping_filter_functions: Optional[Iterable[Callable[[
                 Chem.Mol, Chem.Mol, dict[int, int]], dict[int, int]]]] = None,
             _mapping_algorithm: str = mapping_algorithm.linear_sum_assignment,
@@ -85,15 +86,18 @@ class KartografAtomMapper(AtomMapper):
 
         Parameters
         ----------
-        atom_max_distance : float, optional
+        atom_max_distance : float
             geometric criteria for two atoms, how far their distance
             can be maximal (in Angstrom). Default 0.95
-        map_hydrogens_on_hydrogens_only : bool, optional
+        map_hydrogens_on_hydrogens_only : bool
             map hydrogens only on hydrogens. Default False
-        map_exact_ring_matches_only : bool, optional
+        map_exact_ring_matches_only : bool
             if true, only rings with matching ringsize and same bond-orders
             will be mapped. Additionally no ring-breaking is permitted. default
             False
+        allow_bond_breaks : bool
+            if False, automatically applies ``filter_bond_breaks`` to avoid
+            mappings where bonds are broken. default False
         additional_mapping_filter_functions : Iterable[Callable[[Chem.Mol,
         Chem.Mol, Dict[int, int]], Dict[int, int]]], optional
             with this optional parameter you can further filter the distance
@@ -116,6 +120,7 @@ class KartografAtomMapper(AtomMapper):
         self._map_exact_ring_matches_only = map_exact_ring_matches_only
         self._map_hydrogens_on_hydrogens_only = map_hydrogens_on_hydrogens_only
         self.allow_partial_fused_rings = allow_partial_fused_rings
+        self.allow_bond_breaks = allow_bond_breaks
 
         self._filter_funcs = []
         if additional_mapping_filter_functions is not None:
@@ -866,6 +871,8 @@ class KartografAtomMapper(AtomMapper):
             )
 
         # make sure to filter bond breaks from the final mapping
+        if self.allow_bond_breaks:
+            return mapping
         return filter_bond_breaks(mol_a=molA, mol_b=molB, mapping=mapping)
 
     @staticmethod
