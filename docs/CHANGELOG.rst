@@ -4,6 +4,19 @@ Kartograf Change Log
 
 .. current developments
 
+v1.2.0
+====================
+
+**Added:**
+
+* A flag to retrive the raw kartograf mappings before filtering for bond breaking mappings `PR#90 <https://github.com/OpenFreeEnergy/kartograf/pull/90>`_
+
+**Fixed:**
+
+* Fixed bond breaking transformations from being suggested `PR#89 <https://github.com/OpenFreeEnergy/kartograf/pull/89>`_
+
+
+
 v1.1.0
 ====================
 
