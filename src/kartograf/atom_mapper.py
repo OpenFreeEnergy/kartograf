@@ -676,7 +676,7 @@ class KartografAtomMapper(AtomMapper):
         pre_mapped_atoms : dict, optional
             pre_mapped atoms, that need to be part of the mapping, by default {}
         map_hydrogens : bool, optional
-            if True map hydrogens as well, will hapen after heavy atom
+            if True map hydrogens as well, will happen after heavy atom
             mapping, by default True
 
         Returns
@@ -810,7 +810,7 @@ class KartografAtomMapper(AtomMapper):
             pre_mapped_atoms: Optional[dict] = None,
     ) -> dict[int, int]:
         """ Mapping Function with RDkit
-        The function effectivly maps the two molecules on to each other and
+        The function effectively maps the two molecules on to each other and
         applies the given settings by the obj.
 
         Parameters
@@ -873,6 +873,7 @@ class KartografAtomMapper(AtomMapper):
         # make sure to filter bond breaks from the final mapping
         if self.allow_bond_breaks:
             return mapping
+        logger.info("Filtering bond breaks")
         return filter_bond_breaks(mol_a=molA, mol_b=molB, mapping=mapping)
 
     @staticmethod
