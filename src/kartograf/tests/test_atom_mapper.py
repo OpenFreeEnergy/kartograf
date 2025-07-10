@@ -15,12 +15,6 @@ from kartograf.filters.ring_changes import (
 )
 
 
-from .conftest import (
-    naphtalene_benzene_molecules,
-    naphtalene_benzene_mapping,
-    stereco_chem_molecules,
-    stereo_chem_mapping,
-)
 from copy import deepcopy
 
 
@@ -333,11 +327,11 @@ def test_mapping_multimer_components(trimer_2wtk_component,
     # We expect the unique atoms in initial/ALA to be only 1 hydrogen
     unique_initial = len(list(mapping.componentA_unique))
     assert unique_initial == expected_unique_initial, \
-        f"Unique atoms in initial molecule do not match."
+        "Unique atoms in initial molecule do not match."
     # We expect the unique atoms in final/TYR to be 12 atoms
     expected_unique_final = 12
     unique_final = len(list(mapping.componentB_unique))
-    assert unique_final == expected_unique_final, f"Unique atoms in final molecule do not match."
+    assert unique_final == expected_unique_final, "Unique atoms in final molecule do not match."
     # make sure the types and objects have not changed
     assert isinstance(mapping.componentA, ProteinComponent)
     assert isinstance(mapping.componentB, ProteinComponent)

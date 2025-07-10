@@ -1,6 +1,5 @@
 # This code is part of kartograf and is licensed under the MIT license.
 # For details, see https://github.com/OpenFreeEnergy/kartograf
-from jedi.plugins.django import mapping
 from rdkit import Chem
 import logging
 import networkx as nx

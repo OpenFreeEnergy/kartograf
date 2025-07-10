@@ -7,7 +7,6 @@ from importlib import resources
 from rdkit import Chem
 from gufe import SmallMoleculeComponent, LigandAtomMapping, ProteinComponent
 from kartograf.atom_aligner import align_mol_skeletons, align_mol_shape
-from rdkit import Chem
 
 
 def mol_from_smiles(smiles: str):

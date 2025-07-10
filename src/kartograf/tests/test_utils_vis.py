@@ -1,7 +1,6 @@
 # This code is part of kartograf and is licensed under the MIT license.
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
-import pytest
 
 from py3Dmol import view
 from ipywidgets.widgets.widget_box import VBox
@@ -12,7 +11,6 @@ try:
 except ImportError:
     optional_imports = False
 
-from .conftest import stereo_chem_mapping
 
 
 if(optional_imports):

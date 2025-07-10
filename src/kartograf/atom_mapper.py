@@ -18,7 +18,7 @@ from scipy.sparse.csgraph import connected_components
 from typing import Callable, Iterable, Optional, Union
 
 from gufe.components.explicitmoleculecomponent import ExplicitMoleculeComponent
-from gufe import AtomMapping, AtomMapper, LigandAtomMapping
+from gufe import AtomMapper, LigandAtomMapping
 
 from numpy.typing import NDArray
 
