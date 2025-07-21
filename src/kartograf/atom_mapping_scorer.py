@@ -3,5 +3,11 @@
 
 import logging
 
+from .mapping_metrics import (
+    MappingRMSDScorer,
+    MappingShapeMismatchScorer,
+    MappingShapeOverlapScorer,
+    MappingVolumeRatioScorer,
+)
 
 logger = logging.getLogger(__name__)
