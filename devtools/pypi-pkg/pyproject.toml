@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=77.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kartograf"
+version = "1.0.2"
+description = "Please use conda-forge to install kartograf"
+authors = [{ name = "Mike Henry", email = "mike.henry@omsf.io" }]
+readme = "README.md"
+requires-python = ">=3.7"
+license = "MIT" 
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["."]
