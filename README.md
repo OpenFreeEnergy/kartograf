@@ -15,18 +15,17 @@ Kartograf: A Geometry-Based Atom Mapper
 [![build](https://github.com/OpenFreeEnergy/kartograf/actions/workflows/ci.yaml/badge.svg)](https://github.com/OpenFreeEnergy/kartograf/actions/workflows/ci.yaml)
 [![coverage](https://codecov.io/gh/OpenFreeEnergy/kartograf/branch/main/graph/badge.svg)](https://codecov.io/gh/OpenFreeEnergy/kartograf)
 [![Documentation Status](https://readthedocs.org/projects/kartograf/badge/?version=latest)](https://kartograf.readthedocs.io/en/latest/?badge=latest)
-
-[![Pip Install](https://img.shields.io/badge/pip%20install-kartograf-d9c4b1)](https://pypi.org/project/kartograf/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10566716.svg)](https://doi.org/10.5281/zenodo.10566716)
 [![Conda Install](https://img.shields.io/badge/Conda%20install---c%20conda--forge%20kartograf-009384)](https://anaconda.org/conda-forge/kartograf)
 
-Kartograf is a packgage for atom mappings focussing on 3D geometries.
+Kartograf is a package for atom mappings focussing on 3D geometries.
 This package can be for example be used to generate hybrid topology systems, where an atom mapping is required to determine the core region of the approach.
 But of course there exist also other use cases for this package.
 The atom mapper takes two set of coordinates of molecules as input.
 Optionally those set of coordinates can be aligned onto each other, checkout the `atom_aligner` module functions 
 of Kartograf that offer a shape alignment implementation and a MCS-skeleton alignment.
 The `atom_mapper` can be used to generate the 3D geometry focused atom mapping, the algorithm is described in the related publication of Kartograf (see reference).
-Additionally, rule based filter functions can be provided to demap atoms, that do not fullfill the desired criteria, see `filters`.
+Additionally, rule based filter functions can be provided to demap atoms, that do not fulfill the desired criteria, see `filters`.
 Several mapping scoring metrics are provided, that evaluate geometric properties of your mapping, from `atom_mapping_scorer`, which might be useful for checking quality of your mappings.
 Finally, there is a visualization function `display_mappings_3d` that can be used to check out the mappings with a jupyter notebook widget.
 
@@ -79,12 +78,6 @@ kartograf_mapping
 ### Latest release
 Kartograf can be installed via the package following package managers:
 
-#### `pip` (PyPI)
-
-```shell
-pip install kartograf
-```
-
 #### `conda` (conda-forge)
 
 ```shell
@@ -97,7 +90,7 @@ Kartograf can be used via the OpenFE environment like:
 from openfe.setup.atom_mapping import kartograf
 ```
 
-### Developement version
+### Development version
 The developing setup of Kartograf works like this:
 
 ```shell
