@@ -115,18 +115,18 @@ def benzene_benzene_empty_mapping():
 @pytest.fixture(scope="session")
 def trimer_2wtk_component():
     """Protein component for modelled trimer of protein with PDB ID 2wtk"""
-    with files("kartograf.tests.data") as d:
-        protein_comp = ProteinComponent.from_pdb_file(str(d / "2wtk_trimer_with_extra_mols.pdb"))
-        return protein_comp
+    d = files("kartograf.tests.data")
+    protein_comp = ProteinComponent.from_pdb_file(str(d / "2wtk_trimer_with_extra_mols.pdb"))
+    return protein_comp
 
 
 @pytest.fixture(scope="session")
 def trimer_2wtk_mutated_component():
     """Protein component obtained by applying ALA-53-TYR mutation to trimer of 2wtk,
     to residue in chain 'C'."""
-    with files("kartograf.tests.data") as d:
-        protein_comp = ProteinComponent.from_pdb_file(str(d / "2wtk_mutated_with_extra_mols.pdb"))
-        return protein_comp
+    d = files("kartograf.tests.data")
+    protein_comp = ProteinComponent.from_pdb_file(str(d / "2wtk_mutated_with_extra_mols.pdb"))
+    return protein_comp
 
 
 @pytest.fixture(scope="session")
@@ -134,24 +134,24 @@ def fused_ring_mols() -> tuple[SmallMoleculeComponent, SmallMoleculeComponent]:
     """
     Return two biaryl molecules one with a fused ring which are aligned for mapping, we use files to ensure consistent
     atom ordering."""
-    with resources.files("kartograf.tests.data") as d:
-        rd_mols = [Chem.MolFromMolFile(str(f), removeHs=False) for f in  [d / "biphenyl.sdf", d / "biaryl-indene.sdf"]]
-        mol_a, mol_b = [SmallMoleculeComponent.from_rdkit(m) for m in rd_mols]
-        mol_b_to_a = align_mol_shape(mol_b, ref_mol=mol_a)
-        return mol_a, mol_b_to_a
+    d = resources.files("kartograf.tests.data")
+    rd_mols = [Chem.MolFromMolFile(str(f), removeHs=False) for f in  [d / "biphenyl.sdf", d / "biaryl-indene.sdf"]]
+    mol_a, mol_b = [SmallMoleculeComponent.from_rdkit(m) for m in rd_mols]
+    mol_b_to_a = align_mol_shape(mol_b, ref_mol=mol_a)
+    return mol_a, mol_b_to_a
 
 @pytest.fixture(scope="session")
 def shp2_hybridization_ligands() -> tuple[SmallMoleculeComponent, SmallMoleculeComponent]:
-    with resources.files("kartograf.tests.data") as d:
-        mols = [SmallMoleculeComponent.from_sdf_file(str(f)) for f in [d / "lig_E6.sdf", d / "lig_E29.sdf"]]
-        return mols[0], mols[1]
+    d = resources.files("kartograf.tests.data")
+    mols = [SmallMoleculeComponent.from_sdf_file(str(f)) for f in [d / "lig_E6.sdf", d / "lig_E29.sdf"]]
+    return mols[0], mols[1]
 
 @pytest.fixture(scope="session")
 def pfkfb3_ligands() -> dict[str, SmallMoleculeComponent]:
-    with resources.files("kartograf.tests.data") as d:
-        supplier = Chem.SDMolSupplier(str(d / "pfkfb3_ligands.sdf"), removeHs=False)
-        mols = {}
-        for mol in supplier:
-            ofe_mol = SmallMoleculeComponent.from_rdkit(mol)
-            mols[ofe_mol.name] = ofe_mol
-        return mols
+    d = resources.files("kartograf.tests.data")
+    supplier = Chem.SDMolSupplier(str(d / "pfkfb3_ligands.sdf"), removeHs=False)
+    mols = {}
+    for mol in supplier:
+        ofe_mol = SmallMoleculeComponent.from_rdkit(mol)
+        mols[ofe_mol.name] = ofe_mol
+    return mols
