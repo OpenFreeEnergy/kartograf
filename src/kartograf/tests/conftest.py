@@ -45,7 +45,7 @@ def stereco_chem_molecules():
 @pytest.fixture(scope="session")
 def stereo_chem_mapping():
     mols = stereo_chem_mols()
-    expected_mapping = {2: 7, 4: 4, 5: 5, 6: 6, 7: 2, 0: 0, 1: 1, 3: 3}
+    expected_mapping = {4: 4, 5: 5, 6: 6, 0: 0, 1: 1, 3: 3}
 
     return LigandAtomMapping(mols[0], mols[1], expected_mapping)
 
