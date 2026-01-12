@@ -100,7 +100,7 @@ jobs:
           environment-file: environment.yml
           environment-name: kartograf
           create-args: >-
-            python=3.14
+            python=3.13
 
     - name: install_deps
       run: |
