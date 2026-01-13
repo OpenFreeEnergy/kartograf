@@ -70,7 +70,7 @@ class MappingRMSDScorer(_AbstractAtomMappingScorer):
         rmsd = self.get_rmsd(mapping)
         beta = 1000 / (const.k * const.Avogadro * T)
         V = k_hook * (rmsd - accepted_distance_rmsd)
-        p = np.exp(-beta * V) if (np.exp(-beta * V) < 1) else 1
+        p = min(1, np.exp(-beta * V))
         return float(p)
 
     def get_score(
