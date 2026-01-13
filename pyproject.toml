@@ -51,6 +51,7 @@ lint.select = [
   "W", # pycodestyle warnings
   # "E",  # pycodestyle errors
   # "C901"  # mccabe complexity  TODO: add this back in
+  "UP", # pyupgrade 
 ]
 lint.ignore = [
   "E402", # module-level import not at top (conflicts w/ isort)
