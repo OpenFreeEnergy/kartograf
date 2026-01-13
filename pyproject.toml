@@ -42,6 +42,7 @@ fallback_version = "0.0.0"
 
 [tool.ruff]
 line-length = 120
+target-version = "py311"
 
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
 lint.select = [
@@ -50,20 +51,15 @@ lint.select = [
   "W", # pycodestyle warnings
   # "E",  # pycodestyle errors
   # "C901"  # mccabe complexity  TODO: add this back in
-  # "UP", # TODO: add this in
 ]
 lint.ignore = [
   "E402", # module-level import not at top (conflicts w/ isort)
   "E722", # bare excepts (TODO: we should fix these in a follow-up PR)
   "E731", # lambda expressions (TODO: we should fix these)
   "F401", # unused imports (TODO: we should fix these)
-  "UP03", # pyupgrade linting (TODO: we should fix these)
 ]
 
 # ignore "unused import" error for all __init__.py files
 lint.per-file-ignores."__init__.py" = [ "E401" ]
 
 lint.isort.known-first-party = [ "kartograf" ]
-
-[tool.ruff.lint.pyupgrade]
-py311-plus = true
