@@ -6,8 +6,6 @@ from gufe import LigandAtomMapping
 
 from kartograf.mapping_metrics.metrics_mapping_comparisons import jaccard_score
 
-from .conftest import benzene_benzene_empty_mapping, benzene_benzene_mapping
-
 
 def test_mapping_comparison_jcs_identical(benzene_benzene_mapping):
     """
@@ -69,13 +67,13 @@ def test_mapping_comparison_jcs_empty_mapping(benzene_benzene_mapping, benzene_b
     mappingA = benzene_benzene_empty_mapping
     mappingB = benzene_benzene_mapping
     with pytest.raises(ValueError) as exc:
-        score = jaccard_score(mappingA=mappingA, mappingB=mappingB)
+        jaccard_score(mappingA=mappingA, mappingB=mappingB)
 
     assert "Mapping A does not contain any mapped atoms: set()" in str(exc.value)
 
     mappingA = benzene_benzene_mapping
     mappingB = benzene_benzene_empty_mapping
     with pytest.raises(ValueError) as exc:
-        score = jaccard_score(mappingA=mappingA, mappingB=mappingB)
+        jaccard_score(mappingA=mappingA, mappingB=mappingB)
 
     assert "Mapping B does not contain any mapped atoms: set()" in str(exc.value)

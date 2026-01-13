@@ -9,9 +9,6 @@ from gufe.mapping import AtomMapping
 
 logger = logging.getLogger(__name__)
 
-eukli = lambda x, y: np.sqrt(np.sum(np.square(y - x)))
-rms_func = lambda x: np.sqrt(np.mean(np.square(x)))
-
 
 class _AbstractAtomMappingScorer(abc.ABC):
     def __init__(self):

@@ -3,7 +3,6 @@
 import logging
 
 import networkx as nx
-from jedi.plugins.django import mapping
 from rdkit import Chem
 
 logger = logging.getLogger(__name__)

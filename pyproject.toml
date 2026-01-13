@@ -46,12 +46,18 @@ target-version = "py311"
 line-length = 120
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
 lint.select = [
-  # "F",  # Pyflakes
+  "F",  # Pyflakes
   "I", # isort
-  # "E",  # pycodestyle errors
+  "E",  # pycodestyle errors
   # "C901",  # mccabe complexity  TODO: add this back in
   "UP", # pyupgrade 
   "W",  # pycodestyle warnings
+]
+
+lint.ignore = [
+  "E402", # module-level import not at top (conflicts w/ isort)
+  "F401", # unused imports (TODO: we should fix these)
+  "E501", # line too long, if the formatter can't fix it then it can be okay 
 ]
 
 # ignore "unused import" error for all __init__.py files

@@ -10,17 +10,7 @@ from gufe import SmallMoleculeComponent
 from kartograf import KartografAtomMapper
 from kartograf.atom_mapper import filter_atoms_h_only_h_mapped, filter_whole_rings_only
 from kartograf.filters.element_change import filter_hybridization_changes
-from kartograf.filters.ring_changes import (
-    filter_hybridization_rings,
-    filter_whole_rings_only,
-)
-
-from .conftest import (
-    naphtalene_benzene_mapping,
-    naphtalene_benzene_molecules,
-    stereco_chem_molecules,
-    stereo_chem_mapping,
-)
+from kartograf.filters.ring_changes import filter_hybridization_rings
 
 
 def check_mapping_vs_expected(mapping, expected_mapping):
@@ -98,7 +88,7 @@ def test_mapping_noMap_algo():
     Test mapping of naphtalene to benzene.
     """
     with pytest.raises(ValueError) as exc:
-        geom_mapper = KartografAtomMapper(
+        KartografAtomMapper(
             atom_max_distance=0.95,
             atom_map_hydrogens=True,
             map_hydrogens_on_hydrogens_only=False,
@@ -241,7 +231,7 @@ def test_mapping_rdmols(naphtalene_benzene_molecules, naphtalene_benzene_mapping
     """
     Test mapping of naphtalene to benzene.
     """
-    expected_mapping = naphtalene_benzene_mapping.componentA_to_componentB
+    naphtalene_benzene_mapping.componentA_to_componentB
     geom_mapper = KartografAtomMapper(
         atom_max_distance=0.95,
         atom_map_hydrogens=True,
@@ -250,7 +240,7 @@ def test_mapping_rdmols(naphtalene_benzene_molecules, naphtalene_benzene_mapping
 
     mols = [naphtalene_benzene_molecules[0], naphtalene_benzene_molecules[1]]
 
-    m = geom_mapper.suggest_mapping_from_rdmols(
+    geom_mapper.suggest_mapping_from_rdmols(
         mols[0].to_rdkit(),
         mols[1].to_rdkit(),
         masked_atoms_molA=None,
@@ -325,11 +315,11 @@ def test_mapping_multimer_components(trimer_2wtk_component, trimer_2wtk_mutated_
     )
     # We expect the unique atoms in initial/ALA to be only 1 hydrogen
     unique_initial = len(list(mapping.componentA_unique))
-    assert unique_initial == expected_unique_initial, f"Unique atoms in initial molecule do not match."
+    assert unique_initial == expected_unique_initial, "Unique atoms in initial molecule do not match."
     # We expect the unique atoms in final/TYR to be 12 atoms
     expected_unique_final = 12
     unique_final = len(list(mapping.componentB_unique))
-    assert unique_final == expected_unique_final, f"Unique atoms in final molecule do not match."
+    assert unique_final == expected_unique_final, "Unique atoms in final molecule do not match."
     # make sure the types and objects have not changed
     assert isinstance(mapping.componentA, ProteinComponent)
     assert isinstance(mapping.componentB, ProteinComponent)

@@ -12,8 +12,6 @@ from kartograf.mapping_metrics import (
 )
 from kartograf.mapping_metrics.metric_shape_difference import _MappingShapeDistanceScorer
 
-from .conftest import benzene_benzene_empty_mapping, benzene_benzene_mapping, stereo_chem_mapping
-
 
 def test_score_mappings_rmsd(stereo_chem_mapping):
     """
@@ -126,6 +124,6 @@ def test_scorer_empty_mapping_err(scorer_class, exp: float, benzene_benzene_empt
     """
     with pytest.raises(ValueError) as exc:
         scorer = scorer_class()
-        score = scorer(benzene_benzene_empty_mapping)
+        scorer(benzene_benzene_empty_mapping)
 
     assert "Mapping is too small to calculate convex hull" in str(exc.value)

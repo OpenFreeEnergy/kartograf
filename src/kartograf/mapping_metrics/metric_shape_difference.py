@@ -106,13 +106,13 @@ class _MappingShapeDistanceScorer(_AbstractAtomMappingScorer):
 
         i = 0
         for atom in molA.GetAtoms():
-            if not atom.GetIdx() in mapped_atomIDs.keys():
+            if atom.GetIdx() not in mapped_atomIDs.keys():
                 em_A.RemoveAtom(atom.GetIdx() - i)
                 i += 1
 
         i = 0
         for atom in molB.GetAtoms():
-            if not atom.GetIdx() in mapped_atomIDs.values():
+            if atom.GetIdx() not in mapped_atomIDs.values():
                 em_B.RemoveAtom(atom.GetIdx() - i)
                 i += 1
 

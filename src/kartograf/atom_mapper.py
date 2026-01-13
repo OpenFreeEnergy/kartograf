@@ -858,7 +858,7 @@ class KartografAtomMapper(AtomMapper):
         Iterator[AtomMapping]
             returns an interator of possible atom mappings.
         """
-        if type(A) != type(B):
+        if type(A) is not type(B):
             raise ValueError(f"The components {A} and {B} were not of the same type, please check the inputs.")
         # 1. identify Component Chains if present
         component_a_chains = KartografAtomMapper._split_component_molecules(A)

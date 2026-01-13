@@ -12,7 +12,6 @@ try:
 except ImportError:
     optional_imports = False
 
-from .conftest import stereo_chem_mapping
 
 if optional_imports:
 
