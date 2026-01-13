@@ -3,7 +3,7 @@
 
 import pytest
 
-from kartograf.atom_aligner import align_mol_skeletons, align_mol_shape
+from kartograf.atom_aligner import align_mol_shape, align_mol_skeletons
 
 from .conftest import stereco_chem_molecules
 
@@ -14,6 +14,7 @@ def test_stereo_align_mcs(stereco_chem_molecules):
     """
     molA, molB = stereco_chem_molecules
     aligned_molA = align_mol_skeletons(molA, molB)
+
 
 def test_stereo_align_shape(stereco_chem_molecules):
     """

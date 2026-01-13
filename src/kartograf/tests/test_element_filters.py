@@ -4,15 +4,17 @@ from rdkit import Chem
 from kartograf import filters
 
 
-@pytest.mark.parametrize('reverse', [False, True])
+@pytest.mark.parametrize("reverse", [False, True])
 def test_atoms_H_only_H_mapped(reverse):
     # ethane to propane, hydrogen from ethane mapped to carbon
-    m1 = Chem.AddHs(Chem.MolFromSmiles('CC'))
-    m2 = Chem.AddHs(Chem.MolFromSmiles('CCC'))
-    mapping = {0: 0, 1: 1,
-               2: 2,  # this is a H->C, should get removed
-               5: 3,  # this is a H->H, should remain
-               }
+    m1 = Chem.AddHs(Chem.MolFromSmiles("CC"))
+    m2 = Chem.AddHs(Chem.MolFromSmiles("CCC"))
+    mapping = {
+        0: 0,
+        1: 1,
+        2: 2,  # this is a H->C, should get removed
+        5: 3,  # this is a H->H, should remain
+    }
     ref = {0: 0, 1: 1, 5: 3}
     if reverse:
         m1, m2 = m2, m1
@@ -24,12 +26,12 @@ def test_atoms_H_only_H_mapped(reverse):
     assert newmapping == ref
 
 
-@pytest.mark.parametrize('reverse', [False, True])
+@pytest.mark.parametrize("reverse", [False, True])
 def test_element_change(reverse):
     # benzene to pyridine, has heteroatom change
     # will result in non-whole ring, but that isn't the job of this filter
-    m1 = Chem.MolFromSmiles('c1ccccn1')
-    m2 = Chem.MolFromSmiles('c1ccccc1')
+    m1 = Chem.MolFromSmiles("c1ccccn1")
+    m2 = Chem.MolFromSmiles("c1ccccc1")
     if reverse:
         m1, m2 = m2, m1
 
@@ -40,12 +42,12 @@ def test_element_change(reverse):
     assert newmapping == {i: i for i in range(5)}
 
 
-@pytest.mark.parametrize('reverse', [False, True])
+@pytest.mark.parametrize("reverse", [False, True])
 def test_element_hybridization_change(reverse):
-    # check if atom hybridization is changing 
+    # check if atom hybridization is changing
     # for the example propane to propylene
-    m1 = Chem.MolFromSmiles('CCC')
-    m2 = Chem.MolFromSmiles('CC=C')
+    m1 = Chem.MolFromSmiles("CCC")
+    m2 = Chem.MolFromSmiles("CC=C")
     if reverse:
         m1, m2 = m2, m1
 

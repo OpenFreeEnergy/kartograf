@@ -1,26 +1,26 @@
 # This code is part of kartograf and is licensed under the MIT license.
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
-import pytest
+from copy import deepcopy
 from importlib.resources import files
 
+import pytest
 from gufe import SmallMoleculeComponent
+
 from kartograf import KartografAtomMapper
 from kartograf.atom_mapper import filter_atoms_h_only_h_mapped, filter_whole_rings_only
 from kartograf.filters.element_change import filter_hybridization_changes
 from kartograf.filters.ring_changes import (
-    filter_whole_rings_only,
     filter_hybridization_rings,
+    filter_whole_rings_only,
 )
 
-
 from .conftest import (
-    naphtalene_benzene_molecules,
     naphtalene_benzene_mapping,
+    naphtalene_benzene_molecules,
     stereco_chem_molecules,
     stereo_chem_mapping,
 )
-from copy import deepcopy
 
 
 def check_mapping_vs_expected(mapping, expected_mapping):
@@ -105,10 +105,7 @@ def test_mapping_noMap_algo():
             _mapping_algorithm=None,
         )
 
-    assert (
-        "Mapping algorithm not implemented or unknown (options: MST or "
-        "LSA). got key: None" in str(exc.value)
-    )
+    assert "Mapping algorithm not implemented or unknown (options: MST or LSA). got key: None" in str(exc.value)
 
 
 # Check parameters/Filters
@@ -217,8 +214,8 @@ class TestSerialisation:
 
         assert len(m._filter_funcs) == len(m2._filter_funcs)
 
-        test_args = {1:2, 2:1}
-        assert m._filter_funcs[0](test_args) ==  m2._filter_funcs[0](test_args)
+        test_args = {1: 2, 2: 1}
+        assert m._filter_funcs[0](test_args) == m2._filter_funcs[0](test_args)
 
 
 def test_filter_property():
@@ -283,8 +280,8 @@ def test_split_multimeric_component():
     """
     Test splitting chains of 2wtk multimer is done correctly
     """
-    from openmm.app import PDBFile
     from gufe import ProteinComponent
+    from openmm.app import PDBFile
 
     input_pdb = str(files("kartograf.tests.data") / "2wtk_trimer_with_extra_mols.pdb")
     pdb = PDBFile(input_pdb)
@@ -294,9 +291,7 @@ def test_split_multimeric_component():
     # It happens that number of components is the number of chains for this pdb, but doesn't have to
     expected_n_comps = len(list(omm_topology.chains()))
     for chain in omm_topology.chains():
-        omm_data.append(
-            {"residues": len(list(chain.residues())), "atoms": len(list(chain.atoms()))}
-        )
+        omm_data.append({"residues": len(list(chain.residues())), "atoms": len(list(chain.atoms()))})
 
     protein_comp = ProteinComponent.from_pdb_file(input_pdb)
     chain_comps = KartografAtomMapper._split_component_molecules(protein_comp)
@@ -330,9 +325,7 @@ def test_mapping_multimer_components(trimer_2wtk_component, trimer_2wtk_mutated_
     )
     # We expect the unique atoms in initial/ALA to be only 1 hydrogen
     unique_initial = len(list(mapping.componentA_unique))
-    assert unique_initial == expected_unique_initial, (
-        f"Unique atoms in initial molecule do not match."
-    )
+    assert unique_initial == expected_unique_initial, f"Unique atoms in initial molecule do not match."
     # We expect the unique atoms in final/TYR to be 12 atoms
     expected_unique_final = 12
     unique_final = len(list(mapping.componentB_unique))
@@ -344,9 +337,7 @@ def test_mapping_multimer_components(trimer_2wtk_component, trimer_2wtk_mutated_
     assert mapping.componentB is trimer_2wtk_mutated_component
 
 
-def test_atom_mapping_different_component_types(
-    trimer_2wtk_component, naphtalene_benzene_molecules
-):
+def test_atom_mapping_different_component_types(trimer_2wtk_component, naphtalene_benzene_molecules):
     """Make sure an error is rasied if we try and create a mapping between two different component types."""
     mapper = KartografAtomMapper()
 
@@ -354,9 +345,7 @@ def test_atom_mapping_different_component_types(
         next(mapper.suggest_mappings(trimer_2wtk_component, naphtalene_benzene_molecules[0]))
 
 
-def test_atom_mapping_different_number_of_sub_components(
-    trimer_2wtk_component, naphtalene_benzene_molecules
-):
+def test_atom_mapping_different_number_of_sub_components(trimer_2wtk_component, naphtalene_benzene_molecules):
     """
     Make sure an error is raised if we get a different number of disconected components in the two molecules
     we want to map.
@@ -364,9 +353,7 @@ def test_atom_mapping_different_number_of_sub_components(
     mapper = KartografAtomMapper()
 
     # convert to be the same type to avoid the type check error
-    trimer_smc = SmallMoleculeComponent.from_rdkit(
-        trimer_2wtk_component.to_rdkit(), trimer_2wtk_component.name
-    )
+    trimer_smc = SmallMoleculeComponent.from_rdkit(trimer_2wtk_component.to_rdkit(), trimer_2wtk_component.name)
     with pytest.raises(
         RuntimeError,
         match="ontain a different number of sub components and so no mapping could be created",
@@ -430,9 +417,7 @@ def test_hybridization_and_ring_breaks(shp2_hybridization_ligands):
         map_exact_ring_matches_only=True,
         additional_mapping_filter_functions=[filter_hybridization_changes],
     )
-    mapping = next(
-        mapper.suggest_mappings(shp2_hybridization_ligands[0], shp2_hybridization_ligands[1])
-    )
+    mapping = next(mapper.suggest_mappings(shp2_hybridization_ligands[0], shp2_hybridization_ligands[1]))
     # check the whole rings are mapped
     filtered_mapping = filter_whole_rings_only(
         mapping.componentA.to_rdkit(),
@@ -449,9 +434,7 @@ def test_ring_hybridization_with_non_ring_atoms(shp2_hybridization_ligands):
     <https://github.com/OpenFreeEnergy/kartograf/issues/62>
     """
     mapper = KartografAtomMapper(additional_mapping_filter_functions=[filter_hybridization_rings])
-    mapping = next(
-        mapper.suggest_mappings(shp2_hybridization_ligands[0], shp2_hybridization_ligands[1])
-    )
+    mapping = next(mapper.suggest_mappings(shp2_hybridization_ligands[0], shp2_hybridization_ligands[1]))
     # make sure we have some mapping between the atoms
     assert mapping.componentA_to_componentB
 
