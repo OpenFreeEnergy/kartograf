@@ -28,6 +28,7 @@ jobs:
       matrix:
         os: ['ubuntu',]
         python-version:
+          - "3.11"
           - "3.12"
           - "3.13"
         include:
