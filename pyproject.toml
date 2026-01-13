@@ -41,23 +41,17 @@ kartograf = [ "tests/data/*.pdb", "tests/data/*.sdf" ]
 fallback_version = "0.0.0"
 
 [tool.ruff]
-line-length = 120
 target-version = "py311"
 
+line-length = 120
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
 lint.select = [
   # "F",  # Pyflakes
   "I", # isort
-  "W", # pycodestyle warnings
   # "E",  # pycodestyle errors
-  # "C901"  # mccabe complexity  TODO: add this back in
+  # "C901",  # mccabe complexity  TODO: add this back in
   "UP", # pyupgrade 
-]
-lint.ignore = [
-  "E402", # module-level import not at top (conflicts w/ isort)
-  "E722", # bare excepts (TODO: we should fix these in a follow-up PR)
-  "E731", # lambda expressions (TODO: we should fix these)
-  "F401", # unused imports (TODO: we should fix these)
+  "W",  # pycodestyle warnings
 ]
 
 # ignore "unused import" error for all __init__.py files
