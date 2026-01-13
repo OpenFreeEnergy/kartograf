@@ -55,7 +55,6 @@ lint.select = [
 ]
 
 lint.ignore = [
-  "E402", # module-level import not at top (conflicts w/ isort)
   "E501", # line too long, if the formatter can't fix it then it can be okay 
 ]
 
