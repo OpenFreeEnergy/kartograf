@@ -2,7 +2,6 @@
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
 import logging
-from typing import Tuple
 
 import numpy as np
 from gufe.mapping import AtomMapping
@@ -15,7 +14,7 @@ log = logging.getLogger(__name__)
 
 
 class _MappingShapeDistanceScorer(_AbstractAtomMappingScorer):
-    mapping_mols: Tuple[Chem.Mol, Chem.Mol]
+    mapping_mols: tuple[Chem.Mol, Chem.Mol]
 
     def __init__(
         self,
@@ -81,7 +80,7 @@ class _MappingShapeDistanceScorer(_AbstractAtomMappingScorer):
         s = self.get_mapping_shape_distance(mapping)
         return s if (s > 0) else 0.0
 
-    def get_mapped_mols(self, mapping: AtomMapping) -> Tuple[Chem.Mol, Chem.Mol]:
+    def get_mapped_mols(self, mapping: AtomMapping) -> tuple[Chem.Mol, Chem.Mol]:
         """Reduce the two molecules to an rdmol, representing the mapping.
 
         Parameters

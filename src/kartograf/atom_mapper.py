@@ -4,9 +4,9 @@
 import copy
 import logging
 from collections import OrderedDict
-from collections.abc import Iterator
+from collections.abc import Callable, Iterable, Iterator
 from enum import Enum
-from typing import Callable, Iterable, Optional, Union
+from typing import Optional, Union
 
 import dill
 import numpy as np
@@ -66,9 +66,8 @@ class KartografAtomMapper(AtomMapper):
         map_exact_ring_matches_only: bool = True,
         allow_partial_fused_rings: bool = True,
         allow_bond_breaks: bool = False,
-        additional_mapping_filter_functions: Optional[
-            Iterable[Callable[[Chem.Mol, Chem.Mol, dict[int, int]], dict[int, int]]]
-        ] = None,
+        additional_mapping_filter_functions: Iterable[Callable[[Chem.Mol, Chem.Mol, dict[int, int]], dict[int, int]]]
+        | None = None,
         _mapping_algorithm: str = mapping_algorithm.linear_sum_assignment,
     ):
         """Geometry Based Atom Mapper
@@ -445,8 +444,8 @@ class KartografAtomMapper(AtomMapper):
         atomA_pos: NDArray,
         atomB_pos: NDArray,
         metric: Callable[
-            [Union[float, Iterable], Union[float, Iterable]],
-            Union[float, Iterable],
+            [float | Iterable, float | Iterable],
+            float | Iterable,
         ] = vector_eucledean_dist,
     ) -> np.array:
         """calculates a full distance matrix between the two given input
@@ -610,9 +609,9 @@ class KartografAtomMapper(AtomMapper):
         molA: Chem.Mol,
         molB: Chem.Mol,
         max_d: float = 0.95,
-        masked_atoms_molA: Optional[list[int]] = None,
-        masked_atoms_molB: Optional[list[int]] = None,
-        pre_mapped_atoms: Optional[dict[int, int]] = None,
+        masked_atoms_molA: list[int] | None = None,
+        masked_atoms_molB: list[int] | None = None,
+        pre_mapped_atoms: dict[int, int] | None = None,
         map_hydrogens: bool = True,
     ) -> dict[int, int]:
         """main mapping function - private
@@ -751,9 +750,9 @@ class KartografAtomMapper(AtomMapper):
         self,
         molA: Chem.Mol,
         molB: Chem.Mol,
-        masked_atoms_molA: Optional[list] = None,
-        masked_atoms_molB: Optional[list] = None,
-        pre_mapped_atoms: Optional[dict] = None,
+        masked_atoms_molA: list | None = None,
+        masked_atoms_molB: list | None = None,
+        pre_mapped_atoms: dict | None = None,
     ) -> dict[int, int]:
         """Mapping Function with RDkit
         The function effectively maps the two molecules on to each other and

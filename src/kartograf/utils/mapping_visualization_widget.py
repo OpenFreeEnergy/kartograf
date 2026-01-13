@@ -1,7 +1,6 @@
 # This code is part of kartograf and is licensed under the MIT license.
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
-from typing import List, Union
 
 from gufe import AtomMapping
 from ipywidgets import widgets
@@ -17,7 +16,7 @@ from .optional_imports import requires_package
 
 
 @requires_package("py3Dmol")
-def display_mappings_3d(mappingSet: Union[AtomMapping, List[AtomMapping]]) -> widgets.VBox:
+def display_mappings_3d(mappingSet: AtomMapping | list[AtomMapping]) -> widgets.VBox:
     """Jupyter Visualization Widget
     This function is visualizing the provided list of mappings. It shows in the
     middle an overlay of the coordinates of the molecues, and left and right
