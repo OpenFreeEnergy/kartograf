@@ -204,16 +204,21 @@ class TestSerialisation:
         assert m._filter_funcs == m2._filter_funcs
 
     def test_custom_filters(self):
-        def nop_filter(a, b, c):
-            return c
+        def even_prime_filter(mapping):
+            mapping.pop(2, None)
+
+            return mapping
 
         m = KartografAtomMapper(
-            additional_mapping_filter_functions=[nop_filter],
+            additional_mapping_filter_functions=[even_prime_filter],
         )
 
         m2 = KartografAtomMapper.from_dict(m.to_dict())
 
-        assert m._filter_funcs == m2._filter_funcs
+        assert len(m._filter_funcs) == len(m2._filter_funcs)
+
+        test_args = {1:2, 2:1}
+        assert m._filter_funcs[0](test_args) ==  m2._filter_funcs[0](test_args)
 
 
 def test_filter_property():

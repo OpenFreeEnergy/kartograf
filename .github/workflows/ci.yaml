@@ -28,19 +28,19 @@ jobs:
       matrix:
         os: ['ubuntu',]
         python-version:
-          - "3.10"
           - "3.11"
           - "3.12"
+          - "3.13"
         include:
           - os: 'macos'
-            python-version: "3.11"
+            python-version: "3.13"
 
     steps:
       - uses: actions/checkout@v4
       - name: Get current date
         id: date
         run: echo "date=$(date +%Y-%m-%d)" >> "${GITHUB_OUTPUT}"
-      - uses: mamba-org/setup-micromamba@v1
+      - uses: mamba-org/setup-micromamba@v2
         with:
           environment-file: environment.yml
           environment-name: kartograf
@@ -50,8 +50,7 @@ jobs:
           cache-downloads-key: downloads-${{ steps.date.outputs.date }}
           create-args: >-
             python=${{ matrix.python-version }}
-            lomap2
-            openfe
+            openfe 
 
       - name: "Install"
         run: pip install --no-deps -e .
@@ -96,12 +95,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - uses: mamba-org/setup-micromamba@v1
+    - uses: mamba-org/setup-micromamba@v2
       with:
           environment-file: environment.yml
           environment-name: kartograf
           create-args: >-
-            python=3.12
+            python=3.13
 
     - name: install_deps
       run: |
