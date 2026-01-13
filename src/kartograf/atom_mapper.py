@@ -6,11 +6,10 @@ import logging
 from collections import OrderedDict
 from collections.abc import Callable, Iterable, Iterator
 from enum import Enum
-from typing import Optional, Union
 
 import dill
 import numpy as np
-from gufe import AtomMapper, AtomMapping, LigandAtomMapping
+from gufe import AtomMapper, LigandAtomMapping
 from gufe.components.explicitmoleculecomponent import ExplicitMoleculeComponent
 from numpy.typing import NDArray
 from rdkit import Chem
