@@ -70,7 +70,6 @@ html_theme_options = {
     ],
     "accent_color": "FeelingSick",
 }
-# html_logo = "_static/Squaredcircle.svg"
 
 
 # Add any paths that contain custom static files (such as style sheets) here,

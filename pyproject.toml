@@ -46,6 +46,7 @@ target-version = "py311"
 line-length = 120
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
 lint.select = [
+  "ERA",  # https://pypi.org/project/eradicate/ commented-out code
   "F",  # Pyflakes
   "I", # isort
   "E",  # pycodestyle errors
