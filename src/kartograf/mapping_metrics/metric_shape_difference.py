@@ -24,7 +24,7 @@ class _MappingShapeDistanceScorer(_AbstractAtomMappingScorer):
         ignore_hs: bool = False,
         max_layers: int = -1,
         step_size: float = 0.25,
-    ):
+    ) -> None:
         """A Shape based Scorer Class
         This function is using the implemented shape distances
         in rdkit and applies them to the atom mapping problem.
@@ -202,7 +202,7 @@ class MappingShapeOverlapScorer(_MappingShapeDistanceScorer):
         ignore_hs: bool = False,
         max_layers: int = -1,
         step_size: float = 0.25,
-    ):
+    ) -> None:
         """Shape overlap based scorer
         This class uses the _MappingShapeDistanceScorer
         with the settings such, that the overlap of the
@@ -240,7 +240,7 @@ class MappingShapeMismatchScorer(_MappingShapeDistanceScorer):
         ignore_hs: bool = False,
         max_layers: int = -1,
         step_size: float = 0.25,
-    ):
+    ) -> None:
         """Shape mismatch based scorer
         This class uses the _MappingShapeDistanceScorer with the settings such,
         that the volume mismatches of the two molecules are taken into

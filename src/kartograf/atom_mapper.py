@@ -68,7 +68,7 @@ class KartografAtomMapper(AtomMapper):
         additional_mapping_filter_functions: Iterable[Callable[[Chem.Mol, Chem.Mol, dict[int, int]], dict[int, int]]]
         | None = None,
         _mapping_algorithm: str = mapping_algorithm.linear_sum_assignment,
-    ):
+    ) -> None:
         """Geometry Based Atom Mapper
         This mapper is a homebrew, that utilises rdkit in order
         to generate an atom-mapping based on the coordinates of two molecules.
@@ -194,7 +194,7 @@ class KartografAtomMapper(AtomMapper):
         return self._map_hydrogens_on_hydrogens_only
 
     @map_hydrogens_on_hydrogens_only.setter
-    def map_hydrogens_on_hydrogens_only(self, s: bool):
+    def map_hydrogens_on_hydrogens_only(self, s: bool) -> None:
         self._map_hydrogens_on_hydrogens_only = s
         if s and filter_atoms_h_only_h_mapped not in self._filter_funcs:
             self._filter_funcs.insert(0, filter_atoms_h_only_h_mapped)
@@ -207,7 +207,7 @@ class KartografAtomMapper(AtomMapper):
         return self._map_exact_ring_matches_only
 
     @map_exact_ring_matches_only.setter
-    def map_exact_ring_matches_only(self, s: bool):
+    def map_exact_ring_matches_only(self, s: bool) -> None:
         self._map_exact_ring_matches_only = s
 
         for f in [

@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class _AbstractAtomMappingScorer(abc.ABC):
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     def __call__(self, mapping: AtomMapping, *args, **kwargs) -> float:

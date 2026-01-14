@@ -13,7 +13,7 @@ from kartograf.mapping_metrics import (
 from kartograf.mapping_metrics.metric_shape_difference import _MappingShapeDistanceScorer
 
 
-def test_score_mappings_rmsd(stereo_chem_mapping):
+def test_score_mappings_rmsd(stereo_chem_mapping) -> None:
     """
     Currently a smoke test
     """
@@ -22,7 +22,7 @@ def test_score_mappings_rmsd(stereo_chem_mapping):
     print(score)
 
 
-def test_score_norm_mapping_rmsd(stereo_chem_mapping):
+def test_score_norm_mapping_rmsd(stereo_chem_mapping) -> None:
     """
     Currently a smoke test
     """
@@ -31,7 +31,7 @@ def test_score_norm_mapping_rmsd(stereo_chem_mapping):
     print(score)
 
 
-def test_score_mapping_volume_ratio(stereo_chem_mapping):
+def test_score_mapping_volume_ratio(stereo_chem_mapping) -> None:
     """
     Currently a smoke test
     """
@@ -40,7 +40,7 @@ def test_score_mapping_volume_ratio(stereo_chem_mapping):
     print(score)
 
 
-def test_score_shape_dist(stereo_chem_mapping):
+def test_score_shape_dist(stereo_chem_mapping) -> None:
     """
     Currently a smoke test
     """
@@ -49,7 +49,7 @@ def test_score_shape_dist(stereo_chem_mapping):
     print(score)
 
 
-def test_score_shape_overlap(stereo_chem_mapping):
+def test_score_shape_overlap(stereo_chem_mapping) -> None:
     """
     Currently a smoke test
     """
@@ -58,7 +58,7 @@ def test_score_shape_overlap(stereo_chem_mapping):
     print(score)
 
 
-def test_score_shape_mismatch(stereo_chem_mapping):
+def test_score_shape_mismatch(stereo_chem_mapping) -> None:
     """
     Currently a smoke test
     """
@@ -78,7 +78,7 @@ def test_score_shape_mismatch(stereo_chem_mapping):
         MappingRatioMappedAtomsScorer,
     ],
 )
-def test_scorer_identical_molecules(scorer_class, benzene_benzene_mapping):
+def test_scorer_identical_molecules(scorer_class, benzene_benzene_mapping) -> None:
     """
     Currently a smoke test
     """
@@ -99,7 +99,7 @@ def test_scorer_identical_molecules(scorer_class, benzene_benzene_mapping):
         (MappingRatioMappedAtomsScorer, 0),
     ],
 )
-def test_scorer_empty_mapping(scorer_class, exp: float, benzene_benzene_empty_mapping):
+def test_scorer_empty_mapping(scorer_class, exp: float, benzene_benzene_empty_mapping) -> None:
     """
     Currently a smoke test
     """
@@ -118,7 +118,7 @@ def test_scorer_empty_mapping(scorer_class, exp: float, benzene_benzene_empty_ma
         (MappingVolumeRatioScorer, 1),
     ],
 )
-def test_scorer_empty_mapping_err(scorer_class, exp: float, benzene_benzene_empty_mapping):
+def test_scorer_empty_mapping_err(scorer_class, exp: float, benzene_benzene_empty_mapping) -> None:
     """
     Currently a smoke test
     """

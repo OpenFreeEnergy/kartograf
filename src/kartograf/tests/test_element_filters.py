@@ -5,7 +5,7 @@ from kartograf import filters
 
 
 @pytest.mark.parametrize("reverse", [False, True])
-def test_atoms_H_only_H_mapped(reverse):
+def test_atoms_H_only_H_mapped(reverse) -> None:
     # ethane to propane, hydrogen from ethane mapped to carbon
     m1 = Chem.AddHs(Chem.MolFromSmiles("CC"))
     m2 = Chem.AddHs(Chem.MolFromSmiles("CCC"))
@@ -27,7 +27,7 @@ def test_atoms_H_only_H_mapped(reverse):
 
 
 @pytest.mark.parametrize("reverse", [False, True])
-def test_element_change(reverse):
+def test_element_change(reverse) -> None:
     # benzene to pyridine, has heteroatom change
     # will result in non-whole ring, but that isn't the job of this filter
     m1 = Chem.MolFromSmiles("c1ccccn1")
@@ -43,7 +43,7 @@ def test_element_change(reverse):
 
 
 @pytest.mark.parametrize("reverse", [False, True])
-def test_element_hybridization_change(reverse):
+def test_element_hybridization_change(reverse) -> None:
     # check if atom hybridization is changing
     # for the example propane to propylene
     m1 = Chem.MolFromSmiles("CCC")

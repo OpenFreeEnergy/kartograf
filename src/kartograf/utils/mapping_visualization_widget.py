@@ -39,7 +39,7 @@ def display_mappings_3d(mappingSet: AtomMapping | list[AtomMapping]) -> widgets.
         mappingSet = [mappingSet]
 
     # helper for drawing edges
-    def display_edge(index):
+    def display_edge(index) -> None:
         print(f"MolA: {mappingSet[index].componentA.name}")
         print(f"MolB: {mappingSet[index].componentB.name}")
         print(f"Mapping MolA->MolB: {mappingSet[index].componentA_to_componentB}")
@@ -63,7 +63,7 @@ def display_mappings_3d(mappingSet: AtomMapping | list[AtomMapping]) -> widgets.
     # jump one mapping forward/backwards
     nextButton = widgets.Button(tooltip="next structure", icon="fa-caret-right")
 
-    def increment(fu):
+    def increment(fu) -> None:
         if slider.value == slider.max:
             slider.value = 0
         else:
@@ -73,7 +73,7 @@ def display_mappings_3d(mappingSet: AtomMapping | list[AtomMapping]) -> widgets.
 
     previousButton = widgets.Button(tooltip="previous structure", icon="fa-caret-left")
 
-    def decrement(fu):
+    def decrement(fu) -> None:
         if slider.value == 0:
             slider.value = slider.max
         else:

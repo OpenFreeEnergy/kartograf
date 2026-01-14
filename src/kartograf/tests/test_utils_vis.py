@@ -14,14 +14,14 @@ except ImportError:
 
 if optional_imports:
 
-    def test_score_mappings_rmsd(stereo_chem_mapping):
+    def test_score_mappings_rmsd(stereo_chem_mapping) -> None:
         """
         Currently a smoke test
         """
         v = display_mapping_3d(stereo_chem_mapping)
         assert isinstance(v, view)
 
-    def test_view_mapping(stereo_chem_mapping):
+    def test_view_mapping(stereo_chem_mapping) -> None:
         """
         Currently a smoke test
         """

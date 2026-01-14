@@ -5,7 +5,7 @@
 from kartograf.atom_aligner import align_mol_shape, align_mol_skeletons
 
 
-def test_stereo_align_mcs(stereco_chem_molecules):
+def test_stereo_align_mcs(stereco_chem_molecules) -> None:
     """
     Currently a smoke test
     """
@@ -13,7 +13,7 @@ def test_stereo_align_mcs(stereco_chem_molecules):
     align_mol_skeletons(molA, molB)
 
 
-def test_stereo_align_shape(stereco_chem_molecules):
+def test_stereo_align_shape(stereco_chem_molecules) -> None:
     """
     Currently a smoke test
     """

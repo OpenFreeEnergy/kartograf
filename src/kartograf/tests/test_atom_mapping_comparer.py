@@ -7,7 +7,7 @@ from gufe import LigandAtomMapping
 from kartograf.mapping_metrics.metrics_mapping_comparisons import jaccard_score
 
 
-def test_mapping_comparison_jcs_identical(benzene_benzene_mapping):
+def test_mapping_comparison_jcs_identical(benzene_benzene_mapping) -> None:
     """
     Check identical mappings
     """
@@ -18,7 +18,7 @@ def test_mapping_comparison_jcs_identical(benzene_benzene_mapping):
     assert score == 1
 
 
-def test_mapping_comparison_jcs_diverse(benzene_benzene_mapping):
+def test_mapping_comparison_jcs_diverse(benzene_benzene_mapping) -> None:
     """
     Check completly different mappings
     """
@@ -60,7 +60,7 @@ def test_mapping_comparison_jcs_diverse(benzene_benzene_mapping):
     assert score == 0
 
 
-def test_mapping_comparison_jcs_empty_mapping(benzene_benzene_mapping, benzene_benzene_empty_mapping):
+def test_mapping_comparison_jcs_empty_mapping(benzene_benzene_mapping, benzene_benzene_empty_mapping) -> None:
     """
     Check empty mappings
     """

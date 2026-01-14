@@ -9,7 +9,7 @@ from kartograf import filters
 
 
 @pytest.mark.parametrize("reverse", [False, True])
-def test_ringsize_filter(reverse):
+def test_ringsize_filter(reverse) -> None:
     # naphthalene to indole, 6,6 to 6,5
     # should trim out the 5->6 ring
     m1 = Chem.MolFromSmiles("c12ccccc1cccc2")
@@ -24,7 +24,7 @@ def test_ringsize_filter(reverse):
     assert newmapping == {i: i for i in range(6)}
 
 
-def test_ringsize_safe():
+def test_ringsize_safe() -> None:
     m1 = Chem.MolFromSmiles("c1c(C)cccc1")
     m2 = Chem.MolFromSmiles("c1c(C)cccn1")
 
@@ -35,7 +35,7 @@ def test_ringsize_safe():
 
 
 @pytest.mark.parametrize("reverse", [False, True])
-def test_ringbreaks(reverse):
+def test_ringbreaks(reverse) -> None:
     # naphthalene to toluene
     # should remove methyl
     m1 = Chem.MolFromSmiles("c12ccccc1cccc2")
@@ -51,7 +51,7 @@ def test_ringbreaks(reverse):
     assert newmapping == {i: i for i in range(6)}
 
 
-def test_ringbreaks_safe():
+def test_ringbreaks_safe() -> None:
     m1 = Chem.MolFromSmiles("c1ccccc1")
     m2 = Chem.MolFromSmiles("c1ccccn1")
 
@@ -62,7 +62,7 @@ def test_ringbreaks_safe():
 
 
 @pytest.mark.parametrize("reverse", [False, True])
-def test_whole_rings_only(reverse):
+def test_whole_rings_only(reverse) -> None:
     # benzene to pyridine
     # only first 5 atoms mapped, so none should remain mapped
     m1 = Chem.MolFromSmiles("c1ccccc1")
@@ -77,7 +77,7 @@ def test_whole_rings_only(reverse):
     assert newmapping == {}
 
 
-def test_whole_rings_safe():
+def test_whole_rings_safe() -> None:
     m1 = Chem.MolFromSmiles("c1ccccc1")
     m2 = Chem.MolFromSmiles("c1ccccn1")
 
@@ -122,7 +122,7 @@ def test_whole_rings_safe():
         ),  # expected: map the aliphatic rings ontoeach other
     ],
 )
-def test_ring_hybridization(molA, molB, initial_mapping, expected_mapping):
+def test_ring_hybridization(molA, molB, initial_mapping, expected_mapping) -> None:
     newmapping = filters.filter_hybridization_rings(molA, molB, initial_mapping)
 
     assert newmapping != {}
