@@ -46,7 +46,7 @@ target-version = "py311"
 line-length = 120
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
 lint.select = [
-  "ERA",  # https://pypi.org/project/eradicate/ commented-out code
+  "ERA",  # find commented-out code https://pypi.org/project/eradicate/
   "F",  # Pyflakes
   "I", # isort
   "E",  # pycodestyle errors
@@ -54,6 +54,7 @@ lint.select = [
   "UP", # pyupgrade 
   "W",  # pycodestyle warnings
   "FURB", # A tool for refurbishing and modernizing Python codebases https://github.com/dosisod/refurb
+  "YTT"",  # detect issues using sys to check python version https://pypi.org/project/flake8-2020/
 ]
 
 lint.ignore = [
