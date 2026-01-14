@@ -183,7 +183,7 @@ class KartografAtomMapper(AtomMapper):
 
         d["_mapping_algorithm"] = map_alg
 
-        d["additional_mapping_filter_functions"] = [dill.loads(f) for f in d.pop("filters", [])]
+        d["additional_mapping_filter_functions"] = [dill.loads(f) for f in d.pop("filters", [])]  # noqa: S301
 
         return cls(**d)
 
