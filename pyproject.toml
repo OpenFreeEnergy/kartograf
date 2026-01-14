@@ -50,25 +50,35 @@ line-length = 120
 # easily turn on the linter
 # For linters that exist and we want to use, but don't want to fix now, I've added them and then
 # excluded the rule(s) that we don't want to fix now, but would be good future TODO 
+# TODO add more linters!
 lint.select = [
   # "AIR",  # airflow https://pypi.org/project/apache-airflow/
   # "FAST", # FastAPI https://pypi.org/project/fastapi/
+  "ANN",  # type annotations  https://pypi.org/project/flake8-annotations/
   "E",    # pycodestyle errors
   "ERA",  # find commented-out code https://pypi.org/project/eradicate/
   "F",    # Pyflakes
   "FURB", # A tool for refurbishing and modernizing Python codebases https://github.com/dosisod/refurb
   "I",    # isort
   # "C901",  # mccabe complexity  TODO: add this back in
+  "S",   # security related lint https://pypi.org/project/flake8-bandit/
   "UP",  # pyupgrade 
   "W",   # pycodestyle warnings
   "YTT", # detect issues using sys to check python version https://pypi.org/project/flake8-2020/
 ]
 
 lint.ignore = [
-  "E501", # line too long, if the formatter can't fix it then it can be okay 
+  "ANN001", # TODO Missing type annotation for function argument {name}
+  "ANN002", # TODO Missing type annotation for *{name}
+  "ANN003", # TODO Missing type annotation for **{name}
+  "ANN201", # TODO Missing return type annotation for public function {name}
+  "ANN202", # TODO Missing return type annotation for private function {name}
+  "ANN206", # TODO Missing return type annotation for classmethod {name}
+  "E501",   # line too long, if the formatter can't fix it then it can be okay 
 ]
 
 # ignore "unused import" error for all __init__.py files
 lint.per-file-ignores."__init__.py" = [ "E401" ]
-
+# ignore securty issues in tests
+lint.per-file-ignores."src/kartograf/tests/*" = [ "S" ]
 lint.isort.known-first-party = [ "kartograf" ]
