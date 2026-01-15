@@ -42,8 +42,8 @@ fallback_version = "0.0.0"
 
 [tool.ruff]
 target-version = "py311"
-
 line-length = 120
+src = [ "src" ]
 # I've added all the linters that ruff supports as of 0.14.11
 # If it doesn't exist in the package (for example async) it is not enabled
 # I wanted to include it so that if there is a PR that adds async, we can
