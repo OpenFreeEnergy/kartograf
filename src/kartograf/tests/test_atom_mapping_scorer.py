@@ -3,13 +3,11 @@
 
 import pytest
 
-from kartograf.mapping_metrics import (
-    MappingRatioMappedAtomsScorer,
-    MappingRMSDScorer,
-    MappingShapeMismatchScorer,
-    MappingShapeOverlapScorer,
-    MappingVolumeRatioScorer,
-)
+from kartograf.mapping_metrics import MappingRatioMappedAtomsScorer
+from kartograf.mapping_metrics import MappingRMSDScorer
+from kartograf.mapping_metrics import MappingShapeMismatchScorer
+from kartograf.mapping_metrics import MappingShapeOverlapScorer
+from kartograf.mapping_metrics import MappingVolumeRatioScorer
 from kartograf.mapping_metrics.metric_shape_difference import _MappingShapeDistanceScorer
 
 

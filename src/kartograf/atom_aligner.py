@@ -6,7 +6,9 @@ from copy import deepcopy
 
 from gufe import SmallMoleculeComponent
 from rdkit import Chem
-from rdkit.Chem import AllChem, rdFMCS, rdMolAlign
+from rdkit.Chem import AllChem
+from rdkit.Chem import rdFMCS
+from rdkit.Chem import rdMolAlign
 
 logger = logging.getLogger(__name__)
 

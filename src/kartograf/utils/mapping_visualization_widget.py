@@ -6,9 +6,7 @@ from gufe import AtomMapping
 from ipywidgets import widgets
 
 try:
-    from openfe.utils.visualization_3D import (
-        view_mapping_3d as display_mapping_3d,
-    )
+    from openfe.utils.visualization_3D import view_mapping_3d as display_mapping_3d
 except ImportError:
     pass  # Don't throw  error, will happen later
 
