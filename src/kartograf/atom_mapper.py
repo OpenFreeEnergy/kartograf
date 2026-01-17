@@ -4,12 +4,19 @@
 import copy
 import logging
 from collections import OrderedDict
-from collections.abc import Callable, Iterable, Iterator
+from collections.abc import (
+    Callable,
+    Iterable,
+    Iterator,
+)
 from enum import Enum
 
 import dill
 import numpy as np
-from gufe import AtomMapper, LigandAtomMapping
+from gufe import (
+    AtomMapper,
+    LigandAtomMapping,
+)
 from gufe.components.explicitmoleculecomponent import ExplicitMoleculeComponent
 from numpy.typing import NDArray
 from rdkit import Chem
