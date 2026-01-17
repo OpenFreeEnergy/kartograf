@@ -1,22 +1,20 @@
 # This code is part of kartograf and is licensed under the MIT license.
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
-import pytest
-from importlib.resources import files
 from importlib import resources
+from importlib.resources import files
+
+import pytest
+from gufe import LigandAtomMapping, ProteinComponent, SmallMoleculeComponent
 from rdkit import Chem
-from gufe import SmallMoleculeComponent, LigandAtomMapping, ProteinComponent
-from kartograf.atom_aligner import align_mol_skeletons, align_mol_shape
-from rdkit import Chem
+
+from kartograf.atom_aligner import align_mol_shape, align_mol_skeletons
 
 
 def mol_from_smiles(smiles: str):
     rdmols = [Chem.MolFromSmiles(s) for s in smiles]
     rdmols = [Chem.AddHs(m, addCoords=True) for m in rdmols]
-    [
-        Chem.rdDistGeom.EmbedMolecule(m, useRandomCoords=False, randomSeed=0)
-        for m in rdmols
-    ]
+    [Chem.rdDistGeom.EmbedMolecule(m, useRandomCoords=False, randomSeed=0) for m in rdmols]
     return rdmols
 
 
@@ -100,8 +98,7 @@ def benzene_mol():
 @pytest.fixture(scope="session")
 def benzene_benzene_mapping():
     mol = benzene_mol()
-    expected_mapping = {6: 6, 7: 7, 8: 8, 9: 9, 10: 10, 11: 11, 0: 0, 1: 1,
-                        2: 2, 3: 3, 4: 4, 5: 5}
+    expected_mapping = {6: 6, 7: 7, 8: 8, 9: 9, 10: 10, 11: 11, 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5}
     return LigandAtomMapping(mol, mol, expected_mapping)
 
 
@@ -135,16 +132,18 @@ def fused_ring_mols() -> tuple[SmallMoleculeComponent, SmallMoleculeComponent]:
     Return two biaryl molecules one with a fused ring which are aligned for mapping, we use files to ensure consistent
     atom ordering."""
     d = resources.files("kartograf.tests.data")
-    rd_mols = [Chem.MolFromMolFile(str(f), removeHs=False) for f in  [d / "biphenyl.sdf", d / "biaryl-indene.sdf"]]
+    rd_mols = [Chem.MolFromMolFile(str(f), removeHs=False) for f in [d / "biphenyl.sdf", d / "biaryl-indene.sdf"]]
     mol_a, mol_b = [SmallMoleculeComponent.from_rdkit(m) for m in rd_mols]
     mol_b_to_a = align_mol_shape(mol_b, ref_mol=mol_a)
     return mol_a, mol_b_to_a
+
 
 @pytest.fixture(scope="session")
 def shp2_hybridization_ligands() -> tuple[SmallMoleculeComponent, SmallMoleculeComponent]:
     d = resources.files("kartograf.tests.data")
     mols = [SmallMoleculeComponent.from_sdf_file(str(f)) for f in [d / "lig_E6.sdf", d / "lig_E29.sdf"]]
     return mols[0], mols[1]
+
 
 @pytest.fixture(scope="session")
 def pfkfb3_ligands() -> dict[str, SmallMoleculeComponent]:

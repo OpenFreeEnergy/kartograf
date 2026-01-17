@@ -1,16 +1,12 @@
 # This code is part of kartograf and is licensed under the MIT license.
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
+import logging
 from copy import deepcopy
 
-from rdkit import Chem
-from rdkit.Chem import AllChem
-from rdkit.Chem import rdFMCS
-from rdkit.Chem import rdMolAlign
-
 from gufe import SmallMoleculeComponent
-
-import logging
+from rdkit import Chem
+from rdkit.Chem import AllChem, rdFMCS, rdMolAlign
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +15,7 @@ def align_mol_skeletons(
     mol: SmallMoleculeComponent,
     ref_mol: SmallMoleculeComponent,
 ) -> SmallMoleculeComponent:
-    """ Alignment based on MCS
+    """Alignment based on MCS
         This i a Wrapper for rdkit - MCS align
         Aligns very simply molecule to the reference molecule,
         based on the shared MCS - skeleton.
@@ -68,10 +64,8 @@ def align_mol_skeletons(
     return mol
 
 
-def align_mol_shape(
-    mol: SmallMoleculeComponent, ref_mol: SmallMoleculeComponent
-) -> Chem.Mol:
-    """ Alignment based on shape
+def align_mol_shape(mol: SmallMoleculeComponent, ref_mol: SmallMoleculeComponent) -> Chem.Mol:
+    """Alignment based on shape
         This is a Wrapper for rdkit / OPEN3DAlign
         Aligns shape based two SmallMoleculeComponents.
 
