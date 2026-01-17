@@ -2,8 +2,7 @@
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
 
-from kartograf.atom_aligner import align_mol_shape
-from kartograf.atom_aligner import align_mol_skeletons
+from kartograf.atom_aligner import align_mol_shape, align_mol_skeletons
 
 
 def test_stereo_align_mcs(stereco_chem_molecules) -> None:

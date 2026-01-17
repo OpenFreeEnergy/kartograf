@@ -5,13 +5,10 @@ from importlib import resources
 from importlib.resources import files
 
 import pytest
-from gufe import LigandAtomMapping
-from gufe import ProteinComponent
-from gufe import SmallMoleculeComponent
+from gufe import LigandAtomMapping, ProteinComponent, SmallMoleculeComponent
 from rdkit import Chem
 
-from kartograf.atom_aligner import align_mol_shape
-from kartograf.atom_aligner import align_mol_skeletons
+from kartograf.atom_aligner import align_mol_shape, align_mol_skeletons
 
 
 def mol_from_smiles(smiles: str):

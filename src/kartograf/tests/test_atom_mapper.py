@@ -8,8 +8,7 @@ import pytest
 from gufe import SmallMoleculeComponent
 
 from kartograf import KartografAtomMapper
-from kartograf.atom_mapper import filter_atoms_h_only_h_mapped
-from kartograf.atom_mapper import filter_whole_rings_only
+from kartograf.atom_mapper import filter_atoms_h_only_h_mapped, filter_whole_rings_only
 from kartograf.filters.element_change import filter_hybridization_changes
 from kartograf.filters.ring_changes import filter_hybridization_rings
 

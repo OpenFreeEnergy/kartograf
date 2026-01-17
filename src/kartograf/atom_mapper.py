@@ -4,15 +4,12 @@
 import copy
 import logging
 from collections import OrderedDict
-from collections.abc import Callable
-from collections.abc import Iterable
-from collections.abc import Iterator
+from collections.abc import Callable, Iterable, Iterator
 from enum import Enum
 
 import dill
 import numpy as np
-from gufe import AtomMapper
-from gufe import LigandAtomMapping
+from gufe import AtomMapper, LigandAtomMapping
 from gufe.components.explicitmoleculecomponent import ExplicitMoleculeComponent
 from numpy.typing import NDArray
 from rdkit import Chem
@@ -20,12 +17,14 @@ from scipy.optimize import linear_sum_assignment
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import connected_components
 
-from .filters import filter_atoms_h_only_h_mapped
-from .filters import filter_bond_breaks
-from .filters import filter_fused_ring_changes
-from .filters import filter_ringbreak_changes
-from .filters import filter_ringsize_changes
-from .filters import filter_whole_rings_only
+from .filters import (
+    filter_atoms_h_only_h_mapped,
+    filter_bond_breaks,
+    filter_fused_ring_changes,
+    filter_ringbreak_changes,
+    filter_ringsize_changes,
+    filter_whole_rings_only,
+)
 
 logger = logging.getLogger(__name__)
 
