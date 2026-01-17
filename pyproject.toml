@@ -83,6 +83,14 @@ lint.per-file-ignores."__init__.py" = [ "E401" ]
 lint.per-file-ignores."src/kartograf/tests/*" = [ "S" ]
 lint.isort.known-first-party = [ "kartograf" ]
 #lint.isort.force-single-line = true
-#lint.isort.force-wrap-aliases = true
+lint.isort.force-wrap-aliases = true
 lint.isort.combine-as-imports = true
 #format.skip-magic-trailing-comma = false
+[tool.isort]
+profile = "black"
+force_grid_wrap = 1
+use_parentheses = true
+include_trailing_comma = true
+line_length = 88
+combine_as_imports = true
+force_wrap_aliases = true
