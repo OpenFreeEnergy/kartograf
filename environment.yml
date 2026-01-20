@@ -17,7 +17,7 @@ dependencies:
   - typing-extensions
   - openff-units != 0.2.3
   # Sci
-  - numpy
+  - numpy ~=2.0
   - scipy
   # Chem
   - rdkit
