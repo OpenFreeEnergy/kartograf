@@ -2,10 +2,10 @@
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
 import logging
-import numpy as np
-from scipy import constants as const
 
+import numpy as np
 from gufe.mapping import AtomMapping
+from scipy import constants as const
 
 from ._abstract_scorer import _AbstractAtomMappingScorer
 
@@ -70,7 +70,7 @@ class MappingRMSDScorer(_AbstractAtomMappingScorer):
         rmsd = self.get_rmsd(mapping)
         beta = 1000 / (const.k * const.Avogadro * T)
         V = k_hook * (rmsd - accepted_distance_rmsd)
-        p = np.exp(-beta * V) if (np.exp(-beta * V) < 1) else 1
+        p = min(1, np.exp(-beta * V))
         return float(p)
 
     def get_score(
@@ -80,7 +80,7 @@ class MappingRMSDScorer(_AbstractAtomMappingScorer):
         k_hook: float = 1,
         T: float = 298,
     ) -> float:
-        """ Calculate mapping RMSD based score
+        """Calculate mapping RMSD based score
             returns a normalized value between 0 and 1, where 1.0 is the best
             and 0.0 is the worst score.
 
@@ -97,8 +97,11 @@ class MappingRMSDScorer(_AbstractAtomMappingScorer):
         float
             normalized score between 0 and 1.
         """
-        s = self.get_rmsd_p(mapping,
-                            accepted_distance_rmsd=accepted_distance_rmsd,
-                            k_hook=k_hook, T=T,)
+        s = self.get_rmsd_p(
+            mapping,
+            accepted_distance_rmsd=accepted_distance_rmsd,
+            k_hook=k_hook,
+            T=T,
+        )
 
         return float(s)

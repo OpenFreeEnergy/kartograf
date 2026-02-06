@@ -62,7 +62,7 @@ going to use the :class:`.MappingRMSDScorer`, which gives insight into how far t
 need to travel from one state to the other, if they are mapped onto each
 other::
 
-    from kartograf.atom_mapping_scorer import MappingRMSDScorer
+    from kartograf.mapping_metrics import MappingRMSDScorer
 
     # Score Mapping
     rmsd_scorer = MappingRMSDScorer()
