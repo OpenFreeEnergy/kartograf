@@ -3,7 +3,9 @@
 
 import logging
 
-from rdkit import Chem
+from rdkit import (
+    Chem,
+)
 
 logger = logging.getLogger(__name__)
 

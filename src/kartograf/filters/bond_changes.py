@@ -3,7 +3,9 @@
 import logging
 
 import networkx as nx
-from rdkit import Chem
+from rdkit import (
+    Chem,
+)
 
 logger = logging.getLogger(__name__)
 

@@ -3,13 +3,17 @@
 
 import copy
 import logging
-from collections import OrderedDict
+from collections import (
+    OrderedDict,
+)
 from collections.abc import (
     Callable,
     Iterable,
     Iterator,
 )
-from enum import Enum
+from enum import (
+    Enum,
+)
 
 import dill
 import numpy as np
@@ -17,12 +21,24 @@ from gufe import (
     AtomMapper,
     LigandAtomMapping,
 )
-from gufe.components.explicitmoleculecomponent import ExplicitMoleculeComponent
-from numpy.typing import NDArray
-from rdkit import Chem
-from scipy.optimize import linear_sum_assignment
-from scipy.sparse import csr_matrix
-from scipy.sparse.csgraph import connected_components
+from gufe.components.explicitmoleculecomponent import (
+    ExplicitMoleculeComponent,
+)
+from numpy.typing import (
+    NDArray,
+)
+from rdkit import (
+    Chem,
+)
+from scipy.optimize import (
+    linear_sum_assignment,
+)
+from scipy.sparse import (
+    csr_matrix,
+)
+from scipy.sparse.csgraph import (
+    connected_components,
+)
 
 from .filters import (
     filter_atoms_h_only_h_mapped,
@@ -837,7 +853,9 @@ class KartografAtomMapper(AtomMapper):
         This returns a list of ``Chem.Mol`` objects with a prop named `Starting_index` indicating the starting
         index in the original component.
         """
-        from rdkit.Chem.rdmolops import GetMolFrags
+        from rdkit.Chem.rdmolops import (
+            GetMolFrags,
+        )
 
         rdmol = component.to_rdkit()
         index_tuples = []

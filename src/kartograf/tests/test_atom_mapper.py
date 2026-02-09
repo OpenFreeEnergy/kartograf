@@ -1,16 +1,31 @@
 # This code is part of kartograf and is licensed under the MIT license.
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
-from copy import deepcopy
-from importlib.resources import files
+from copy import (
+    deepcopy,
+)
+from importlib.resources import (
+    files,
+)
 
 import pytest
-from gufe import SmallMoleculeComponent
+from gufe import (
+    SmallMoleculeComponent,
+)
 
-from kartograf import KartografAtomMapper
-from kartograf.atom_mapper import filter_atoms_h_only_h_mapped, filter_whole_rings_only
-from kartograf.filters.element_change import filter_hybridization_changes
-from kartograf.filters.ring_changes import filter_hybridization_rings
+from kartograf import (
+    KartografAtomMapper,
+)
+from kartograf.atom_mapper import (
+    filter_atoms_h_only_h_mapped,
+    filter_whole_rings_only,
+)
+from kartograf.filters.element_change import (
+    filter_hybridization_changes,
+)
+from kartograf.filters.ring_changes import (
+    filter_hybridization_rings,
+)
 
 
 def check_mapping_vs_expected(mapping, expected_mapping) -> None:
@@ -63,7 +78,9 @@ def test_mapping_naphtalene_benzene_mst(naphtalene_benzene_molecules, naphtalene
     """
     Test mapping of naphtalene to benzene.
     """
-    from kartograf.atom_mapper import mapping_algorithm
+    from kartograf.atom_mapper import (
+        mapping_algorithm,
+    )
 
     expected_mapping = naphtalene_benzene_mapping.componentA_to_componentB
     geom_mapper = KartografAtomMapper(
@@ -270,8 +287,12 @@ def test_split_multimeric_component() -> None:
     """
     Test splitting chains of 2wtk multimer is done correctly
     """
-    from gufe import ProteinComponent
-    from openmm.app import PDBFile
+    from gufe import (
+        ProteinComponent,
+    )
+    from openmm.app import (
+        PDBFile,
+    )
 
     input_pdb = str(files("kartograf.tests.data") / "2wtk_trimer_with_extra_mols.pdb")
     pdb = PDBFile(input_pdb)
@@ -301,7 +322,9 @@ def test_mapping_multimer_components(trimer_2wtk_component, trimer_2wtk_mutated_
 
     The final/target component is the same original component but with a ALA-76-TYR mutation.
     """
-    from gufe import ProteinComponent
+    from gufe import (
+        ProteinComponent,
+    )
 
     mapper = KartografAtomMapper(atom_map_hydrogens=True)
     mapping = next(mapper.suggest_mappings(trimer_2wtk_component, trimer_2wtk_mutated_component))

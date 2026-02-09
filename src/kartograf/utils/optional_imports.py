@@ -7,7 +7,9 @@ shamelessly borrowed from openff.toolkit
 """
 
 import functools
-from collections.abc import Callable
+from collections.abc import (
+    Callable,
+)
 
 
 def requires_package(package_name: str) -> Callable:
