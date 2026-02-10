@@ -68,7 +68,6 @@ lint.select = [
 ]
 
 lint.ignore = [
-#  "I",
   "ANN001", # TODO Missing type annotation for function argument {name}
   "ANN002", # TODO Missing type annotation for *{name}
   "ANN003", # TODO Missing type annotation for **{name}
@@ -83,14 +82,5 @@ lint.per-file-ignores."__init__.py" = [ "E401" ]
 # ignore securty issues in tests
 lint.per-file-ignores."src/kartograf/tests/*" = [ "S" ]
 lint.isort.known-first-party = [ "kartograf" ]
-#lint.isort.force-single-line = true
 lint.isort.force-wrap-aliases = true
 lint.isort.combine-as-imports = true
-#format.skip-magic-trailing-comma = false
-#[tool.isort]
-#profile = "black"
-#use_parentheses = true
-#include_trailing_comma = true
-#line_length = 120
-#combine_as_imports = true
-#force_grid_wrap = 1
