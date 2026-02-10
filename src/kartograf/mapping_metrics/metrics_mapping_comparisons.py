@@ -1,6 +1,4 @@
-from gufe import (
-    AtomMapping,
-)
+from gufe import AtomMapping
 
 
 def jaccard_score(mappingA: AtomMapping, mappingB: AtomMapping) -> float:

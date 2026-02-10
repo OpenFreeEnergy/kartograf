@@ -2,13 +2,9 @@
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
 import pytest
-from gufe import (
-    LigandAtomMapping,
-)
+from gufe import LigandAtomMapping
 
-from kartograf.mapping_metrics.metrics_mapping_comparisons import (
-    jaccard_score,
-)
+from kartograf.mapping_metrics.metrics_mapping_comparisons import jaccard_score
 
 
 def test_mapping_comparison_jcs_identical(benzene_benzene_mapping) -> None:

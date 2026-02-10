@@ -2,13 +2,9 @@
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
 import logging
-from collections import (
-    defaultdict,
-)
+from collections import defaultdict
 
-from rdkit import (
-    Chem,
-)
+from rdkit import Chem
 
 logger = logging.getLogger(__name__)
 

@@ -2,21 +2,11 @@
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
 import logging
-from copy import (
-    deepcopy,
-)
+from copy import deepcopy
 
-from gufe import (
-    SmallMoleculeComponent,
-)
-from rdkit import (
-    Chem,
-)
-from rdkit.Chem import (
-    AllChem,
-    rdFMCS,
-    rdMolAlign,
-)
+from gufe import SmallMoleculeComponent
+from rdkit import Chem
+from rdkit.Chem import AllChem, rdFMCS, rdMolAlign
 
 logger = logging.getLogger(__name__)
 

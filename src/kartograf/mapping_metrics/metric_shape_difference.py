@@ -4,20 +4,11 @@
 import logging
 
 import numpy as np
-from gufe.mapping import (
-    AtomMapping,
-)
-from rdkit import (
-    Chem,
-)
-from rdkit.Chem import (
-    AllChem,
-    rdShapeHelpers,
-)
+from gufe.mapping import AtomMapping
+from rdkit import Chem
+from rdkit.Chem import AllChem, rdShapeHelpers
 
-from ._abstract_scorer import (
-    _AbstractAtomMappingScorer,
-)
+from ._abstract_scorer import _AbstractAtomMappingScorer
 
 log = logging.getLogger(__name__)
 

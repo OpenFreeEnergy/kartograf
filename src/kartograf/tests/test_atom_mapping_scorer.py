@@ -10,9 +10,7 @@ from kartograf.mapping_metrics import (
     MappingShapeOverlapScorer,
     MappingVolumeRatioScorer,
 )
-from kartograf.mapping_metrics.metric_shape_difference import (
-    _MappingShapeDistanceScorer,
-)
+from kartograf.mapping_metrics.metric_shape_difference import _MappingShapeDistanceScorer
 
 
 def test_score_mappings_rmsd(stereo_chem_mapping) -> None:

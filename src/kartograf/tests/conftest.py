@@ -1,27 +1,14 @@
 # This code is part of kartograf and is licensed under the MIT license.
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
-from importlib import (
-    resources,
-)
-from importlib.resources import (
-    files,
-)
+from importlib import resources
+from importlib.resources import files
 
 import pytest
-from gufe import (
-    LigandAtomMapping,
-    ProteinComponent,
-    SmallMoleculeComponent,
-)
-from rdkit import (
-    Chem,
-)
+from gufe import LigandAtomMapping, ProteinComponent, SmallMoleculeComponent
+from rdkit import Chem
 
-from kartograf.atom_aligner import (
-    align_mol_shape,
-    align_mol_skeletons,
-)
+from kartograf.atom_aligner import align_mol_shape, align_mol_skeletons
 
 
 def mol_from_smiles(smiles: str):

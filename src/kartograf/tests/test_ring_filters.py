@@ -3,13 +3,9 @@
 
 
 import pytest
-from rdkit import (
-    Chem,
-)
+from rdkit import Chem
 
-from kartograf import (
-    filters,
-)
+from kartograf import filters
 
 
 @pytest.mark.parametrize("reverse", [False, True])

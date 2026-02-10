@@ -4,9 +4,7 @@
 import abc
 import logging
 
-from gufe.mapping import (
-    AtomMapping,
-)
+from gufe.mapping import AtomMapping
 
 logger = logging.getLogger(__name__)
 

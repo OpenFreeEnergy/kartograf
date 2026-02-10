@@ -4,16 +4,10 @@
 import logging
 
 import numpy as np
-from gufe.mapping import (
-    AtomMapping,
-)
-from scipy.spatial import (
-    ConvexHull,
-)
+from gufe.mapping import AtomMapping
+from scipy.spatial import ConvexHull
 
-from ._abstract_scorer import (
-    _AbstractAtomMappingScorer,
-)
+from ._abstract_scorer import _AbstractAtomMappingScorer
 
 log = logging.getLogger(__name__)
 
