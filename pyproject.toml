@@ -81,6 +81,6 @@ lint.ignore = [
 lint.per-file-ignores."__init__.py" = [ "E401" ]
 # ignore securty issues in tests
 lint.per-file-ignores."src/kartograf/tests/*" = [ "S" ]
-lint.isort.known-first-party = [ "kartograf" ]
-lint.isort.force-wrap-aliases = true
 lint.isort.combine-as-imports = true
+lint.isort.force-wrap-aliases = true
+lint.isort.known-first-party = [ "kartograf" ]
