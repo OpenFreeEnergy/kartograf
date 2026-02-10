@@ -30,4 +30,5 @@ dependencies:
   # docs
   - pip:
     - git+https://github.com/OpenFreeEnergy/ofe-sphinx-theme@a45f3edd5bc3e973c1a01b577c71efa1b62a65d6
+    - git+https://github.com/OpenFreeEnergy/openfe-benchmarks.git@d5a027e4e3cb53e47d4b230e8ddffda274b70aff
 
