@@ -28,5 +28,3 @@ You can find our Preprint on `Ries, B.; Alibay, I.; Swenson, D. W. H; Baumann, H
    guide
    api
    CHANGELOG
-
-

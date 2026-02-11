@@ -12,7 +12,7 @@ distance of 0 angstroms to each other.
 A less trivial example is the atom mapping case for molecule transformations
 like in hybrid topology free energy calculation approaches. In such a case
 the mapping quality depends on the likelihood of the transformation to converge
-well and to give a reasonable free energy. This in a way would 
+well and to give a reasonable free energy. This in a way would
 require the true and calculated result of the calculation and lead to a henn
 egg problem. To tackle this problem usually simplistic approaches
 are used to estimate the success likelihood of the transformation. Criteria
