@@ -12,4 +12,3 @@ API docs
    api/kartograf.metrics
    api/kartograf.aligners
    api/kartograf.utils
-

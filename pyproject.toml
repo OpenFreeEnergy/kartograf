@@ -49,7 +49,7 @@ src = [ "src" ]
 # I wanted to include it so that if there is a PR that adds async, we can
 # easily turn on the linter
 # For linters that exist and we want to use, but don't want to fix now, I've added them and then
-# excluded the rule(s) that we don't want to fix now, but would be good future TODO 
+# excluded the rule(s) that we don't want to fix now, but would be good future TODO
 # TODO add more linters!
 lint.select = [
   # "AIR",  # airflow https://pypi.org/project/apache-airflow/
@@ -62,7 +62,7 @@ lint.select = [
   "I",    # isort
   # "C901",  # mccabe complexity  TODO: add this back in
   "S",   # security related lint https://pypi.org/project/flake8-bandit/
-  "UP",  # pyupgrade 
+  "UP",  # pyupgrade
   "W",   # pycodestyle warnings
   "YTT", # detect issues using sys to check python version https://pypi.org/project/flake8-2020/
 ]
@@ -74,7 +74,7 @@ lint.ignore = [
   "ANN201", # TODO Missing return type annotation for public function {name}
   "ANN202", # TODO Missing return type annotation for private function {name}
   "ANN206", # TODO Missing return type annotation for classmethod {name}
-  "E501",   # line too long, if the formatter can't fix it then it can be okay 
+  "E501",   # line too long, if the formatter can't fix it then it can be okay
 ]
 
 # ignore "unused import" error for all __init__.py files

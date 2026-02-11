@@ -70,4 +70,3 @@ other::
     print(f"RMSD Score: {score}")
 
 This will print the calculated score.
-

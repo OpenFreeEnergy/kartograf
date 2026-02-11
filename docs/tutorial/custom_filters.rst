@@ -58,4 +58,3 @@ Now you can start building atom mappings without element changes. Note you
 can add as many filters here as you like, they will be executed in order of
 their list appearance. The default ring rules of Kartograf can also be turned
 off by setting ``map_exact_ring_matches_only=False``, not recommended though.
-

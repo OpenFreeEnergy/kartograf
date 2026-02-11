@@ -39,5 +39,3 @@ v1.1.0
 **Fixed:**
 
 * Ring hybridization filter `PR#65 <https://github.com/OpenFreeEnergy/kartograf/pull/65>`_
-
-
