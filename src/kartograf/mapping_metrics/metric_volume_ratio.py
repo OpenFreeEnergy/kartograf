@@ -2,10 +2,10 @@
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
 import logging
-import numpy as np
-from scipy.spatial import ConvexHull
 
+import numpy as np
 from gufe.mapping import AtomMapping
+from scipy.spatial import ConvexHull
 
 from ._abstract_scorer import _AbstractAtomMappingScorer
 
@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 
 class MappingVolumeRatioScorer(_AbstractAtomMappingScorer):
     def get_score(self, mapping: AtomMapping) -> float:
-        """ Calculate a Volume ratio based score
+        """Calculate a Volume ratio based score
             returns a normalized value between 0 and 1, where 0 is the best
             and 1 ist the worst score.
 
@@ -35,7 +35,7 @@ class MappingVolumeRatioScorer(_AbstractAtomMappingScorer):
         return 0.0 if (r < 0) else r
 
     def get_volume_ratio(self, mapping: AtomMapping) -> float:
-        """ Calculate volume ratio
+        """Calculate volume ratio
         this function calculates the ratio of the volume of the convex
         hull of the mapped atoms to the volume of the convex hull of the
         complete molecule
@@ -67,17 +67,11 @@ class MappingVolumeRatioScorer(_AbstractAtomMappingScorer):
             raise ValueError("Mapping is too small to calculate convex hull")
 
         complete_molA = ConvexHull(molA.GetConformer().GetPositions()).volume
-        map_molA = ConvexHull(
-            molA.GetConformer().GetPositions()[mapping_molA]
-        ).volume
+        map_molA = ConvexHull(molA.GetConformer().GetPositions()[mapping_molA]).volume
         complete_molB = ConvexHull(molB.GetConformer().GetPositions()).volume
-        map_molB = ConvexHull(
-            molB.GetConformer().GetPositions()[mapping_molB]
-        ).volume
+        map_molB = ConvexHull(molB.GetConformer().GetPositions()[mapping_molB]).volume
 
-        ratios = np.array(
-            [map_molA / complete_molA, map_molB / complete_molB]
-        )
+        ratios = np.array([map_molA / complete_molA, map_molB / complete_molB])
         avg_map_volume_ratio = np.mean(ratios)
 
         return avg_map_volume_ratio

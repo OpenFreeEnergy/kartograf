@@ -3,18 +3,14 @@
 
 import abc
 import logging
-import numpy as np
 
 from gufe.mapping import AtomMapping
 
 logger = logging.getLogger(__name__)
 
-eukli = lambda x, y: np.sqrt(np.sum(np.square(y - x)))
-rms_func = lambda x: np.sqrt(np.mean(np.square(x)))
-
 
 class _AbstractAtomMappingScorer(abc.ABC):
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     def __call__(self, mapping: AtomMapping, *args, **kwargs) -> float:
@@ -22,7 +18,7 @@ class _AbstractAtomMappingScorer(abc.ABC):
 
     @abc.abstractmethod
     def get_score(self, mapping: AtomMapping, *args, **kwargs) -> float:
-        """ calculate the score
+        """calculate the score
             the scoring function returns a value between 0 and 1.
             a value close to 1.0 indicates a small distance, a score close to zero indicates a large cost/error.
 

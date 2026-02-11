@@ -1,17 +1,17 @@
 # This code is part of kartograf and is licensed under the MIT license.
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
-from collections import defaultdict
 import logging
+from collections import defaultdict
+
 from rdkit import Chem
 
 logger = logging.getLogger(__name__)
 
 ATOM_MAPPING = dict[int, int]
 
-def filter_ringsize_changes(
-        molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING
-) -> ATOM_MAPPING:
+
+def filter_ringsize_changes(molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING) -> ATOM_MAPPING:
     """Prevents mutating the size of rings in the mapping"""
     riA = molA.GetRingInfo()
     riB = molB.GetRingInfo()
@@ -41,9 +41,7 @@ def filter_ringsize_changes(
     return filtered_mapping
 
 
-def filter_ringbreak_changes(
-        molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING
-) -> ATOM_MAPPING:
+def filter_ringbreak_changes(molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING) -> ATOM_MAPPING:
     """Prevent any ring cleaving transformations in the mapping
 
     This filter prevents any non-ring atom turning into a ring atom (or
@@ -61,16 +59,12 @@ def filter_ringbreak_changes(
     return filtered_mapping
 
 
-def filter_whole_rings_only(
-        molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING
-) -> ATOM_MAPPING:
+def filter_whole_rings_only(molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING) -> ATOM_MAPPING:
     """Ensure that any mapped rings are wholly mapped"""
     proposed_mapping = {**mapping}
 
     for mol in [molA, molB]:  # loop over A->B and B->A directions
-        ri = (
-            mol.GetRingInfo().AtomRings()
-        )  # gives list of tuple of atom indices
+        ri = mol.GetRingInfo().AtomRings()  # gives list of tuple of atom indices
         # for each ring, are we fully present?
         ringok: dict[frozenset[int], bool] = {}
         # for each atom, which (maybe unmapped) rings is it present in?
@@ -100,9 +94,7 @@ def filter_whole_rings_only(
     return proposed_mapping
 
 
-def filter_hybridization_rings(
-        molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING
-) -> ATOM_MAPPING:
+def filter_hybridization_rings(molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING) -> ATOM_MAPPING:
     """Ensure that any mapped rings are either both aromatic or aliphatic
 
     e.g. this filter would unmap hexane to benzene type transformations
@@ -131,9 +123,7 @@ def filter_hybridization_rings(
         # maps ring index to aromaticity as bool
         is_ring_aromatic = {}
         for i, ring in enumerate(riInf.BondRings()):
-            is_ring_aromatic[i] = all(
-                rdmol.GetBondWithIdx(atomI).GetIsAromatic()
-                for atomI in ring)
+            is_ring_aromatic[i] = all(rdmol.GetBondWithIdx(atomI).GetIsAromatic() for atomI in ring)
 
         # first iterate over all rings and determine if they are aromatic
         # map atoms to ring aromaticities
@@ -165,6 +155,7 @@ def filter_hybridization_rings(
 
     return filtered_mapping
 
+
 def filter_fused_ring_changes(molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING) -> ATOM_MAPPING:
     """
     Remove cases where a fused ring is partially mapped and could be considered broken, the entire fused ring system
@@ -181,9 +172,7 @@ def filter_fused_ring_changes(molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPP
     # do not change the order of the mapping this will be done at the
     # end of each loop
     for mol in [molA, molB]:  # loop over A->B and B->A directions
-        ri = (
-            mol.GetRingInfo().AtomRings()
-        )  # gives list of tuple of atom indices
+        ri = mol.GetRingInfo().AtomRings()  # gives list of tuple of atom indices
         # for each ring, are we fully present?
         ringok: dict[frozenset[int], bool] = {}
         # for each atom, which (maybe unmapped) rings is it present in?

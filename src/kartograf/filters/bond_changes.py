@@ -1,11 +1,12 @@
 # This code is part of kartograf and is licensed under the MIT license.
 # For details, see https://github.com/OpenFreeEnergy/kartograf
-from jedi.plugins.django import mapping
-from rdkit import Chem
 import logging
+
 import networkx as nx
+from rdkit import Chem
 
 logger = logging.getLogger(__name__)
+
 
 def filter_bond_breaks(mol_a: Chem.Mol, mol_b: Chem.Mol, mapping: dict[int, int]):
     """
@@ -56,7 +57,7 @@ def filter_bond_breaks(mol_a: Chem.Mol, mol_b: Chem.Mol, mapping: dict[int, int]
     if broken_bonds:
         sub_graphs = [subgraph for subgraph in nx.connected_components(graph)]
         # sort by length to get the largest one
-        sub_graphs.sort(key= lambda x: len(x), reverse=True)
+        sub_graphs.sort(key=lambda x: len(x), reverse=True)
         largest_graph = sub_graphs[0]
         mapping = {k: v for k, v in mapping.items() if k in largest_graph}
 
