@@ -80,13 +80,11 @@ jobs:
 
       - name: codecov
         if: ${{ github.repository == 'OpenFreeEnergy/kartograf' && github.event_name != 'schedule'}}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
-          env_vars: OS,PYTHON
-          fail_ci_if_error: True
-          verbose: True
+          fail_ci_if_error: true
+          verbose: true
 
   check_packaging:
     runs-on: ubuntu-latest
