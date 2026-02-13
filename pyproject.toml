@@ -84,3 +84,43 @@ lint.per-file-ignores."src/kartograf/tests/*" = [ "S" ]
 lint.isort.combine-as-imports = true
 lint.isort.force-wrap-aliases = true
 lint.isort.known-first-party = [ "kartograf" ]
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[tool.pixi.pypi-dependencies]
+kartograf = { path = ".", editable = true }
+
+[tool.pixi.tasks]
+
+[tool.pixi.feature.kartograf]
+channels = ["conda-forge"]
+
+[tool.pixi.feature.kartograf.dependencies]
+dill = "*"
+python = "*"
+pip = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-xdist = "*"
+coverage = "*"
+mypy = "*"
+nbval = "*"
+gufe = ">=1.0"
+typing-extensions = "*"
+openff-units = "!=0.2.3"
+numpy = "~=2.0"
+scipy = "*"
+rdkit = "*"
+myst-parser = "*"
+pydata-sphinx-theme = "*"
+ipywidgets = "*"
+py3dmol = "*"
+openfe = ">=1.8.1"
+
+[tool.pixi.environments]
+kartograf = { features = ["kartograf"], no-default-feature = true }
+
+[dependency-groups]
+kartograf = ["ofe-sphinx-theme @ git+https://github.com/OpenFreeEnergy/ofe-sphinx-theme@a45f3edd5bc3e973c1a01b577c71efa1b62a65d6"]
