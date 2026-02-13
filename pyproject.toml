@@ -28,6 +28,11 @@ dependencies = [
 ]
 urls."Homepage" = "https://github.com/OpenFreeEnergy/kartograf"
 
+[dependency-groups]
+kartograf = [
+  "ofe-sphinx-theme @ git+https://github.com/OpenFreeEnergy/ofe-sphinx-theme@a45f3edd5bc3e973c1a01b577c71efa1b62a65d6",
+]
+
 [tool.setuptools]
 include-package-data = true
 
@@ -86,8 +91,8 @@ lint.isort.force-wrap-aliases = true
 lint.isort.known-first-party = [ "kartograf" ]
 
 [tool.pixi.workspace]
-channels = ["conda-forge"]
-platforms = ["linux-64"]
+channels = [ "conda-forge" ]
+platforms = [ "linux-64" ]
 
 [tool.pixi.pypi-dependencies]
 kartograf = { path = ".", editable = true }
@@ -95,7 +100,7 @@ kartograf = { path = ".", editable = true }
 [tool.pixi.tasks]
 
 [tool.pixi.feature.kartograf]
-channels = ["conda-forge"]
+channels = [ "conda-forge" ]
 
 [tool.pixi.feature.kartograf.dependencies]
 dill = "*"
@@ -120,7 +125,4 @@ py3dmol = "*"
 openfe = ">=1.8.1"
 
 [tool.pixi.environments]
-kartograf = { features = ["kartograf"], no-default-feature = true }
-
-[dependency-groups]
-kartograf = ["ofe-sphinx-theme @ git+https://github.com/OpenFreeEnergy/ofe-sphinx-theme@a45f3edd5bc3e973c1a01b577c71efa1b62a65d6"]
+kartograf = { features = [ "kartograf" ], no-default-feature = true }
