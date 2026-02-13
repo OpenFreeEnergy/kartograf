@@ -59,7 +59,7 @@ def display_mappings_3d(mappingSet: AtomMapping | list[AtomMapping]) -> widgets.
     )
 
     # jump one mapping forward/backwards
-    nextButton = widgets.Button(tooltip="next structure", icon="fa-caret-right")
+    nextButton = widgets.Button(tooltip="next structure", icon="caret-right")
 
     def increment(fu) -> None:
         if slider.value == slider.max:
@@ -69,7 +69,7 @@ def display_mappings_3d(mappingSet: AtomMapping | list[AtomMapping]) -> widgets.
 
     nextButton.on_click(increment)
 
-    previousButton = widgets.Button(tooltip="previous structure", icon="fa-caret-left")
+    previousButton = widgets.Button(tooltip="previous structure", icon="caret-left")
 
     def decrement(fu) -> None:
         if slider.value == 0:
