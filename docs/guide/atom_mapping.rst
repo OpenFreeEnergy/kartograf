@@ -36,6 +36,3 @@ such that for example hydrogens are only mapped on hydrogens or no ring
 breakage occurs. Such rules might be necessary in order to
 ensure sampling of physically relevant configurations or serve other purposes. You can find more information and
 examples in the :ref:`mapping filters tutorial <custom-filter-label>`.
-
-
-

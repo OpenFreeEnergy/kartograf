@@ -25,4 +25,3 @@ References
 
 .. [1] Ries, B.; Rieder, S.; Rhiner, C.; Hünenberger, P. H.; Riniker, S. - RestraintMaker: a graph-based approach to select distance restraints in free-energy calculations with dual topology. J Comput Aided Mol Des 36, 175–192 (2022). https://doi.org/10.1007/s10822-022-00445-6.
 .. [2] Ries, B.; Alibay, I.; Swenson, D. W. H; Baumann, H. M.; Henry, M. M.; Eastwood, J. R. B.; Gowers, R. J. - Kartograf: An Accurate Geometry-Based Atom Mapper for Hybrid Topology Relative Free Energy Calculations, Chemrxiv (2023) https://10.26434/chemrxiv-2023-0n1pq
-

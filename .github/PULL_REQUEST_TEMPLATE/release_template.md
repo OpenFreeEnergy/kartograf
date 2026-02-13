@@ -11,4 +11,3 @@ Make the PR:
 * [ ] Merge the PR into `main`.
 
 After Merging the PR [follow this guide](https://github.com/OpenFreeEnergy/openfe/wiki/How-to-create-a-new-release)
-

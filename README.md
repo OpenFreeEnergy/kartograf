@@ -22,11 +22,11 @@ Kartograf is a package for atom mappings focussing on 3D geometries.
 This package can be for example be used to generate hybrid topology systems, where an atom mapping is required to determine the core region of the approach.
 But of course there exist also other use cases for this package.
 The atom mapper takes two set of coordinates of molecules as input.
-Optionally those set of coordinates can be aligned onto each other, checkout the `atom_aligner` module functions 
+Optionally those set of coordinates can be aligned onto each other, checkout the `atom_aligner` module functions
 of Kartograf that offer a shape alignment implementation and a MCS-skeleton alignment.
 The `atom_mapper` can be used to generate the 3D geometry focused atom mapping, the algorithm is described in the related publication of Kartograf (see reference).
 Additionally, rule based filter functions can be provided to demap atoms, that do not fulfill the desired criteria, see `filters`.
-Several mapping scoring metrics are provided, that evaluate geometric properties of your mapping, from `atom_mapping_scorer`, which might be useful for checking quality of your mappings.
+Several mapping scoring metrics are provided, that evaluate geometric properties of your mapping, from `mapping_metrics`, which might be useful for checking quality of your mappings.
 Finally, there is a visualization function `display_mappings_3d` that can be used to check out the mappings with a jupyter notebook widget.
 
 Checkout our article on Kartograf in the Journal of Chemical Theory and Computation: [*Kartograf: A Geometrically Accurate Atom Mapper for Hybrid-Topology Relative Free Energy Calculations* - Benjamin Ries*, Irfan Alibay, David W. H. Swenson, Hannah M. Baumann, Michael M. Henry, James R. B. Eastwood, and Richard J. Gowers](https://doi.org/10.1021/acs.jctc.3c01206).
@@ -41,7 +41,7 @@ Try our interactive demo: [![Open In Colab](https://colab.research.google.com/as
 ```python3
 from rdkit import Chem
 from kartograf.atom_aligner import align_mol_shape
-from kartograf.atom_mapping_scorer import MappingRMSDScorer
+from kartograf.mapping_metrics import MappingRMSDScorer
 from kartograf import KartografAtomMapper, SmallMoleculeComponent
 
 # Preprocessing from Smiles - Here you can add your Input!
@@ -110,4 +110,3 @@ This library is made available under the MIT open source license.
 ## Authors
 
 The OpenFE development team.
-

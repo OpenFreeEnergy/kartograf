@@ -1,58 +1,86 @@
 [build-system]
-requires=[
-	"setuptools>=61.0",
-	"versioningit",
-]
 build-backend = "setuptools.build_meta"
+
+requires = [
+  "setuptools>=77.0.3",
+  "setuptools-scm>=8",
+]
 
 [project]
 name = "kartograf"
-dynamic = ["version"]
-authors = [{name = "The OpenFE developers", email = "openfe@omsf.io"}]
-dependencies = [
-  'rdkit',
-  'scipy',
-  'numpy',
-  'dill',
-]
-description="Kartograf is a package for geometrically mapping atoms of two molecules."
-readme="README.md"
-requires-python = ">=3.10"
+description = "Kartograf is a package for geometrically mapping atoms of two molecules."
+readme = "README.md"
+license = "MIT"
+license-files = [ "LICENSE" ]
+
+authors = [ { name = "The OpenFE developers", email = "openfe@omsf.io" } ]
+requires-python = ">=3.11"
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
 ]
-
-[project.urls]
-"Homepage" = "https://github.com/OpenFreeEnergy/kartograf"
-
-[tool.poetry.extras]
-vis = ["openfe",   'ipywidgets', 'py3Dmol']
-
-[tool.versioningit]
-default-version = "1+unknown"
-
-[tool.versioningit.format]
-distance = "{base_version}+{distance}.{vcs}{rev}"
-dirty = "{base_version}+{distance}.{vcs}{rev}.dirty"
-distance-dirty = "{base_version}+{distance}.{vcs}{rev}.dirty"
-
-[tool.versioningit.vcs]
-method = "git" 
-match = ["*"]
-default-tag = "0.0.0"
-
-[tool.versioningit.write]
-file = "src/kartograf/_version.py"
+dynamic = [ "version" ]
+dependencies = [
+]
+urls."Homepage" = "https://github.com/OpenFreeEnergy/kartograf"
 
 [tool.setuptools]
 include-package-data = true
-license-files = ["LICENSE"]
 
 [tool.setuptools.packages.find]
-where = ['src']
+where = [ 'src' ]
 
 [tool.setuptools.package-data]
-kartograf = ["tests/data/*.pdb", "tests/data/*.sdf"]
+kartograf = [ "tests/data/*.pdb", "tests/data/*.sdf" ]
 
+[tool.setuptools_scm]
+fallback_version = "0.0.0"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+src = [ "src" ]
+# I've added all the linters that ruff supports as of 0.14.11
+# If it doesn't exist in the package (for example async) it is not enabled
+# I wanted to include it so that if there is a PR that adds async, we can
+# easily turn on the linter
+# For linters that exist and we want to use, but don't want to fix now, I've added them and then
+# excluded the rule(s) that we don't want to fix now, but would be good future TODO
+# TODO add more linters!
+lint.select = [
+  # "AIR",  # airflow https://pypi.org/project/apache-airflow/
+  # "FAST", # FastAPI https://pypi.org/project/fastapi/
+  "ANN",  # type annotations  https://pypi.org/project/flake8-annotations/
+  "E",    # pycodestyle errors
+  "ERA",  # find commented-out code https://pypi.org/project/eradicate/
+  "F",    # Pyflakes
+  "FURB", # A tool for refurbishing and modernizing Python codebases https://github.com/dosisod/refurb
+  "I",    # isort
+  # "C901",  # mccabe complexity  TODO: add this back in
+  "S",   # security related lint https://pypi.org/project/flake8-bandit/
+  "UP",  # pyupgrade
+  "W",   # pycodestyle warnings
+  "YTT", # detect issues using sys to check python version https://pypi.org/project/flake8-2020/
+]
+
+lint.ignore = [
+  "ANN001", # TODO Missing type annotation for function argument {name}
+  "ANN002", # TODO Missing type annotation for *{name}
+  "ANN003", # TODO Missing type annotation for **{name}
+  "ANN201", # TODO Missing return type annotation for public function {name}
+  "ANN202", # TODO Missing return type annotation for private function {name}
+  "ANN206", # TODO Missing return type annotation for classmethod {name}
+  "E501",   # line too long, if the formatter can't fix it then it can be okay
+]
+
+# ignore "unused import" error for all __init__.py files
+lint.per-file-ignores."__init__.py" = [ "E401" ]
+# ignore securty issues in tests
+lint.per-file-ignores."src/kartograf/tests/*" = [ "S" ]
+lint.isort.combine-as-imports = true
+lint.isort.force-wrap-aliases = true
+lint.isort.known-first-party = [ "kartograf" ]

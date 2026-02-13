@@ -12,7 +12,7 @@ mapping, the algorithm is described in the related publication of Kartograf (see
 Additionally, rule-based filter functions can be provided to demap atoms,
 that do not fulfill the desired criteria, see ``filters``.
 Several mapping scoring metrics are provided, that evaluate geometric
-properties of your mapping, from ``atom_mapping_scorer``, which might be
+properties of your mapping, from ``mapping_metrics``, which might be
 useful for checking the quality of your mappings.
 Finally, there is a visualization function ``display_mappings_3d`` that can be
 used to check out the mappings with a Jupyter Notebook widget.
@@ -28,5 +28,3 @@ You can find our Preprint on `Ries, B.; Alibay, I.; Swenson, D. W. H; Baumann, H
    guide
    api
    CHANGELOG
-
-
