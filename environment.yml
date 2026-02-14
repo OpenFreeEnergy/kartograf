@@ -24,6 +24,7 @@ dependencies:
   # docs
   - myst-parser
   - pydata-sphinx-theme
+  - nbsphinx-link
   # vis
   - ipywidgets
   - py3Dmol
