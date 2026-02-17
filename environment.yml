@@ -22,6 +22,7 @@ dependencies:
   # Chem
   - rdkit
   # docs
+  - docutils == 0.20
   - myst-parser
   - pydata-sphinx-theme
   - nbsphinx-link
