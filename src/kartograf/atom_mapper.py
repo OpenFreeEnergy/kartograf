@@ -16,6 +16,7 @@ from rdkit import Chem
 from scipy.optimize import linear_sum_assignment
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import connected_components
+from scipy.spatial.distance import cdist
 
 from .filters import (
     filter_atoms_h_only_h_mapped,
@@ -41,10 +42,6 @@ class mapping_algorithm(Enum):
 
 
 _mapping_alg_type = Callable[[NDArray, float], dict[int, int]]
-
-
-# Helper:
-vector_eucledean_dist = calculate_edge_weight = lambda x, y: np.sqrt(np.sum(np.square(y - x), axis=1))
 
 
 # Implementation of Mapper:
@@ -442,10 +439,6 @@ class KartografAtomMapper(AtomMapper):
     def _get_full_distance_matrix(
         atomA_pos: NDArray,
         atomB_pos: NDArray,
-        metric: Callable[
-            [float | Iterable, float | Iterable],
-            float | Iterable,
-        ] = vector_eucledean_dist,
     ) -> np.array:
         """calculates a full distance matrix between the two given input
         position matrixes.
@@ -457,10 +450,6 @@ class KartografAtomMapper(AtomMapper):
             position matrix A
         atomB_pos : NDArray
             position matrix B
-        metric : Callable[[Union[float, Iterable], Union[float, Iterable]],
-        Union[float, Iterable]], optional
-            the applied metric to calculate the distance matrix. default
-            metric: eucledean distance.
 
         Returns
         -------
@@ -468,12 +457,7 @@ class KartografAtomMapper(AtomMapper):
             returns a distance matrix.
 
         """
-        distance_matrix = []
-        for atomPosA in atomA_pos:
-            atomPos_distances = metric(atomPosA, atomB_pos)
-            distance_matrix.append(atomPos_distances)
-        distance_matrix = np.array(distance_matrix)
-        return distance_matrix
+        return cdist(atomA_pos, atomB_pos)
 
     @staticmethod
     def _mask_atoms(
