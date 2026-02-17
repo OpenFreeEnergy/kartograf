@@ -44,6 +44,9 @@ templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 
+# ignore
+# WARNING: cannot cache unpickleable configuration value: 'nbsphinx_custom_formats' (because it contains a function, class, or module object) [config.cache]
+suppress_warnings = ["config.cache"]
 # autodoc_mock_imports = ['lomap', 'networkx', 'openff', 'openff.toolkit', 'rdkit', 'pytest',
 #                        'typing_extensions',
 #                        'click', 'plugcli']
