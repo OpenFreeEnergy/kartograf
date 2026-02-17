@@ -65,6 +65,9 @@ jobs:
           micromamba info
           micromamba list
 
+      - name: "Print Version"
+        run: python -c "import kartograf; print(kartograf.__version__)"
+
       - name: "Run tests"
         run: |
           # add openfe-benchmarks
