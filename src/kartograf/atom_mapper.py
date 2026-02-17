@@ -439,12 +439,6 @@ class KartografAtomMapper(AtomMapper):
     def _get_full_distance_matrix(
         atomA_pos: NDArray,
         atomB_pos: NDArray,
-        metric: Callable[
-            [float | Iterable, float | Iterable],
-            float | Iterable,
-        ]
-        | str = "euclidean",
-        metric_kwargs: dict = {},
     ) -> np.array:
         """calculates a full distance matrix between the two given input
         position matrixes.
@@ -456,15 +450,6 @@ class KartografAtomMapper(AtomMapper):
             position matrix A
         atomB_pos : NDArray
             position matrix B
-        metric : Callable[[Union[float, Iterable], Union[float, Iterable]],
-        Union[float, Iterable]] | str, optional
-            the applied metric to calculate the distance matrix. default
-            metric: eucledean distance. See
-            https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html#scipy.spatial.distance.cdist
-            for other options.
-        metric_kwargs: dict, optional
-            Extra arguemnts to metric, see https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html#scipy.spatial.distance.cdist
-            for more details.
 
         Returns
         -------
@@ -472,7 +457,7 @@ class KartografAtomMapper(AtomMapper):
             returns a distance matrix.
 
         """
-        return cdist(atomA_pos, atomB_pos, metric=metric, **metric_kwargs)
+        return cdist(atomA_pos, atomB_pos)
 
     @staticmethod
     def _mask_atoms(
