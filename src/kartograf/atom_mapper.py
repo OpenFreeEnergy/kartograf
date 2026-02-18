@@ -425,11 +425,7 @@ class KartografAtomMapper(AtomMapper):
             filtered mapping
 
         """
-        filtered_mapping = {}
-        for atom_a, atom_b in mapping.items():
-            if atom_a in set_a and atom_b in set_b:
-                filtered_mapping[atom_a] = atom_b
-        return filtered_mapping
+        return {atom_a: atom_b for atom_a, atom_b in mapping.items() if atom_a in set_a and atom_b in set_b}
 
     """
         Utils
