@@ -279,7 +279,9 @@ def test_split_multimeric_component() -> None:
     # It happens that number of components is the number of chains for this pdb, but doesn't have to
     expected_n_comps = len(list(omm_topology.chains()))
 
-    omm_data = [{"residues": len(list(chain.residues())), "atoms": len(list(chain.atoms()))} for chain in omm_topology.chains()]
+    omm_data = [
+        {"residues": len(list(chain.residues())), "atoms": len(list(chain.atoms()))} for chain in omm_topology.chains()
+    ]
 
     protein_comp = ProteinComponent.from_pdb_file(input_pdb)
     chain_comps = KartografAtomMapper._split_component_molecules(protein_comp)
