@@ -33,9 +33,6 @@ Checkout our article on Kartograf in the Journal of Chemical Theory and Computat
 
 You can find a preprint on [ChemRxiv](https://doi.org/10.26434/chemrxiv-2023-0n1pq).
 
-Try our interactive demo: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/OpenFreeEnergy/kartograf/blob/main/examples/kartograf_example.ipynb)
-
-
 ## Usage
 
 ```python3
