@@ -61,10 +61,11 @@ lint.select = [
   "FURB", # A tool for refurbishing and modernizing Python codebases https://github.com/dosisod/refurb
   "I",    # isort
   # "C901",  # mccabe complexity  TODO: add this back in
-  "S",   # security related lint https://pypi.org/project/flake8-bandit/
-  "UP",  # pyupgrade
-  "W",   # pycodestyle warnings
-  "YTT", # detect issues using sys to check python version https://pypi.org/project/flake8-2020/
+  "PERF", # performance linting https://github.com/tonybaloney/perflint
+  "S",    # security related lint https://pypi.org/project/flake8-bandit/
+  "UP",   # pyupgrade
+  "W",    # pycodestyle warnings
+  "YTT",  # detect issues using sys to check python version https://pypi.org/project/flake8-2020/
 ]
 
 lint.ignore = [
