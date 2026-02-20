@@ -5,13 +5,6 @@ dependencies:
   - dill
   - python
   - pip
-  #Test
-  - pytest
-  - pytest-cov
-  - pytest-xdist
-  - coverage
-  - mypy
-  - nbval
   #Typing
   - gufe>=1.0
   - typing-extensions
