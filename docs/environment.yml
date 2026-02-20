@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - dill
-  - python
+  - python==3.13
   - pip
   #Typing
   - gufe>=1.0
