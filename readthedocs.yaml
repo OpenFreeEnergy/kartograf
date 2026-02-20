@@ -6,9 +6,9 @@
 version: 2
 
 build:
-  os: ubuntu-20.04
+  os: ubuntu-24.04
   tools:
-    python: "mambaforge-4.10"
+    python: "miniconda3-3.12-24.9"
 
 sphinx:
    configuration: docs/conf.py
@@ -16,3 +16,11 @@ sphinx:
 
 conda:
   environment: docs/environment.yml
+
+
+python:
+  # Install our python package before building the docs
+  # this is needed to pull in setuptools-scm for pkg metadata
+  install:
+    - method: pip
+      path: .
