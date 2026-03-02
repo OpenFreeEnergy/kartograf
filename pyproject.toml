@@ -1,6 +1,5 @@
 [build-system]
 build-backend = "setuptools.build_meta"
-
 requires = [
   "setuptools>=77.0.3",
   "setuptools-scm>=8",
@@ -12,7 +11,6 @@ description = "Kartograf is a package for geometrically mapping atoms of two mol
 readme = "README.md"
 license = "MIT"
 license-files = [ "LICENSE" ]
-
 authors = [ { name = "The OpenFE developers", email = "openfe@omsf.io" } ]
 requires-python = ">=3.11"
 classifiers = [
@@ -24,18 +22,13 @@ classifiers = [
   "Programming Language :: Python :: 3.14",
 ]
 dynamic = [ "version" ]
-dependencies = [
-]
+dependencies = []
 urls."Homepage" = "https://github.com/OpenFreeEnergy/kartograf"
 
 [tool.setuptools]
 include-package-data = true
-
-[tool.setuptools.packages.find]
-where = [ 'src' ]
-
-[tool.setuptools.package-data]
-kartograf = [ "tests/data/*.pdb", "tests/data/*.sdf" ]
+package-data.kartograf = [ "tests/data/*.pdb", "tests/data/*.sdf" ]
+packages.find.where = [ "src" ]
 
 [tool.setuptools_scm]
 fallback_version = "0.0.0"
@@ -67,7 +60,6 @@ lint.select = [
   "W",    # pycodestyle warnings
   "YTT",  # detect issues using sys to check python version https://pypi.org/project/flake8-2020/
 ]
-
 lint.ignore = [
   "ANN001", # TODO Missing type annotation for function argument {name}
   "ANN002", # TODO Missing type annotation for *{name}
@@ -77,7 +69,6 @@ lint.ignore = [
   "ANN206", # TODO Missing return type annotation for classmethod {name}
   "E501",   # line too long, if the formatter can't fix it then it can be okay
 ]
-
 # ignore "unused import" error for all __init__.py files
 lint.per-file-ignores."__init__.py" = [ "E401" ]
 # ignore securty issues in tests
