@@ -15,22 +15,20 @@ from .optional_imports import requires_package
 
 @requires_package("py3Dmol")
 def display_mappings_3d(mappingSet: AtomMapping | list[AtomMapping]) -> widgets.VBox:
-    """Jupyter Visualization Widget
-    This function is visualizing the provided list of mappings. It shows in the
-    middle an overlay of the coordinates of the molecues, and left and right
-    the mapping of the atoms (color of the spheres indicates partners).
-    This function is tested in jupyter notebooks.
+    """
+    Jupyter Visualization Widget.
+
+    This function visualizes the provided list of mappings. It shows an overlay of the coordinates of the molecules in the middle, and on the left and right, the mapping of the atoms (color of the spheres indicates partners). This function is tested in Jupyter notebooks.
 
     Parameters
     ----------
-    mappingSet:Union[AtomMapping, List[AtomMapping]]
-        a list of atom mappings (gufe.AtomMapping objects)
+    mappingSet : AtomMapping or list[AtomMapping]
+        A list of atom mappings (gufe.AtomMapping objects).
 
     Returns
     -------
-    widgets.Vbox:
-        returns a widget, with the visualization and control elements.
-
+    widgets.VBox
+        A widget with the visualization and control elements.
     """
     # Input Parse
     if isinstance(mappingSet, AtomMapping):

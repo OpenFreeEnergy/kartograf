@@ -15,22 +15,22 @@ def align_mol_skeletons(
     mol: SmallMoleculeComponent,
     ref_mol: SmallMoleculeComponent,
 ) -> SmallMoleculeComponent:
-    """Alignment based on MCS
-        This i a Wrapper for rdkit - MCS align
-        Aligns very simply molecule to the reference molecule,
-        based on the shared MCS - skeleton.
+    """
+    Alignment based on MCS.
+
+    This is a Wrapper for rdkit - MCS align that aligns one molecule to another based on the shared MCS skeleton.
 
     Parameters
     ----------
     mol : SmallMoleculeComponent
-        molecule to be aligned to molA (will be moved)
+        Molecule to be aligned to `ref_mol` (will be moved).
     ref_mol : SmallMoleculeComponent
-        molecule with the reference_positions.
+        Molecule with the reference positions.
 
     Returns
     -------
     SmallMoleculeComponent
-        return an aligned copy of molB
+        Aligned copy of `mol`.
     """
     mol = deepcopy(mol)
 
@@ -65,21 +65,22 @@ def align_mol_skeletons(
 
 
 def align_mol_shape(mol: SmallMoleculeComponent, ref_mol: SmallMoleculeComponent) -> Chem.Mol:
-    """Alignment based on shape
-        This is a Wrapper for rdkit / OPEN3DAlign
-        Aligns shape based two SmallMoleculeComponents.
+    """
+    Alignment based on shape.
+
+    This is a Wrapper for rdkit / OPEN3DAlign that aligns the shape of one molecule to another.
 
     Parameters
     ----------
     mol : SmallMoleculeComponent
-        molecule to be aligned to molA (will be moved)
+        Molecule to be aligned to `ref_mol` (will be moved).
     ref_mol : SmallMoleculeComponent
-        molecule with the reference_positions.
+        Molecule with the reference positions.
 
     Returns
     -------
     SmallMoleculeComponent
-        return an aligned copy of molB
+        Aligned copy of `mol`.
     """
     mol = deepcopy(mol)
 
