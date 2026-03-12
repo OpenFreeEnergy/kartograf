@@ -22,7 +22,7 @@ def display_mappings_3d(mappingSet: AtomMapping | list[AtomMapping]) -> widgets.
 
     Parameters
     ----------
-    mappingSet : AtomMapping or list[AtomMapping]
+    mappingSet : AtomMapping or list of AtomMapping
         A list of atom mappings (gufe.AtomMapping objects).
 
     Returns
@@ -40,7 +40,7 @@ def display_mappings_3d(mappingSet: AtomMapping | list[AtomMapping]) -> widgets.
         print(f"MolB: {mappingSet[index].componentB.name}")
         print(f"Mapping MolA->MolB: {mappingSet[index].componentA_to_componentB}")
         if hasattr(mappingSet[index], "score"):
-            print(f"Mapping Score: {getattr(mappingSet[index])} score")
+            print(f"Mapping Score: {mappingSet[index].score} score")
         else:
             print()
         view = display_mapping_3d(mappingSet[index], spheres=True, show_atomIDs=True)  # shift=(0.1, 0, 0))
