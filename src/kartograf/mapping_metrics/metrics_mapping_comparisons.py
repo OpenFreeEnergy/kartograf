@@ -2,22 +2,26 @@ from gufe import AtomMapping
 
 
 def jaccard_score(mappingA: AtomMapping, mappingB: AtomMapping) -> float:
-    """Calculate the Jaccard score for mapping diversity
-        The Jaccard score is a normalized score ([0,1]) , that gives insight
-        on the selected atom pair diversity of two compared mappings.
-        Diversity is expressed here as the change in atom assignments,
-        if the score is 1 the mappings are identical. If the score is 0,
-        the two mapping consist of entirely different atom mapping pairs.
+    """
+    Calculate the Jaccard score for mapping diversity.
+
+    The Jaccard score is a normalized score ([0,1]) that gives insight
+    into the selected atom pair diversity of two compared mappings.
+    Diversity is expressed here as the change in atom assignments.
+    If the score is 1, the mappings are identical. If the score is 0,
+    the two mappings consist of entirely different atom mapping pairs.
 
     Parameters
     ----------
-    mappingA: AtomMapping
-    mappingB: AtomMapping
+    mappingA : AtomMapping
+        The first atom mapping.
+    mappingB : AtomMapping
+        The second atom mapping.
 
     Returns
     -------
     float
-        the calculated Jaccard Score [0, 1]
+        The calculated Jaccard Score [0, 1].
     """
 
     mappingA_pairs = set(mappingA.componentA_to_componentB.items())
