@@ -18,7 +18,7 @@ def align_mol_skeletons(
     """
     Alignment based on MCS.
 
-    This is a Wrapper for rdkit - MCS align that aligns one molecule to another based on the shared MCS skeleton.
+    This is a wrapper for RDKit - MCS align that aligns one molecule to another based on the shared MCS skeleton.
 
     Parameters
     ----------
@@ -68,7 +68,7 @@ def align_mol_shape(mol: SmallMoleculeComponent, ref_mol: SmallMoleculeComponent
     """
     Alignment based on shape.
 
-    This is a Wrapper for rdkit / OPEN3DAlign that aligns the shape of one molecule to another.
+    This is a wrapper for RDKit / Open3DAlign that aligns the shape of one molecule to another.
 
     Parameters
     ----------
@@ -79,8 +79,8 @@ def align_mol_shape(mol: SmallMoleculeComponent, ref_mol: SmallMoleculeComponent
 
     Returns
     -------
-    SmallMoleculeComponent
-        Aligned copy of `mol`.
+    Chem.Mol
+        Aligned RDKit molecule.
     """
     mol = deepcopy(mol)
 
