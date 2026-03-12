@@ -14,18 +14,18 @@ logger = logging.getLogger(__name__)
 
 class MappingRMSDScorer(_AbstractAtomMappingScorer):
     def get_rmsd(self, mapping: AtomMapping) -> float:
-        """this function calculates the rmsd between
-        the mapped atoms of the two molecules
+        """
+        Calculate the RMSD between the mapped atoms of the two molecules.
 
         Parameters
         ----------
         mapping : AtomMapping
-            A mapping to be scored
+            A mapping to be scored.
 
         Returns
         -------
         float
-            returns non-normalized rmsd
+            Non-normalized RMSD.
         """
         molA = mapping.componentA.to_rdkit()
         molB = mapping.componentB.to_rdkit()
@@ -51,21 +51,25 @@ class MappingRMSDScorer(_AbstractAtomMappingScorer):
         k_hook: float = 1,
         T: float = 298,
     ) -> float:
-        """estimate likelihood of this shift by calculating the probability
-        of the rmsd of the mapping with a harmonic oscillator
+        """
+        Estimate the likelihood of this shift by calculating the probability
+        of the RMSD of the mapping with a harmonic oscillator.
 
         Parameters
         ----------
         mapping : AtomMapping
-            A mapping to be scored
+            A mapping to be scored.
+        accepted_distance_rmsd : float, optional
+            Accepted distance RMSD. Default is 0.5.
         k_hook : float, optional
-            hook constant of the harmonic oscillator
+            Hook constant of the harmonic oscillator. Default is 1.
         T : float, optional
-            Temperature
+            Temperature in Kelvin. Default is 298.
+
         Returns
         -------
         float
-            likelihood of the shift (1-p)
+            Likelihood of the shift (1-p).
         """
         rmsd = self.get_rmsd(mapping)
         beta = 1000 / (const.k * const.Avogadro * T)
@@ -80,22 +84,27 @@ class MappingRMSDScorer(_AbstractAtomMappingScorer):
         k_hook: float = 1,
         T: float = 298,
     ) -> float:
-        """Calculate mapping RMSD based score
-            returns a normalized value between 0 and 1, where 1.0 is the best
-            and 0.0 is the worst score.
+        """
+        Calculate the mapping RMSD-based score.
+
+        Returns a normalized value between 0 and 1, where 1.0 is the best
+        and 0.0 is the worst score.
 
         Parameters
         ----------
         mapping : AtomMapping
-            A mapping to be scored
+            A mapping to be scored.
+        accepted_distance_rmsd : float, optional
+            Accepted distance RMSD. Default is 0.
         k_hook : float, optional
-            hook constant of the harmonic oscillator
+            Hook constant of the harmonic oscillator. Default is 1.
         T : float, optional
-            Temperature
+            Temperature in Kelvin. Default is 298.
+
         Returns
         -------
         float
-            normalized score between 0 and 1.
+            Normalized score between 0 and 1.
         """
         s = self.get_rmsd_p(
             mapping,
