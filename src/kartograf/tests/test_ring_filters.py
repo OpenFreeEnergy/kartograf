@@ -25,6 +25,13 @@ def test_ringsize_filter(reverse) -> None:
 
 
 def test_ringsize_safe() -> None:
+    """
+    Test the filter_ringsize_changes function with a safe case.
+
+    Notes
+    -----
+    The test ensures that the function does not alter the mapping when no ring size changes occur.
+    """
     m1 = Chem.MolFromSmiles("c1c(C)cccc1")
     m2 = Chem.MolFromSmiles("c1c(C)cccn1")
 
@@ -36,8 +43,19 @@ def test_ringsize_safe() -> None:
 
 @pytest.mark.parametrize("reverse", [False, True])
 def test_ringbreaks(reverse) -> None:
-    # naphthalene to toluene
-    # should remove methyl
+    """
+    Test the filter_ringbreak_changes function.
+
+    Parameters
+    ----------
+    reverse : bool
+        If True, reverse the order of molecules m1 and m2.
+
+    Notes
+    -----
+    naphthalene to toluene
+    should remove methyl
+    """
     m1 = Chem.MolFromSmiles("c12ccccc1cccc2")
     m2 = Chem.MolFromSmiles("c1ccccc1C")
 
@@ -52,6 +70,13 @@ def test_ringbreaks(reverse) -> None:
 
 
 def test_ringbreaks_safe() -> None:
+    """
+    Test the filter_ringbreak_changes function with a safe case.
+
+    Notes
+    -----
+    The test ensures that the function does not alter the mapping when no ring break changes occur.
+    """
     m1 = Chem.MolFromSmiles("c1ccccc1")
     m2 = Chem.MolFromSmiles("c1ccccn1")
 
@@ -63,8 +88,19 @@ def test_ringbreaks_safe() -> None:
 
 @pytest.mark.parametrize("reverse", [False, True])
 def test_whole_rings_only(reverse) -> None:
-    # benzene to pyridine
-    # only first 5 atoms mapped, so none should remain mapped
+    """
+    Test the filter_whole_rings_only function.
+
+    Parameters
+    ----------
+    reverse : bool
+        If True, reverse the order of molecules m1 and m2.
+
+    Notes
+    -----
+    benzene to pyridine
+    only first 5 atoms mapped, so none should remain mapped
+    """
     m1 = Chem.MolFromSmiles("c1ccccc1")
     m2 = Chem.MolFromSmiles("c1ccccn1")
     if reverse:
@@ -78,6 +114,13 @@ def test_whole_rings_only(reverse) -> None:
 
 
 def test_whole_rings_safe() -> None:
+    """
+    Test the filter_whole_rings_only function with a safe case.
+
+    Notes
+    -----
+    The test ensures that the function does not alter the mapping when the whole rings are correctly mapped.
+    """
     m1 = Chem.MolFromSmiles("c1ccccc1")
     m2 = Chem.MolFromSmiles("c1ccccn1")
 
@@ -123,6 +166,24 @@ def test_whole_rings_safe() -> None:
     ],
 )
 def test_ring_hybridization(molA, molB, initial_mapping, expected_mapping) -> None:
+    """
+    Test the filter_hybridization_rings function.
+
+    Parameters
+    ----------
+    molA : rdkit.Chem.Mol
+        The first molecule.
+    molB : rdkit.Chem.Mol
+        The second molecule.
+    initial_mapping : dict
+        The initial mapping of atoms between molA and molB.
+    expected_mapping : dict
+        The expected mapping of atoms after filtering.
+
+    Notes
+    -----
+    The test checks if the function correctly filters the mapping based on ring hybridization.
+    """
     newmapping = filters.filter_hybridization_rings(molA, molB, initial_mapping)
 
     assert newmapping != {}
