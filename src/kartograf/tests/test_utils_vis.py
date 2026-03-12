@@ -16,14 +16,32 @@ if optional_imports:
 
     def test_score_mappings_rmsd(stereo_chem_mapping) -> None:
         """
-        Currently a smoke test
+        Currently a smoke test.
+
+        Parameters
+        ----------
+        stereo_chem_mapping : ?
+            Description of stereo_chem_mapping.
+
+        Returns
+        -------
+        None
         """
         v = display_mapping_3d(stereo_chem_mapping)
         assert isinstance(v, view)
 
     def test_view_mapping(stereo_chem_mapping) -> None:
         """
-        Currently a smoke test
+        Currently a smoke test.
+
+        Parameters
+        ----------
+        stereo_chem_mapping : ?
+            Description of stereo_chem_mapping.
+
+        Returns
+        -------
+        None
         """
         view = display_mappings_3d([stereo_chem_mapping, stereo_chem_mapping])
         assert isinstance(view, VBox)
