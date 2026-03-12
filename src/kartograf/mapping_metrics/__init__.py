@@ -5,13 +5,13 @@ from .metric_mapping_rmsd import MappingRMSDScorer as MappingRMSDScorer
 """Compute the RMSD of a mapping."""
 from .metric_shape_difference import (
     MappingShapeMismatchScorer as MappingShapeMismatchScorer,
-"""Compute the shape mismatch of a mapping."""
     MappingShapeOverlapScorer as MappingShapeOverlapScorer,
-"""Compute the shape overlap of a mapping."""
 )
+"""Compute the shape mismatch of a mapping."""
+"""Compute the shape overlap of a mapping."""
 from .metric_volume_ratio import (
     MappingRatioMappedAtomsScorer as MappingRatioMappedAtomsScorer,
-"""Compute the ratio of mapped atoms in a mapping."""
     MappingVolumeRatioScorer as MappingVolumeRatioScorer,
-"""Compute the volume ratio of a mapping."""
 )
+"""Compute the ratio of mapped atoms in a mapping."""
+"""Compute the volume ratio of a mapping."""
