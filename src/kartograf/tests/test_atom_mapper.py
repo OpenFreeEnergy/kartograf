@@ -41,6 +41,13 @@ def check_mapping_vs_expected(mapping, expected_mapping) -> None:
 def test_mapping_naphtalene_benzene(naphtalene_benzene_molecules, naphtalene_benzene_mapping) -> None:
     """
     Test mapping of naphtalene to benzene.
+
+    Parameters
+    ----------
+    naphtalene_benzene_molecules : tuple
+        A tuple containing the naphtalene and benzene molecules.
+    naphtalene_benzene_mapping : Mapping
+        The expected mapping between the naphtalene and benzene molecules.
     """
     expected_mapping = naphtalene_benzene_mapping.componentA_to_componentB
     geom_mapper = KartografAtomMapper(
@@ -61,7 +68,14 @@ def test_mapping_naphtalene_benzene(naphtalene_benzene_molecules, naphtalene_ben
 
 def test_mapping_naphtalene_benzene_mst(naphtalene_benzene_molecules, naphtalene_benzene_mapping) -> None:
     """
-    Test mapping of naphtalene to benzene.
+    Test mapping of naphtalene to benzene using the minimal spanning tree algorithm.
+
+    Parameters
+    ----------
+    naphtalene_benzene_molecules : tuple
+        A tuple containing the naphtalene and benzene molecules.
+    naphtalene_benzene_mapping : Mapping
+        The expected mapping between the naphtalene and benzene molecules.
     """
     from kartograf.atom_mapper import mapping_algorithm
 
@@ -85,7 +99,7 @@ def test_mapping_naphtalene_benzene_mst(naphtalene_benzene_molecules, naphtalene
 
 def test_mapping_noMap_algo() -> None:
     """
-    Test mapping of naphtalene to benzene.
+    Test that an error is raised when no mapping algorithm is provided.
     """
     with pytest.raises(ValueError) as exc:
         KartografAtomMapper(
@@ -102,6 +116,11 @@ def test_mapping_noMap_algo() -> None:
 def test_mapping_naphtalene_benzene_noHs(naphtalene_benzene_molecules) -> None:
     """
     Test mapping of naphtalene to benzene without H-atoms.
+
+    Parameters
+    ----------
+    naphtalene_benzene_molecules : tuple
+        A tuple containing the naphtalene and benzene molecules.
     """
     expected_mapping = {10: 7, 11: 8, 12: 9, 13: 10, 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5}
     geom_mapper = KartografAtomMapper(
@@ -122,8 +141,12 @@ def test_mapping_naphtalene_benzene_noHs(naphtalene_benzene_molecules) -> None:
 
 def test_mapping_naphtalene_benzene_noHs_add_filter(naphtalene_benzene_molecules) -> None:
     """
-    Test mapping of naphtalene to benzene without H-atoms added as
-     additional filter.
+    Test mapping of naphtalene to benzene without H-atoms using an additional filter.
+
+    Parameters
+    ----------
+    naphtalene_benzene_molecules : tuple
+        A tuple containing the naphtalene and benzene molecules.
     """
     expected_mapping = {10: 7, 11: 8, 12: 9, 13: 10, 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5}
     geom_mapper = KartografAtomMapper(
@@ -145,7 +168,14 @@ def test_mapping_naphtalene_benzene_noHs_add_filter(naphtalene_benzene_molecules
 
 def test_stereo_mapping(stereco_chem_molecules, stereo_chem_mapping) -> None:
     """
-    Test weird Stereochemistry mapping.
+    Test stereochemistry mapping.
+
+    Parameters
+    ----------
+    stereco_chem_molecules : tuple
+        A tuple containing the stereochemical molecules.
+    stereo_chem_mapping : Mapping
+        The expected mapping between the stereochemical molecules.
     """
     expected_mapping = stereo_chem_mapping.componentA_to_componentB
     geom_mapper = KartografAtomMapper(
@@ -163,6 +193,9 @@ def test_stereo_mapping(stereco_chem_molecules, stereo_chem_mapping) -> None:
 
 class TestSerialisation:
     def test_to_from_dict_cycle(self) -> None:
+        """
+        Test that a KartografAtomMapper can be serialized to a dictionary and deserialized back to an identical object.
+        """
         m = KartografAtomMapper()
 
         m_dict = m.to_dict()
@@ -181,6 +214,16 @@ class TestSerialisation:
         ],
     )
     def test_check_filters(self, mhoho, mermo) -> None:
+        """
+        Test that the filter functions are correctly serialized and deserialized.
+
+        Parameters
+        ----------
+        mhoho : bool
+            Whether to map hydrogens on hydrogens only.
+        mermo : bool
+            Whether to map exact ring matches only.
+        """
         m = KartografAtomMapper(
             map_hydrogens_on_hydrogens_only=mhoho,
             map_exact_ring_matches_only=mermo,
@@ -191,6 +234,9 @@ class TestSerialisation:
         assert m._filter_funcs == m2._filter_funcs
 
     def test_custom_filters(self) -> None:
+        """
+        Test that custom filter functions are correctly serialized and deserialized.
+        """
         def even_prime_filter(mapping):
             mapping.pop(2, None)
 
@@ -209,6 +255,9 @@ class TestSerialisation:
 
 
 def test_filter_property() -> None:
+    """
+    Test that the filter property correctly updates the filter functions.
+    """
     mapper = KartografAtomMapper(map_hydrogens_on_hydrogens_only=False)
     first_filters = deepcopy(mapper._filter_funcs)
 
@@ -223,13 +272,20 @@ def test_filter_property() -> None:
 
     assert filter_atoms_h_only_h_mapped in second_filters
     assert filter_atoms_h_only_h_mapped not in first_filters
-    assert filter_atoms_h_only_h_mapped not in first_filters
+    assert filter_atoms_h_only_h_mapped not in third_filters
 
 
 # Check non params
 def test_mapping_rdmols(naphtalene_benzene_molecules, naphtalene_benzene_mapping) -> None:
     """
-    Test mapping of naphtalene to benzene.
+    Test mapping of naphtalene to benzene using RDKit molecules.
+
+    Parameters
+    ----------
+    naphtalene_benzene_molecules : tuple
+        A tuple containing the naphtalene and benzene molecules.
+    naphtalene_benzene_mapping : Mapping
+        The expected mapping between the naphtalene and benzene molecules.
     """
     naphtalene_benzene_mapping.componentA_to_componentB
     geom_mapper = KartografAtomMapper(
@@ -251,7 +307,7 @@ def test_mapping_rdmols(naphtalene_benzene_molecules, naphtalene_benzene_mapping
 
 def test_ring_matches_property() -> None:
     """
-    Test ring property changes.
+    Test that the ring matches property correctly updates the filter functions.
     """
     geom_mapper = KartografAtomMapper(atom_max_distance=0.95, map_exact_ring_matches_only=False)
 
@@ -268,7 +324,7 @@ def test_ring_matches_property() -> None:
 
 def test_split_multimeric_component() -> None:
     """
-    Test splitting chains of 2wtk multimer is done correctly
+    Test that splitting chains of the 2wtk multimer is done correctly.
     """
     from gufe import ProteinComponent
     from openmm.app import PDBFile
@@ -297,9 +353,16 @@ def test_split_multimeric_component() -> None:
 
 def test_mapping_multimer_components(trimer_2wtk_component, trimer_2wtk_mutated_component) -> None:
     """
-    Test we can properly map ProteinComponents generated from 2wtk trimers.
+    Test that we can properly map ProteinComponents generated from 2wtk trimers.
 
-    The final/target component is the same original component but with a ALA-76-TYR mutation.
+    The final/target component is the same original component but with an ALA-76-TYR mutation.
+
+    Parameters
+    ----------
+    trimer_2wtk_component : ProteinComponent
+        The original 2wtk trimer component.
+    trimer_2wtk_mutated_component : ProteinComponent
+        The mutated 2wtk trimer component.
     """
     from gufe import ProteinComponent
 
@@ -328,7 +391,16 @@ def test_mapping_multimer_components(trimer_2wtk_component, trimer_2wtk_mutated_
 
 
 def test_atom_mapping_different_component_types(trimer_2wtk_component, naphtalene_benzene_molecules) -> None:
-    """Make sure an error is rasied if we try and create a mapping between two different component types."""
+    """
+    Test that an error is raised if we try to create a mapping between two different component types.
+
+    Parameters
+    ----------
+    trimer_2wtk_component : ProteinComponent
+        The 2wtk trimer component.
+    naphtalene_benzene_molecules : tuple
+        A tuple containing the naphtalene and benzene molecules.
+    """
     mapper = KartografAtomMapper()
 
     with pytest.raises(ValueError, match="were not of the same type, please check the inputs."):
@@ -337,8 +409,15 @@ def test_atom_mapping_different_component_types(trimer_2wtk_component, naphtalen
 
 def test_atom_mapping_different_number_of_sub_components(trimer_2wtk_component, naphtalene_benzene_molecules) -> None:
     """
-    Make sure an error is raised if we get a different number of disconected components in the two molecules
+    Test that an error is raised if we get a different number of disconnected components in the two molecules
     we want to map.
+
+    Parameters
+    ----------
+    trimer_2wtk_component : ProteinComponent
+        The 2wtk trimer component.
+    naphtalene_benzene_molecules : tuple
+        A tuple containing the naphtalene and benzene molecules.
     """
     mapper = KartografAtomMapper()
 
@@ -388,7 +467,18 @@ def test_atom_mapping_different_number_of_sub_components(trimer_2wtk_component, 
     ],
 )
 def test_partial_fused_rings(fused_ring_mols, allow_partial_fused_rings, expected_mapping) -> None:
-    """Make sure that partial mappings of fused rings are correctly handled depending on if the flag is set."""
+    """
+    Test that partial mappings of fused rings are correctly handled depending on if the flag is set.
+
+    Parameters
+    ----------
+    fused_ring_mols : tuple
+        A tuple containing the molecules with fused rings.
+    allow_partial_fused_rings : bool
+        Whether to allow partial mappings of fused rings.
+    expected_mapping : Mapping
+        The expected mapping between the molecules.
+    """
     geom_mapper = KartografAtomMapper(allow_partial_fused_rings=allow_partial_fused_rings)
     geom_mapping = next(
         geom_mapper.suggest_mappings(
@@ -401,7 +491,12 @@ def test_partial_fused_rings(fused_ring_mols, allow_partial_fused_rings, expecte
 
 def test_hybridization_and_ring_breaks(shp2_hybridization_ligands) -> None:
     """
-    Make sure rings are not broken when map_exact_ring_matches_only=True and a custom filter is used.
+    Test that rings are not broken when map_exact_ring_matches_only=True and a custom filter is used.
+
+    Parameters
+    ----------
+    shp2_hybridization_ligands : tuple
+        A tuple containing the ligands for hybridization and ring break tests.
     """
     mapper = KartografAtomMapper(
         map_exact_ring_matches_only=True,
@@ -420,8 +515,14 @@ def test_hybridization_and_ring_breaks(shp2_hybridization_ligands) -> None:
 
 def test_ring_hybridization_with_non_ring_atoms(shp2_hybridization_ligands) -> None:
     """
-    Make sure this filter does not fail on non-ring atoms see
-    <https://github.com/OpenFreeEnergy/kartograf/issues/62>
+    Test that the filter does not fail on non-ring atoms.
+
+    See <https://github.com/OpenFreeEnergy/kartograf/issues/62>
+
+    Parameters
+    ----------
+    shp2_hybridization_ligands : tuple
+        A tuple containing the ligands for hybridization and ring break tests.
     """
     mapper = KartografAtomMapper(additional_mapping_filter_functions=[filter_hybridization_rings])
     mapping = next(mapper.suggest_mappings(shp2_hybridization_ligands[0], shp2_hybridization_ligands[1]))
@@ -581,8 +682,20 @@ def test_ring_hybridization_with_non_ring_atoms(shp2_hybridization_ligands) -> N
 )
 def test_bond_break_transforms(pfkfb3_ligands, edge, allow_broken, expected_mapping) -> None:
     """
-    Make sure that bond breaking transformations are always filtered, see
-    <https://github.com/OpenFreeEnergy/kartograf/issues/88>
+    Test that bond breaking transformations are always filtered.
+
+    See <https://github.com/OpenFreeEnergy/kartograf/issues/88>
+
+    Parameters
+    ----------
+    pfkfb3_ligands : dict
+        A dictionary containing the ligands for bond break tests.
+    edge : tuple
+        A tuple containing the edge identifiers.
+    allow_broken : bool
+        Whether to allow bond breaks.
+    expected_mapping : Mapping
+        The expected mapping between the ligands.
     """
     ligand_a = pfkfb3_ligands[edge[0]]
     ligand_b = pfkfb3_ligands[edge[1]]
