@@ -11,18 +11,21 @@ from collections.abc import Callable
 
 
 def requires_package(package_name: str) -> Callable:
-    """Optional package detection function
-    Helper function to denote that a funciton requires some optional
+    """Optional package detection function.
+
+    Helper function to denote that a function requires some optional
     dependency. A function decorated with this decorator will raise
-    `MissingDependencyError` if the package is not found by
-    `importlib.import_module()`.
+    `ImportError` if the package is not found by `importlib.import_module()`.
+
     Parameters
     ----------
     package_name : str
-        The directory path to enter within the context
+        The name of the package required by the function.
+
     Raises
     ------
-    MissingDependencyError
+    ImportError
+        If the required package is not found.
     """
 
     def test_import_for_require_package(function: Callable) -> Callable:
