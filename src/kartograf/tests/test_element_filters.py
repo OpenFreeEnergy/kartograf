@@ -6,7 +6,18 @@ from kartograf import filters
 
 @pytest.mark.parametrize("reverse", [False, True])
 def test_atoms_H_only_H_mapped(reverse) -> None:
-    # ethane to propane, hydrogen from ethane mapped to carbon
+    """
+    Test the filter_atoms_h_only_h_mapped function.
+
+    Parameters
+    ----------
+    reverse : bool
+        If True, reverse the order of molecules and mapping.
+
+    Notes
+    -----
+    ethane to propane, hydrogen from ethane mapped to carbon
+    """
     m1 = Chem.AddHs(Chem.MolFromSmiles("CC"))
     m2 = Chem.AddHs(Chem.MolFromSmiles("CCC"))
     mapping = {
