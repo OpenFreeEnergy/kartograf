@@ -24,6 +24,14 @@ def mol_from_smiles(smiles: str):
 
 
 def stereo_chem_mols():
+    """
+    Generate stereochemical molecules from SMILES strings.
+
+    Returns
+    -------
+    list
+        A list of SmallMoleculeComponent objects representing stereochemical molecules.
+    """
     smiles = [
         "C[C@H](F)Br",
         "C[C@@H](F)Br",
@@ -54,6 +62,14 @@ def stereo_chem_mapping():
 
 
 def naphtalene_benzene_mols():
+    """
+    Generate napthalene and benzene molecules from SMILES strings.
+
+    Returns
+    -------
+    list
+        A list of SmallMoleculeComponent objects representing napthalene and benzene molecules.
+    """
     smi_napthalene = "c12ccccc1cccc2"
     smi_benzene = "c1ccccc1"
 
@@ -90,6 +106,14 @@ def naphtalene_benzene_mapping():
 
 
 def benzene_mol():
+    """
+    Generate a benzene molecule from a SMILES string.
+
+    Returns
+    -------
+    SmallMoleculeComponent
+        A SmallMoleculeComponent object representing a benzene molecule.
+    """
     smi_benzene = "c1ccccc1"
     rdmols = mol_from_smiles([smi_benzene])
     return SmallMoleculeComponent(rdmols[0])
@@ -111,7 +135,14 @@ def benzene_benzene_empty_mapping():
 
 @pytest.fixture(scope="session")
 def trimer_2wtk_component():
-    """Protein component for modelled trimer of protein with PDB ID 2wtk"""
+    """
+    Generate a protein component for a modelled trimer of protein with PDB ID 2wtk.
+
+    Returns
+    -------
+    ProteinComponent
+        A ProteinComponent object representing the trimer of protein with PDB ID 2wtk.
+    """
     d = files("kartograf.tests.data")
     protein_comp = ProteinComponent.from_pdb_file(str(d / "2wtk_trimer_with_extra_mols.pdb"))
     return protein_comp
@@ -119,8 +150,15 @@ def trimer_2wtk_component():
 
 @pytest.fixture(scope="session")
 def trimer_2wtk_mutated_component():
-    """Protein component obtained by applying ALA-53-TYR mutation to trimer of 2wtk,
-    to residue in chain 'C'."""
+    """
+    Generate a protein component obtained by applying ALA-53-TYR mutation to trimer of 2wtk,
+    to residue in chain 'C'.
+
+    Returns
+    -------
+    ProteinComponent
+        A ProteinComponent object representing the mutated trimer of protein with PDB ID 2wtk.
+    """
     d = files("kartograf.tests.data")
     protein_comp = ProteinComponent.from_pdb_file(str(d / "2wtk_mutated_with_extra_mols.pdb"))
     return protein_comp
@@ -129,8 +167,14 @@ def trimer_2wtk_mutated_component():
 @pytest.fixture(scope="session")
 def fused_ring_mols() -> tuple[SmallMoleculeComponent, SmallMoleculeComponent]:
     """
-    Return two biaryl molecules one with a fused ring which are aligned for mapping, we use files to ensure consistent
-    atom ordering."""
+    Return two biaryl molecules, one with a fused ring, which are aligned for mapping.
+    We use files to ensure consistent atom ordering.
+
+    Returns
+    -------
+    tuple
+        A tuple containing two SmallMoleculeComponent objects representing the biaryl molecules.
+    """
     d = resources.files("kartograf.tests.data")
     rd_mols = [Chem.MolFromMolFile(str(f), removeHs=False) for f in [d / "biphenyl.sdf", d / "biaryl-indene.sdf"]]
     mol_a, mol_b = [SmallMoleculeComponent.from_rdkit(m) for m in rd_mols]
@@ -140,6 +184,14 @@ def fused_ring_mols() -> tuple[SmallMoleculeComponent, SmallMoleculeComponent]:
 
 @pytest.fixture(scope="session")
 def shp2_hybridization_ligands() -> tuple[SmallMoleculeComponent, SmallMoleculeComponent]:
+    """
+    Load SHP2 hybridization ligands from SDF files.
+
+    Returns
+    -------
+    tuple
+        A tuple containing two SmallMoleculeComponent objects representing the SHP2 hybridization ligands.
+    """
     d = resources.files("kartograf.tests.data")
     mols = [SmallMoleculeComponent.from_sdf_file(str(f)) for f in [d / "lig_E6.sdf", d / "lig_E29.sdf"]]
     return mols[0], mols[1]
@@ -147,6 +199,14 @@ def shp2_hybridization_ligands() -> tuple[SmallMoleculeComponent, SmallMoleculeC
 
 @pytest.fixture(scope="session")
 def pfkfb3_ligands() -> dict[str, SmallMoleculeComponent]:
+    """
+    Load PFKFB3 ligands from an SDF file.
+
+    Returns
+    -------
+    dict
+        A dictionary mapping ligand names to SmallMoleculeComponent objects representing the PFKFB3 ligands.
+    """
     d = resources.files("kartograf.tests.data")
     supplier = Chem.SDMolSupplier(str(d / "pfkfb3_ligands.sdf"), removeHs=False)
     mols = {}
