@@ -63,40 +63,35 @@ class KartografAtomMapper(AtomMapper):
         | None = None,
         _mapping_algorithm: str = mapping_algorithm.linear_sum_assignment,
     ) -> None:
-        """Geometry Based Atom Mapper
-        This mapper is a homebrew, that utilises rdkit in order
-        to generate an atom-mapping based on the coordinates of two molecules.
+        """Geometry Based Atom Mapper.
+
+        This mapper utilizes RDKit to generate an atom-mapping based on the coordinates of two molecules.
 
         Parameters
         ----------
-        atom_max_distance : float
-            geometric criteria for two atoms, how far their distance
-            can be maximal (in Angstrom). Default 0.95
-        atom_map_hydrogens : bool, optional
-            If hydrogens should be included in the atom mapping. Default True
-        map_hydrogens_on_hydrogens_only : bool, optional
-            map hydrogens only on hydrogens. Default True
-        map_exact_ring_matches_only : bool
-            if true, only rings with matching ringsize and same bond-orders
-            will be mapped. Additionally no ring-breaking is permitted. default
-            True
-        allow_bond_breaks : bool
-            if False, automatically applies ``filter_bond_breaks`` to avoid
-            mappings where bonds are broken. default False
-        additional_mapping_filter_functions : Iterable[Callable[[Chem.Mol, Chem.Mol, Dict[int, int]], Dict[int, int]]], optional
-            with this optional parameter you can further filter the distance
-            based mappings with your own custom filters, provided as iterables.
-            as default we suggest to avoid ring size/breaking changes and only
-            allow whole rings to be mapped. These filters will be applied before any defaults
-        _mapping_algorithm : str, optional
-            mapping_algorithm.linear_sum_assignment - this allows to swap the
-            optimization algorithm. Not recommended.
-        allow_partial_fused_rings: bool
-            If we should allow partially mapped fused rings (True) or not (False). Default True.
+        atom_max_distance : float, default=0.95
+            Geometric criteria for two atoms, how far their distance can be maximal (in Angstrom).
+        atom_map_hydrogens : bool, default=True
+            If hydrogens should be included in the atom mapping.
+        map_hydrogens_on_hydrogens_only : bool, default=True
+            Map hydrogens only on hydrogens.
+        map_exact_ring_matches_only : bool, default=True
+            If true, only rings with matching ringsize and same bond-orders will be mapped.
+            Additionally, no ring-breaking is permitted.
+        allow_bond_breaks : bool, default=False
+            If False, automatically applies ``filter_bond_breaks`` to avoid mappings where bonds are broken.
+        additional_mapping_filter_functions : Iterable[Callable[[Chem.Mol, Chem.Mol, dict[int, int]], dict[int, int]]], optional
+            With this optional parameter, you can further filter the distance-based mappings with your own custom filters,
+            provided as iterables. As default, we suggest to avoid ring size/breaking changes and only allow whole rings to be mapped.
+            These filters will be applied before any defaults.
+        _mapping_algorithm : str, default=mapping_algorithm.linear_sum_assignment
+            Mapping algorithm. Not recommended to change.
+        allow_partial_fused_rings : bool, default=True
+            If we should allow partially mapped fused rings (True) or not (False).
 
         Notes
         -----
-        The ``additional_mapping_filter_functions`` will be applied before any default filters, to change this
+        The ``additional_mapping_filter_functions`` will be applied before any default filters. To change this,
         turn off all defaults and pass the full list of filters in the order they should be applied.
         """
         self.atom_max_distance = atom_max_distance
