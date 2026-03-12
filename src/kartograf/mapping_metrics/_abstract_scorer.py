@@ -14,25 +14,43 @@ class _AbstractAtomMappingScorer(abc.ABC):
         pass
 
     def __call__(self, mapping: AtomMapping, *args, **kwargs) -> float:
-        return self.get_score(mapping)
-
-    @abc.abstractmethod
-    def get_score(self, mapping: AtomMapping, *args, **kwargs) -> float:
-        """calculate the score
-            the scoring function returns a value between 0 and 1.
-            a value close to 1.0 indicates a small distance, a score close to zero indicates a large cost/error.
+        """Call the scorer to get the score of an atom mapping.
 
         Parameters
         ----------
-        mapping: AtomMapping
-            the mapping to be scored
-        args
-        kwargs
+        mapping : AtomMapping
+            The atom mapping to be scored.
+        *args
+            Additional positional arguments.
+        **kwargs
+            Additional keyword arguments.
 
         Returns
         -------
         float
-            a value between [0,1] where one is a very bad score and 0 a very good one.
+            A score between 0 and 1, where 0 indicates a very good score and 1 a very bad score.
+        """
+        return self.get_score(mapping)
 
+    @abc.abstractmethod
+    def get_score(self, mapping: AtomMapping, *args, **kwargs) -> float:
+        """Calculate the score of an atom mapping.
+
+        The scoring function returns a value between 0 and 1, where a value close to 1.0 indicates a small distance,
+        and a score close to zero indicates a large cost/error.
+
+        Parameters
+        ----------
+        mapping : AtomMapping
+            The atom mapping to be scored.
+        *args
+            Additional positional arguments.
+        **kwargs
+            Additional keyword arguments.
+
+        Returns
+        -------
+        float
+            A score between 0 and 1, where 0 indicates a very good score and 1 a very bad score.
         """
         pass
