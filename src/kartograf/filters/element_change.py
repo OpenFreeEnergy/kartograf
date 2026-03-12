@@ -9,7 +9,23 @@ logger = logging.getLogger(__name__)
 
 
 def filter_atoms_h_only_h_mapped(molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]) -> dict[int, int]:
-    """Forces a mapping to only allow hydrogens to map to other hydrogens"""
+    """
+    Forces a mapping to only allow hydrogens to map to other hydrogens.
+
+    Parameters
+    ----------
+    molA : Chem.Mol
+        The first molecule.
+    molB : Chem.Mol
+        The second molecule.
+    mapping : dict[int, int]
+        The initial mapping between atoms of molA and molB.
+
+    Returns
+    -------
+    dict[int, int]
+        The filtered mapping where only hydrogens are mapped to other hydrogens.
+    """
 
     filtered_mapping = {}
     for atomA_idx, atomB_idx in mapping.items():
@@ -32,7 +48,23 @@ def filter_atoms_h_only_h_mapped(molA: Chem.Mol, molB: Chem.Mol, mapping: dict[i
 
 
 def filter_element_changes(molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]) -> dict[int, int]:
-    """Forces a mapping to exclude any alchemical element changes in the core"""
+    """
+    Forces a mapping to exclude any alchemical element changes in the core.
+
+    Parameters
+    ----------
+    molA : Chem.Mol
+        The first molecule.
+    molB : Chem.Mol
+        The second molecule.
+    mapping : dict[int, int]
+        The initial mapping between atoms of molA and molB.
+
+    Returns
+    -------
+    dict[int, int]
+        The filtered mapping excluding any alchemical element changes.
+    """
     filtered_mapping = {}
 
     for i, j in mapping.items():
@@ -44,8 +76,24 @@ def filter_element_changes(molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, in
 
 
 def filter_hybridization_changes(molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]) -> dict[int, int]:
-    """Forces a mapping to exclude any alchemical atom hybridization changes.
-    Such a change could be for example -C-C >> -C=C ."""
+    """
+    Forces a mapping to exclude any alchemical atom hybridization changes.
+    Such a change could be for example -C-C >> -C=C.
+
+    Parameters
+    ----------
+    molA : Chem.Mol
+        The first molecule.
+    molB : Chem.Mol
+        The second molecule.
+    mapping : dict[int, int]
+        The initial mapping between atoms of molA and molB.
+
+    Returns
+    -------
+    dict[int, int]
+        The filtered mapping excluding any alchemical atom hybridization changes.
+    """
     filtered_mapping = {}
 
     for i, j in mapping.items():
