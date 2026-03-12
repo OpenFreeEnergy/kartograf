@@ -15,7 +15,12 @@ from kartograf.mapping_metrics.metric_shape_difference import _MappingShapeDista
 
 def test_score_mappings_rmsd(stereo_chem_mapping) -> None:
     """
-    Currently a smoke test
+    Currently a smoke test.
+
+    Parameters
+    ----------
+    stereo_chem_mapping : Mapping
+        The stereochemical mapping to score.
     """
     scorer = MappingRMSDScorer()
     score = scorer.get_rmsd(stereo_chem_mapping)
@@ -24,7 +29,12 @@ def test_score_mappings_rmsd(stereo_chem_mapping) -> None:
 
 def test_score_norm_mapping_rmsd(stereo_chem_mapping) -> None:
     """
-    Currently a smoke test
+    Currently a smoke test.
+
+    Parameters
+    ----------
+    stereo_chem_mapping : Mapping
+        The stereochemical mapping to score.
     """
     scorer = MappingRMSDScorer()
     score = scorer.get_rmsd_p(stereo_chem_mapping)
@@ -33,7 +43,12 @@ def test_score_norm_mapping_rmsd(stereo_chem_mapping) -> None:
 
 def test_score_mapping_volume_ratio(stereo_chem_mapping) -> None:
     """
-    Currently a smoke test
+    Currently a smoke test.
+
+    Parameters
+    ----------
+    stereo_chem_mapping : Mapping
+        The stereochemical mapping to score.
     """
     scorer = MappingVolumeRatioScorer()
     score = scorer(stereo_chem_mapping)
@@ -42,7 +57,12 @@ def test_score_mapping_volume_ratio(stereo_chem_mapping) -> None:
 
 def test_score_shape_dist(stereo_chem_mapping) -> None:
     """
-    Currently a smoke test
+    Currently a smoke test.
+
+    Parameters
+    ----------
+    stereo_chem_mapping : Mapping
+        The stereochemical mapping to score.
     """
     scorer = _MappingShapeDistanceScorer()
     score = scorer(stereo_chem_mapping)
@@ -51,7 +71,12 @@ def test_score_shape_dist(stereo_chem_mapping) -> None:
 
 def test_score_shape_overlap(stereo_chem_mapping) -> None:
     """
-    Currently a smoke test
+    Currently a smoke test.
+
+    Parameters
+    ----------
+    stereo_chem_mapping : Mapping
+        The stereochemical mapping to score.
     """
     scorer = MappingShapeOverlapScorer()
     score = scorer(stereo_chem_mapping)
@@ -60,7 +85,12 @@ def test_score_shape_overlap(stereo_chem_mapping) -> None:
 
 def test_score_shape_mismatch(stereo_chem_mapping) -> None:
     """
-    Currently a smoke test
+    Currently a smoke test.
+
+    Parameters
+    ----------
+    stereo_chem_mapping : Mapping
+        The stereochemical mapping to score.
     """
     scorer = MappingShapeMismatchScorer()
     score = scorer(stereo_chem_mapping)
@@ -80,7 +110,14 @@ def test_score_shape_mismatch(stereo_chem_mapping) -> None:
 )
 def test_scorer_identical_molecules(scorer_class, benzene_benzene_mapping) -> None:
     """
-    Currently a smoke test
+    Currently a smoke test.
+
+    Parameters
+    ----------
+    scorer_class : Scorer
+        The scorer class to test.
+    benzene_benzene_mapping : Mapping
+        The mapping of benzene to benzene.
     """
     scorer = scorer_class()
     score = scorer(benzene_benzene_mapping)
@@ -101,7 +138,16 @@ def test_scorer_identical_molecules(scorer_class, benzene_benzene_mapping) -> No
 )
 def test_scorer_empty_mapping(scorer_class, exp: float, benzene_benzene_empty_mapping) -> None:
     """
-    Currently a smoke test
+    Currently a smoke test.
+
+    Parameters
+    ----------
+    scorer_class : Scorer
+        The scorer class to test.
+    exp : float
+        The expected score.
+    benzene_benzene_empty_mapping : Mapping
+        The empty mapping of benzene to benzene.
     """
     scorer = scorer_class()
     score = scorer(benzene_benzene_empty_mapping)
@@ -120,7 +166,16 @@ def test_scorer_empty_mapping(scorer_class, exp: float, benzene_benzene_empty_ma
 )
 def test_scorer_empty_mapping_err(scorer_class, exp: float, benzene_benzene_empty_mapping) -> None:
     """
-    Currently a smoke test
+    Currently a smoke test.
+
+    Parameters
+    ----------
+    scorer_class : Scorer
+        The scorer class to test.
+    exp : float
+        The expected score.
+    benzene_benzene_empty_mapping : Mapping
+        The empty mapping of benzene to benzene.
     """
     with pytest.raises(ValueError) as exc:
         scorer = scorer_class()
