@@ -10,8 +10,19 @@ from kartograf import filters
 
 @pytest.mark.parametrize("reverse", [False, True])
 def test_ringsize_filter(reverse) -> None:
-    # naphthalene to indole, 6,6 to 6,5
-    # should trim out the 5->6 ring
+    """
+    Test the filter_ringsize_changes function.
+
+    Parameters
+    ----------
+    reverse : bool
+        If True, reverse the order of molecules m1 and m2.
+
+    Notes
+    -----
+    naphthalene to indole, 6,6 to 6,5
+    should trim out the 5->6 ring
+    """
     m1 = Chem.MolFromSmiles("c12ccccc1cccc2")
     m2 = Chem.MolFromSmiles("c12ccccc1C=CN2")
     if reverse:
