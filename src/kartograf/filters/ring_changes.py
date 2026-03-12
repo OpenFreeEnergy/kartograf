@@ -12,7 +12,23 @@ ATOM_MAPPING = dict[int, int]
 
 
 def filter_ringsize_changes(molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING) -> ATOM_MAPPING:
-    """Prevents mutating the size of rings in the mapping"""
+    """
+    Prevents mutating the size of rings in the mapping.
+
+    Parameters
+    ----------
+    molA : Chem.Mol
+        The first molecule.
+    molB : Chem.Mol
+        The second molecule.
+    mapping : ATOM_MAPPING
+        The atom mapping between molA and molB.
+
+    Returns
+    -------
+    ATOM_MAPPING
+        The filtered atom mapping.
+    """
     riA = molA.GetRingInfo()
     riB = molB.GetRingInfo()
 
@@ -42,10 +58,24 @@ def filter_ringsize_changes(molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPIN
 
 
 def filter_ringbreak_changes(molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING) -> ATOM_MAPPING:
-    """Prevent any ring cleaving transformations in the mapping
+    """
+    Prevent any ring cleaving transformations in the mapping.
 
-    This filter prevents any non-ring atom turning into a ring atom (or
-    vice versa)
+    This filter prevents any non-ring atom turning into a ring atom (or vice versa).
+
+    Parameters
+    ----------
+    molA : Chem.Mol
+        The first molecule.
+    molB : Chem.Mol
+        The second molecule.
+    mapping : ATOM_MAPPING
+        The atom mapping between molA and molB.
+
+    Returns
+    -------
+    ATOM_MAPPING
+        The filtered atom mapping.
     """
     filtered_mapping = {}
 
@@ -60,7 +90,23 @@ def filter_ringbreak_changes(molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPI
 
 
 def filter_whole_rings_only(molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING) -> ATOM_MAPPING:
-    """Ensure that any mapped rings are wholly mapped"""
+    """
+    Ensure that any mapped rings are wholly mapped.
+
+    Parameters
+    ----------
+    molA : Chem.Mol
+        The first molecule.
+    molB : Chem.Mol
+        The second molecule.
+    mapping : ATOM_MAPPING
+        The atom mapping between molA and molB.
+
+    Returns
+    -------
+    ATOM_MAPPING
+        The filtered atom mapping.
+    """
     proposed_mapping = {**mapping}
 
     for mol in [molA, molB]:  # loop over A->B and B->A directions
@@ -95,26 +141,41 @@ def filter_whole_rings_only(molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPIN
 
 
 def filter_hybridization_rings(molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING) -> ATOM_MAPPING:
-    """Ensure that any mapped rings are either both aromatic or aliphatic
+    """
+    Ensure that any mapped rings are either both aromatic or aliphatic.
 
-    e.g. this filter would unmap hexane to benzene type transformations
+    E.g. this filter would unmap hexane to benzene type transformations.
+
+    Parameters
+    ----------
+    molA : Chem.Mol
+        The first molecule.
+    molB : Chem.Mol
+        The second molecule.
+    mapping : ATOM_MAPPING
+        The atom mapping between molA and molB.
+
+    Returns
+    -------
+    ATOM_MAPPING
+        The filtered atom mapping.
     """
 
     def get_atom_ring_hybridization_map(rdmol: Chem.Mol) -> dict[int, bool]:
         """
-        For each atom, determines information about ring hybridization
+        For each atom, determines information about ring hybridization.
 
         Parameters
         ----------
-        rdmol: Chem.Mol
+        rdmol : Chem.Mol
+            The molecule to analyze.
 
         Returns
         -------
-        dict[int, bool]:
-            returns a dict, that maps each atom's index to if it is always in aromatic rings
-            (If True this atom exists entirely in aromatic rings, if False it is
-            not entirely aromatic and therefore not necessarily sterically restraint
-            by a pi-orbital-system.)
+        dict[int, bool]
+            A dictionary mapping each atom's index to whether it is always in aromatic rings.
+            If True, the atom exists entirely in aromatic rings; if False, it is not entirely
+            aromatic and therefore not necessarily sterically restrained by a pi-orbital system.
         """
         riInf = rdmol.GetRingInfo()
 
@@ -159,7 +220,7 @@ def filter_hybridization_rings(molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAP
 def filter_fused_ring_changes(molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPPING) -> ATOM_MAPPING:
     """
     Remove cases where a fused ring is partially mapped and could be considered broken, the entire fused ring system
-    is then to be considered unique resulting in larger alchemical regions following the recomended best practices
+    is then to be considered unique resulting in larger alchemical regions following the recommended best practices
     <https://livecomsjournal.org/index.php/livecoms/article/view/v2i1e18378>.
 
     See <https://github.com/OpenFreeEnergy/kartograf/pull/56> for more details.
@@ -167,6 +228,20 @@ def filter_fused_ring_changes(molA: Chem.Mol, molB: Chem.Mol, mapping: ATOM_MAPP
     See Also
     --------
     filter_whole_rings_only
+
+    Parameters
+    ----------
+    molA : Chem.Mol
+        The first molecule.
+    molB : Chem.Mol
+        The second molecule.
+    mapping : ATOM_MAPPING
+        The atom mapping between molA and molB.
+
+    Returns
+    -------
+    ATOM_MAPPING
+        The filtered atom mapping.
     """
     proposed_mapping = {**mapping}
     # do not change the order of the mapping this will be done at the
