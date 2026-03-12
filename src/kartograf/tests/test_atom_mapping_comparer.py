@@ -9,7 +9,12 @@ from kartograf.mapping_metrics.metrics_mapping_comparisons import jaccard_score
 
 def test_mapping_comparison_jcs_identical(benzene_benzene_mapping) -> None:
     """
-    Check identical mappings
+    Check identical mappings.
+
+    Parameters
+    ----------
+    benzene_benzene_mapping : LigandAtomMapping
+        A mapping of benzene to benzene atoms.
     """
     mapping = benzene_benzene_mapping
 
@@ -20,7 +25,12 @@ def test_mapping_comparison_jcs_identical(benzene_benzene_mapping) -> None:
 
 def test_mapping_comparison_jcs_diverse(benzene_benzene_mapping) -> None:
     """
-    Check completly different mappings
+    Check completely different mappings.
+
+    Parameters
+    ----------
+    benzene_benzene_mapping : LigandAtomMapping
+        A mapping of benzene to benzene atoms.
     """
     # Totallydifferent indices
     mapping = benzene_benzene_mapping
@@ -62,7 +72,14 @@ def test_mapping_comparison_jcs_diverse(benzene_benzene_mapping) -> None:
 
 def test_mapping_comparison_jcs_empty_mapping(benzene_benzene_mapping, benzene_benzene_empty_mapping) -> None:
     """
-    Check empty mappings
+    Check empty mappings.
+
+    Parameters
+    ----------
+    benzene_benzene_mapping : LigandAtomMapping
+        A mapping of benzene to benzene atoms.
+    benzene_benzene_empty_mapping : LigandAtomMapping
+        An empty mapping of benzene to benzene atoms.
     """
     mappingA = benzene_benzene_empty_mapping
     mappingB = benzene_benzene_mapping
