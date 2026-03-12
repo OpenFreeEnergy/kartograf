@@ -12,6 +12,19 @@ from kartograf.atom_aligner import align_mol_shape, align_mol_skeletons
 
 
 def mol_from_smiles(smiles: str):
+    """
+    Generate RDKit molecule objects from SMILES strings.
+
+    Parameters
+    ----------
+    smiles : str
+        A string containing SMILES representations of molecules.
+
+    Returns
+    -------
+    list
+        A list of RDKit molecule objects with hydrogen atoms added and embedded coordinates.
+    """
     rdmols = [Chem.MolFromSmiles(s) for s in smiles]
     rdmols = [Chem.AddHs(m, addCoords=True) for m in rdmols]
     [Chem.rdDistGeom.EmbedMolecule(m, useRandomCoords=False, randomSeed=0) for m in rdmols]
