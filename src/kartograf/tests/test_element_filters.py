@@ -28,8 +28,19 @@ def test_atoms_H_only_H_mapped(reverse) -> None:
 
 @pytest.mark.parametrize("reverse", [False, True])
 def test_element_change(reverse) -> None:
-    # benzene to pyridine, has heteroatom change
-    # will result in non-whole ring, but that isn't the job of this filter
+    """
+    Test the filter_element_changes function.
+
+    Parameters
+    ----------
+    reverse : bool
+        If True, reverse the order of molecules.
+
+    Notes
+    -----
+    benzene to pyridine, has heteroatom change
+    will result in non-whole ring, but that isn't the job of this filter
+    """
     m1 = Chem.MolFromSmiles("c1ccccn1")
     m2 = Chem.MolFromSmiles("c1ccccc1")
     if reverse:
@@ -44,8 +55,19 @@ def test_element_change(reverse) -> None:
 
 @pytest.mark.parametrize("reverse", [False, True])
 def test_element_hybridization_change(reverse) -> None:
-    # check if atom hybridization is changing
-    # for the example propane to propylene
+    """
+    Test the filter_hybridization_changes function.
+
+    Parameters
+    ----------
+    reverse : bool
+        If True, reverse the order of molecules.
+
+    Notes
+    -----
+    check if atom hybridization is changing
+    for the example propane to propylene
+    """
     m1 = Chem.MolFromSmiles("CCC")
     m2 = Chem.MolFromSmiles("CC=C")
     if reverse:
