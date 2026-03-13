@@ -64,7 +64,7 @@ def align_mol_skeletons(
     return mol
 
 
-def align_mol_shape(mol: SmallMoleculeComponent, ref_mol: SmallMoleculeComponent) -> Chem.Mol:
+def align_mol_shape(mol: SmallMoleculeComponent, ref_mol: SmallMoleculeComponent) -> SmallMoleculeComponent:
     """
     Alignment based on shape.
 
@@ -79,8 +79,8 @@ def align_mol_shape(mol: SmallMoleculeComponent, ref_mol: SmallMoleculeComponent
 
     Returns
     -------
-    Chem.Mol
-        Aligned RDKit molecule.
+    SmallMoleculeComponent
+        Aligned mol to ref_mol.
     """
     mol = deepcopy(mol)
 

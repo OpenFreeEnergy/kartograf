@@ -91,8 +91,8 @@ class KartografAtomMapper(AtomMapper):
 
         Notes
         -----
-        The ``additional_mapping_filter_functions`` will be applied before any default filters. To change this,
-        turn off all defaults and pass the full list of filters in the order they should be applied.
+        The ``additional_mapping_filter_functions`` will be applied before any default filters.
+        To change this, turn off all defaults and pass the full list of filters in the order they should be applied.
         """
         self.atom_max_distance = atom_max_distance
         self.atom_map_hydrogens = atom_map_hydrogens
@@ -343,8 +343,8 @@ class KartografAtomMapper(AtomMapper):
 
     @staticmethod
     def _get_maximal_mapping_set_overlap(
-        sets_a: Iterable[set], sets_b: Iterable[set], mapping: dict[int, int]
-    ) -> tuple[set, set]:
+        sets_a: Iterable[set[int]], sets_b: Iterable[set[int]], mapping: dict[int, int]
+    ) -> tuple[set[int], set[int]]:
         """Get the largest set overlaps in the mapping of set_a and set_b.
 
         Parameters
