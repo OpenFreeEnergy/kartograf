@@ -20,7 +20,7 @@ if optional_imports:
 
         Parameters
         ----------
-        stereo_chem_mapping : ?
+        stereo_chem_mapping : LigandAtomMapping
             Description of stereo_chem_mapping.
 
         Returns
@@ -36,7 +36,7 @@ if optional_imports:
 
         Parameters
         ----------
-        stereo_chem_mapping : ?
+        stereo_chem_mapping : LigandAtomMapping
             Description of stereo_chem_mapping.
 
         Returns
