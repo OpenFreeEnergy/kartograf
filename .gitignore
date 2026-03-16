@@ -99,3 +99,6 @@ src/kartograf/_version.py
 
 # Rever
 rever/
+# pixi environments
+.pixi/*
+!.pixi/config.toml
