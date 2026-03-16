@@ -46,7 +46,7 @@ def test_mapping_naphtalene_benzene(naphtalene_benzene_molecules, naphtalene_ben
     ----------
     naphtalene_benzene_molecules : tuple
         A tuple containing the naphtalene and benzene molecules.
-    naphtalene_benzene_mapping : Mapping
+    naphtalene_benzene_mapping : LigandAtomMapping
         The expected mapping between the naphtalene and benzene molecules.
     """
     expected_mapping = naphtalene_benzene_mapping.componentA_to_componentB
@@ -74,7 +74,7 @@ def test_mapping_naphtalene_benzene_mst(naphtalene_benzene_molecules, naphtalene
     ----------
     naphtalene_benzene_molecules : tuple
         A tuple containing the naphtalene and benzene molecules.
-    naphtalene_benzene_mapping : Mapping
+    naphtalene_benzene_mapping : LigandAtomMapping
         The expected mapping between the naphtalene and benzene molecules.
     """
     from kartograf.atom_mapper import mapping_algorithm
@@ -174,7 +174,7 @@ def test_stereo_mapping(stereco_chem_molecules, stereo_chem_mapping) -> None:
     ----------
     stereco_chem_molecules : tuple
         A tuple containing the stereochemical molecules.
-    stereo_chem_mapping : Mapping
+    stereo_chem_mapping : LigandAtomMapping
         The expected mapping between the stereochemical molecules.
     """
     expected_mapping = stereo_chem_mapping.componentA_to_componentB
@@ -284,7 +284,7 @@ def test_mapping_rdmols(naphtalene_benzene_molecules, naphtalene_benzene_mapping
     ----------
     naphtalene_benzene_molecules : tuple
         A tuple containing the naphtalene and benzene molecules.
-    naphtalene_benzene_mapping : Mapping
+    naphtalene_benzene_mapping : LigandAtomMapping
         The expected mapping between the naphtalene and benzene molecules.
     """
     naphtalene_benzene_mapping.componentA_to_componentB
@@ -476,7 +476,7 @@ def test_partial_fused_rings(fused_ring_mols, allow_partial_fused_rings, expecte
         A tuple containing the molecules with fused rings.
     allow_partial_fused_rings : bool
         Whether to allow partial mappings of fused rings.
-    expected_mapping : Mapping
+    expected_mapping : LigandAtomMapping
         The expected mapping between the molecules.
     """
     geom_mapper = KartografAtomMapper(allow_partial_fused_rings=allow_partial_fused_rings)
@@ -694,7 +694,7 @@ def test_bond_break_transforms(pfkfb3_ligands, edge, allow_broken, expected_mapp
         A tuple containing the edge identifiers.
     allow_broken : bool
         Whether to allow bond breaks.
-    expected_mapping : Mapping
+    expected_mapping : LigandAtomMapping
         The expected mapping between the ligands.
     """
     ligand_a = pfkfb3_ligands[edge[0]]
