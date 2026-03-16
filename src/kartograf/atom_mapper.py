@@ -576,7 +576,7 @@ class KartografAtomMapper(AtomMapper):
         pre_mapped_atoms: dict[int, int] | None = None,
         map_hydrogens: bool = True,
     ) -> dict[int, int]:
-        """Main mapping function - private.
+        """Main mapping function
 
         Find a mapping between two molecules based on 3D coordinates.
         This is a helper function for the suggest mapping functions.
