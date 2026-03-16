@@ -802,7 +802,7 @@ class KartografAtomMapper(AtomMapper):
     def suggest_mappings(
         self, A: ExplicitMoleculeComponent, B: ExplicitMoleculeComponent
     ) -> Iterator[LigandAtomMapping]:
-        """Mapping generator - Gufe.
+        """Mapping generator.
 
         Return a generator for atom mappings.
 
