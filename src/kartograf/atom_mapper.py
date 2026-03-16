@@ -31,6 +31,7 @@ logger = logging.getLogger(__name__)
 
 
 # Enums:
+# TODO: rename this to MappingAlgorithmEnum or MappingAlgorithm
 class mapping_algorithm(Enum):
     """Enum for selecting the optimization algorithm for the distance graph based atom mapping."""
 
