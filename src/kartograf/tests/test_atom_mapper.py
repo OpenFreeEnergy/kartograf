@@ -237,6 +237,7 @@ class TestSerialisation:
         """
         Test that custom filter functions are correctly serialized and deserialized.
         """
+
         def even_prime_filter(mapping):
             mapping.pop(2, None)
 
