@@ -27,7 +27,6 @@ of Kartograf that offer a shape alignment implementation and a MCS-skeleton alig
 The `atom_mapper` can be used to generate the 3D geometry focused atom mapping, the algorithm is described in the related publication of Kartograf (see reference).
 Additionally, rule based filter functions can be provided to demap atoms, that do not fulfill the desired criteria, see `filters`.
 Several mapping scoring metrics are provided, that evaluate geometric properties of your mapping, from `mapping_metrics`, which might be useful for checking quality of your mappings.
-Finally, there is a visualization function `display_mappings_3d` that can be used to check out the mappings with a jupyter notebook widget.
 
 Checkout our article on Kartograf in the Journal of Chemical Theory and Computation: [*Kartograf: A Geometrically Accurate Atom Mapper for Hybrid-Topology Relative Free Energy Calculations* - Benjamin Ries*, Irfan Alibay, David W. H. Swenson, Hannah M. Baumann, Michael M. Henry, James R. B. Eastwood, and Richard J. Gowers](https://doi.org/10.1021/acs.jctc.3c01206).
 
