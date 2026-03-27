@@ -1,9 +1,9 @@
+import os
 import subprocess
 import tempfile
-import os
 
-from sybil import Sybil, Example
-from sybil.parsers.rest import ClearNamespaceParser, PythonCodeBlockParser, CodeBlockParser
+from sybil import Example, Sybil
+from sybil.parsers.rest import ClearNamespaceParser, CodeBlockParser, PythonCodeBlockParser
 
 
 def ruff_fix(example: Example) -> str | None:
@@ -33,14 +33,12 @@ def ruff_fix(example: Example) -> str | None:
 
             # Re-indent the fixed code
             fixed_indented = "".join(
-                indent + line if line.strip() else "\n"
-                for line in fixed.splitlines(keepends=True)
+                indent + line if line.strip() else "\n" for line in fixed.splitlines(keepends=True)
             )
 
             # Replace the original block in the file
             original_indented = "".join(
-                indent + line if line.strip() else "\n"
-                for line in example.parsed.splitlines(keepends=True)
+                indent + line if line.strip() else "\n" for line in example.parsed.splitlines(keepends=True)
             )
             with open(source_path, "w") as f:
                 f.write("".join(source_lines).replace(original_indented, fixed_indented, 1))
@@ -55,6 +53,7 @@ def ruff_fix(example: Example) -> str | None:
             return result.stdout.replace(tmpfile, "<example>")
     finally:
         os.unlink(tmpfile)
+
 
 linting = Sybil(
     name="linting",

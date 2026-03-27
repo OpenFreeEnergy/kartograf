@@ -22,7 +22,7 @@ classifiers = [
   "Programming Language :: Python :: 3.14",
 ]
 dynamic = [ "version" ]
-dependencies = [  ]
+dependencies = []
 urls."Homepage" = "https://github.com/OpenFreeEnergy/kartograf"
 
 [tool.setuptools]
@@ -78,5 +78,5 @@ lint.isort.combine-as-imports = true
 lint.isort.force-wrap-aliases = true
 lint.isort.known-first-party = [ "kartograf" ]
 
-[tool.pytest.ini_options]
-addopts = "-p no:doctest --dist loadfile"
+[tool.pytest]
+ini_options.addopts = "-p no:doctest --dist loadfile"
