@@ -1,19 +1,17 @@
+import os
 import re
 import subprocess
-import tempfile
-import os
 import sys
+import tempfile
 
 CODEBLOCK_RE = re.compile(
     r"(?P<directive>[ \t]*\.\. code-block:: python\n(?:[ \t]*:[^:]+:[^\n]*\n)*\n)"
     r"(?P<code>(?:[ \t]+[^\n]*\n|\n)+)"
 )
 
+
 def fix_block(code: str, indent: str) -> str:
-    dedented = "".join(
-        line[len(indent):] if line.startswith(indent) else line
-        for line in code.splitlines(keepends=True)
-    )
+    dedented = "".join(line.removeprefix(indent) for line in code.splitlines(keepends=True))
     with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
         f.write(dedented)
         tmpfile = f.name
@@ -24,10 +22,8 @@ def fix_block(code: str, indent: str) -> str:
             fixed = f.read()
     finally:
         os.unlink(tmpfile)
-    return "".join(
-        indent + line if line.strip() else "\n"
-        for line in fixed.splitlines(keepends=True)
-    )
+    return "".join(indent + line if line.strip() else "\n" for line in fixed.splitlines(keepends=True))
+
 
 def process_file(path: str) -> bool:
     with open(path) as f:
@@ -51,6 +47,7 @@ def process_file(path: str) -> bool:
             f.write(fixed_content)
         return True
     return False
+
 
 if __name__ == "__main__":
     changed = [p for p in sys.argv[1:] if process_file(p)]
