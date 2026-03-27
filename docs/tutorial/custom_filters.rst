@@ -13,7 +13,7 @@ In the function, the ``mapping`` should then be filtered by the implemented rule
 
 .. code-block:: python
 
-    from rdkit import Chem 
+    from rdkit import Chem
 
     def custom_filter(
         molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]

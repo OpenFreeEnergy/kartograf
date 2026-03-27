@@ -4,7 +4,7 @@ Atom Mapping of two Molecules for finding a common core region
 ---------------------------------------------------------------
 
 This is a short tutorial trying to give a hand on how to work with Kartograf.
-First, the input is generated from two SMILES with RDKit. 
+First, the input is generated from two SMILES with RDKit.
 We will add all hydrogens and generate both molecules a 3D conformation with RDKit.
 Afterward, the molecules are transformed into ``SmallMoleculeComponent``, which is the entrance into Kartograf and the OpenFE world:
 
