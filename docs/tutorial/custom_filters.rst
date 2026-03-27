@@ -11,7 +11,9 @@ the filter rules and employ your own rules. The general signature of the filters
 In the function, the ``mapping`` should then be filtered by the implemented rule resulting in a returned
 ``filtered_mapping``:
 
-.. code-block::
+.. code-block:: python
+
+    from rdkit import Chem 
 
     def custom_filter(
         molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
@@ -27,7 +29,7 @@ like, for example, the following definition defines the filter for the element
 changes, by filtering for the atomic number of the RDKit molecules and
 comparing them. The return value of a filter is the filtered dictionary:
 
-.. code-block::
+.. code-block:: python
 
     def filter_element_changes(
         molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
@@ -48,7 +50,7 @@ comparing them. The return value of a filter is the filtered dictionary:
 After defining this filter, you only need to plug it into the atom mapper
 like this:
 
-.. code-block::
+.. code-block:: python
 
     from kartograf import KartografAtomMapper
     # Build Kartograf Atom Mapper

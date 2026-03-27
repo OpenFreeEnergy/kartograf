@@ -7,9 +7,6 @@ from importlib.resources import files
 import pytest
 from gufe import LigandAtomMapping, ProteinComponent, SmallMoleculeComponent
 from rdkit import Chem
-from sybil import Sybil
-from sybil.parsers.rest import PythonCodeBlockParser, DocTestParser
-
 
 from kartograf.atom_aligner import align_mol_shape, align_mol_skeletons
 
@@ -157,12 +154,3 @@ def pfkfb3_ligands() -> dict[str, SmallMoleculeComponent]:
         ofe_mol = SmallMoleculeComponent.from_rdkit(mol)
         mols[ofe_mol.name] = ofe_mol
     return mols
-
-
-pytest_collect_file = Sybil(
-    parsers=[
-        DocTestParser(),  # handles >>> style
-        PythonCodeBlockParser(),  # handles .. code-block:: python
-    ],
-    patterns=["*.rst", "*.py"],
-).pytest()

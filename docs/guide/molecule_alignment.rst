@@ -48,5 +48,3 @@ Choosing Between the Two Methods
  
 For a congeneric series where you want to respect the common core, use :ref:`align_mol_skeletons <align-mol-skeletons>`. 
 For structurally diverse molecules where binding-volume overlap is the primary concern, use :ref:`align_mol_shape <align-mol-shape>`.
- 
-----

@@ -43,11 +43,11 @@ def align_mol_skeletons(
 
     .. code-block:: python
 
-       from kartograf.alignment import align_mol_skeletons
+       from kartograf import align_mol_skeletons
        from gufe import SmallMoleculeComponent
 
-       mol = SmallMoleculeComponent.from_sdf("ligand.sdf")
-       ref_mol = SmallMoleculeComponent.from_sdf("reference.sdf")
+       mol = SmallMoleculeComponent.from_sdf_file("ligand.sdf")
+       ref_mol = SmallMoleculeComponent.from_sdf_file("reference.sdf")
 
        aligned_mol = align_mol_skeletons(mol, ref_mol)
 
@@ -124,11 +124,11 @@ def align_mol_shape(mol: SmallMoleculeComponent, ref_mol: SmallMoleculeComponent
 
     .. code-block:: python
 
-       from kartograf.alignment import align_mol_shape
+       from kartograf import align_mol_shape
        from gufe import SmallMoleculeComponent
 
-       mol = SmallMoleculeComponent.from_sdf("ligand.sdf")
-       ref_mol = SmallMoleculeComponent.from_sdf("reference.sdf")
+       mol = SmallMoleculeComponent.from_sdf_file("ligand.sdf")
+       ref_mol = SmallMoleculeComponent.from_sdf_file("reference.sdf")
 
        aligned_mol = align_mol_shape(mol, ref_mol)
 
