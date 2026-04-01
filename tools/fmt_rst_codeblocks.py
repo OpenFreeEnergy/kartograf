@@ -40,7 +40,12 @@ def fix_block(code: str, indent: str) -> str:
         with open(tmpfile, encoding="utf-8") as f:
             fixed = f.read()
 
-    return "".join(indent + line if line != "\n" else "\n" for line in fixed.splitlines(keepends=True))
+    reindented = "".join(indent + line if line != "\n" else "\n" for line in fixed.splitlines(keepends=True))
+
+    # We need to add a SINGLE blank line after the code block, but ruff trims
+    # the empty new line so we remove the one ruff adds, then we add one to the
+    # line and then another to make a blank line
+    return reindented.rstrip("\n") + "\n\n"
 
 
 def process_file(path: str, check_only: bool = False) -> bool:
