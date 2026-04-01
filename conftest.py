@@ -1,11 +1,10 @@
 from sybil import Sybil
-from sybil.parsers.rest import ClearNamespaceParser, PythonCodeBlockParser
+from sybil.parsers.rest import PythonCodeBlockParser
 
 pytest_collect_file = Sybil(
     name="tests",
     parsers=[
         PythonCodeBlockParser(),
-        ClearNamespaceParser(),
     ],
     patterns=["*.py", "*.rst"],
 ).pytest()

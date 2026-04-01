@@ -41,6 +41,18 @@ def align_mol_skeletons(
 
     **Example**
 
+    .. invisible-code-block: python
+
+       # We do this so we can keep our examples easy to read
+       # We copy test data into a temp dir so we can run our
+       # example in an isolated dir + rename the files
+       import shutil, os, tempfile
+       _tmp = tempfile.mkdtemp()
+       _orig_cwd = os.getcwd()
+       shutil.copy("src/kartograf/tests/data/lig_E29.sdf", _tmp + "/ligand.sdf")
+       shutil.copy("src/kartograf/tests/data/lig_E6.sdf",  _tmp + "/reference.sdf")
+       os.chdir(_tmp)
+
     .. code-block:: python
 
        from kartograf import align_mol_skeletons
@@ -50,6 +62,10 @@ def align_mol_skeletons(
        ref_mol = SmallMoleculeComponent.from_sdf_file("reference.sdf")
 
        aligned_mol = align_mol_skeletons(mol, ref_mol)
+
+    .. invisible-code-block: python
+
+       os.chdir(_orig_cwd)  # restore cwd
 
     .. warning::
 
@@ -122,6 +138,18 @@ def align_mol_shape(mol: SmallMoleculeComponent, ref_mol: SmallMoleculeComponent
 
     **Example**
 
+    .. invisible-code-block: python
+
+       # We do this so we can keep our examples easy to read
+       # We copy test data into a temp dir so we can run our
+       # example in an isolated dir + rename the files
+       import shutil, os, tempfile
+       _tmp = tempfile.mkdtemp()
+       _orig_cwd = os.getcwd()
+       shutil.copy("src/kartograf/tests/data/lig_E29.sdf", _tmp + "/ligand.sdf")
+       shutil.copy("src/kartograf/tests/data/lig_E6.sdf",  _tmp + "/reference.sdf")
+       os.chdir(_tmp)
+
     .. code-block:: python
 
        from kartograf import align_mol_shape
@@ -131,6 +159,10 @@ def align_mol_shape(mol: SmallMoleculeComponent, ref_mol: SmallMoleculeComponent
        ref_mol = SmallMoleculeComponent.from_sdf_file("reference.sdf")
 
        aligned_mol = align_mol_shape(mol, ref_mol)
+
+    .. invisible-code-block: python
+
+       os.chdir(_orig_cwd )  # restore cwd
 
     .. note::
 
