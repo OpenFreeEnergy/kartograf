@@ -40,7 +40,7 @@ jobs:
       - name: Get current date
         id: date
         run: echo "date=$(date +%Y-%m-%d)" >> "${GITHUB_OUTPUT}"
-      - uses: mamba-org/setup-micromamba@v2
+      - uses: mamba-org/setup-micromamba@v3
         with:
           environment-file: environment.yml
           environment-name: kartograf
@@ -96,7 +96,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
 
-    - uses: mamba-org/setup-micromamba@v2
+    - uses: mamba-org/setup-micromamba@v3
       with:
           environment-file: environment.yml
           environment-name: kartograf
