@@ -37,6 +37,7 @@ fallback_version = "0.0.0"
 target-version = "py311"
 line-length = 120
 src = [ "src" ]
+format.docstring-code-format = true
 # I've added all the linters that ruff supports as of 0.14.11
 # If it doesn't exist in the package (for example async) it is not enabled
 # I wanted to include it so that if there is a PR that adds async, we can
@@ -76,3 +77,6 @@ lint.per-file-ignores."src/kartograf/tests/*" = [ "S" ]
 lint.isort.combine-as-imports = true
 lint.isort.force-wrap-aliases = true
 lint.isort.known-first-party = [ "kartograf" ]
+
+[tool.pytest]
+ini_options.addopts = "-p no:doctest --dist loadfile"
