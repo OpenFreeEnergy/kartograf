@@ -30,11 +30,22 @@ author = "The OpenFE Development Team"
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
     "nbsphinx",
     "nbsphinx_link",
 ]
 
+intersphinx_mapping = {
+    "gufe": ("https://gufe.openfree.energy/en/latest/", None),
+    "rdkit": ("https://www.rdkit.org/docs", None),
+}
+
+autodoc_type_aliases = {
+    "SmallMoleculeComponent": "gufe.components.smallmoleculecomponent.SmallMoleculeComponent",
+}
+
+autodoc_typehints = "both"
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
