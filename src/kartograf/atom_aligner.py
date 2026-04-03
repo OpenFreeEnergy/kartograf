@@ -120,21 +120,15 @@ def align_mol_shape(mol: SmallMoleculeComponent, ref_mol: SmallMoleculeComponent
 
     Choose shape-based alignment when:
 
-    * The molecules belong to different chemical series (scaffold hops,
-      bioisosteric replacements) but are expected to occupy a similar
-      binding volume.
-    * No obvious MCS exists or the MCS is too small to anchor a reliable
-      structural overlay.
+    * The molecules belong to different chemical series (scaffold hops, bioisosteric replacements) but are expected to occupy a similar binding volume.
+    * No obvious MCS exists or the MCS is too small to anchor a reliable structural overlay.
     * You wish to compare or cluster molecules by 3D pharmacophoric shape.
 
     **Algorithm outline**
 
-    1. Compute the Open3DAlign score between the probe and reference
-       molecules using :func:`~rdkit.Chem.rdMolAlign.GetO3A`.
-    2. Call :meth:`Align` to apply the optimal rigid-body rotation and
-       translation that maximises shape overlap.
-    3. The alignment score (a float) is logged at ``DEBUG`` level for
-       diagnostic purposes.
+    1. Compute the Open3DAlign score between the probe and reference molecules using :func:`~rdkit.Chem.rdMolAlign.GetO3A`.
+    2. Call :meth:`Align` to apply the optimal rigid-body rotation and translation that maximises shape overlap.
+    3. The alignment score (a float) is logged at ``DEBUG`` level for diagnostic purposes.
 
     **Example**
 
@@ -166,9 +160,8 @@ def align_mol_shape(mol: SmallMoleculeComponent, ref_mol: SmallMoleculeComponent
 
     .. note::
 
-       Open3DAlign requires that both molecules carry 3D coordinates and
-       (optionally) partial charges for optimal scoring. Ensure that conformers
-       have been generated before calling this function.
+       Open3DAlign requires that both molecules carry 3D coordinates and (optionally) partial charges for optimal scoring.
+       Ensure that conformers have been generated before calling this function.
     """
     mol = deepcopy(mol)
 
