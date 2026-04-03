@@ -15,3 +15,4 @@ Guide to Kartograf
 
    guide/atom_mapping
    guide/atom_mapping_scoring
+   guide/molecule_alignment

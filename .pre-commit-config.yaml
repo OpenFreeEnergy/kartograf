@@ -36,3 +36,12 @@ repos:
       args: [--fix ]
     # Run the formatter.
     - id: ruff-format
+
+- repo: local
+  hooks:
+    - id: fmt-rst-codeblocks
+      name: Format Python code blocks in RST files
+      entry: python tools/fmt_rst_codeblocks.py
+      language: python
+      files: \.rst$
+      additional_dependencies: [ruff]
