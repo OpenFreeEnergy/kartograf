@@ -12,6 +12,7 @@ dependencies:
   - coverage
   - mypy
   - nbval
+  - sybil
   #Typing
   - gufe>=1.0
   - typing-extensions
