@@ -23,7 +23,7 @@ classifiers = [
 ]
 dynamic = [ "version" ]
 dependencies = []
-urls."Homepage" = "https://github.com/OpenFreeEnergy/kartograf"
+urls.Homepage = "https://github.com/OpenFreeEnergy/kartograf"
 
 [tool.setuptools]
 include-package-data = true
