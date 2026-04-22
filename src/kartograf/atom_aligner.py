@@ -30,7 +30,7 @@ def align_mol_skeletons(
     Choose skeleton-based alignment when:
 
     * The two molecules share a recognisable common scaffold (e.g. an R-group optimisation series).
-    * You are using a method that requires a well mapped common ccore (e.g. openfe's `HybridTopologyProtocol`).
+    * You are using a method that requires a well mapped common core (e.g. openfe's `HybridTopologyProtocol`).
     * You want the alignment to reflect chemical similarity rather than overall 3D shape.
     * The molecules differ primarily in peripheral substituents and the core geometry should be conserved.
 
@@ -121,7 +121,7 @@ def align_mol_shape(mol: SmallMoleculeComponent, ref_mol: SmallMoleculeComponent
 
     Choose shape-based alignment when:
 
-    * You are not using a method that requires a well mapped common ccore (e.g. openfe's `SepTopProtocol`).
+    * You are not using a method that requires a well mapped common core (e.g. openfe's `SepTopProtocol`).
     * The molecules belong to different chemical series (scaffold hops, bioisosteric replacements) but are expected to occupy a similar binding volume.
     * No obvious MCS exists or the MCS is too small to anchor a reliable structural overlay.
     * You wish to compare or cluster molecules by 3D pharmacophoric shape.
