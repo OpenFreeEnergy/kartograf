@@ -35,7 +35,7 @@ Choosing Between the Two Methods
 +================================+===========================+===========================+
 | Requires shared substructure   | Yes                       | No                        |
 +--------------------------------+---------------------------+---------------------------+
-| Sensitive to scaffold changes  | Low                       | High                      |
+| Sensitive to scaffold changes  | High                      | Low                       |
 +--------------------------------+---------------------------+---------------------------+
 | Best for congeneric series     | ✓                         |                           |
 +--------------------------------+---------------------------+---------------------------+
@@ -46,5 +46,5 @@ Choosing Between the Two Methods
 | Underlying RDKit module        | ``rdFMCS`` / ``AllChem``  | ``rdMolAlign`` (O3A)      |
 +--------------------------------+---------------------------+---------------------------+
 
-For a congeneric series where you want to respect the common core, use :ref:`align_mol_skeletons <align-mol-skeletons>`.
-For structurally diverse molecules where binding-volume overlap is the primary concern, use :ref:`align_mol_shape <align-mol-shape>`.
+For a congeneric series, or when using a single or hybrid topology scheme (such as openfe's `RelativeHybridTopology` method), where you want to respect the common core use :ref:`align_mol_skeletons <align-mol-skeletons>`.
+For structurally diverse molecules where binding-volume overlap is the primary concern, or when applying a method that does not require common core overlap (e.g. `Separated Topologies`), use :ref:`align_mol_shape <align-mol-shape>`.
