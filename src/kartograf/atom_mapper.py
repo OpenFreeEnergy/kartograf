@@ -711,12 +711,12 @@ class KartografAtomMapper(AtomMapper):
         if len(mapping) == 0:
             if len(pre_mapped_atoms) == 0:
                 logger.warning(
-            "Atom mapping failed after filters: %d candidate atom pairs were "
-            "found geometrically, but all candidate mappings were removed by "
-            "filters rules. Returning an empty mapping. max_d=%s, map_hydrogens=%s",
-            pre_filter_mapping_size,
-            max_d,
-            map_hydrogens,
+                    "Atom mapping failed after filters: %d candidate atom pairs were "
+                    "found geometrically, but all candidate mappings were removed by "
+                    "filters rules. Returning an empty mapping. max_d=%s, map_hydrogens=%s",
+                    pre_filter_mapping_size,
+                    max_d,
+                    map_hydrogens,
                 )
             return pre_mapped_atoms
 
