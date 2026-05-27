@@ -712,15 +712,16 @@ class KartografAtomMapper(AtomMapper):
         # If additional filter rules removed all the mappings, warn the user
         if len(mapping) == 0 and len(pre_mapped_atoms) == 0:
             logger.warning(
-                "Atom mapping failed after filters: %d candidate atom pairs were "
-                "found geometrically, but all were removed by additional filter "
-                "rules. Returning an empty mapping. max_d=%s, map_hydrogens=%s",
+                "Atom mapping for molA (name='%s') to molB (name='%s') failed after filters: %d candidate atom pairs "
+                "were found geometrically, but all were removed by additional filter rules. Returning an empty "
+                "mapping. max_d=%s, map_hydrogens=%s",
+                molA.GetProp("ofe-name"),
+                molB.GetProp("ofe-name"),
                 pre_filter_mapping_size,
                 max_d,
                 map_hydrogens,
             )
             return pre_mapped_atoms
-
 
         # Reduce mapping to maximally overlapping two connected sets
         logger.info("Find Maximal overlapping connected sets of mapped atoms")
