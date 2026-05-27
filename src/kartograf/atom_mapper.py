@@ -711,12 +711,19 @@ class KartografAtomMapper(AtomMapper):
 
         # If additional filter rules removed all the mappings, warn the user
         if len(mapping) == 0 and len(pre_mapped_atoms) == 0:
+
+            # Helper function to get the mol name safely
+            def _mol_name(mol: Chem.Mol) -> str:
+                if mol.HasProp("ofe-name"):
+                    return mol.GetProp("ofe-name")
+                return ""
+
             logger.warning(
                 "Atom mapping for molA (name='%s') to molB (name='%s') failed after filters: %d candidate atom pairs "
-                "were found geometrically, but all were removed by additional filter rules. Returning an empty "
+                "were found geometrically, but all were removed by configured filter rules. Returning an empty "
                 "mapping. max_d=%s, map_hydrogens=%s",
-                molA.GetProp("ofe-name"),
-                molB.GetProp("ofe-name"),
+                _mol_name(molA),
+                _mol_name(molB),
                 pre_filter_mapping_size,
                 max_d,
                 map_hydrogens,
