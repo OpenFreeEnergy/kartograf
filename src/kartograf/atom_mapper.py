@@ -704,22 +704,21 @@ class KartografAtomMapper(AtomMapper):
         if self._filter_funcs is not None:
             pre_filter_mapping_size = len(mapping)
             mapping = self._additional_filter_rules(molA, molB, mapping)
-
-        if len(pre_mapped_atoms) > 0:
-            mapping.update(pre_mapped_atoms)
-        logger.debug(f"reverse Masking Mapping: {mapping}")
-
-        if len(mapping) == 0:
-            if len(pre_mapped_atoms) == 0:
+            # If additional filter rules removed all the mappings, warn the user
+            if len(mapping) == 0 and len(pre_mapped_atoms) == 0:
                 logger.warning(
                     "Atom mapping failed after filters: %d candidate atom pairs were "
-                    "found geometrically, but all candidate mappings were removed by "
-                    "filter rules. Returning an empty mapping. max_d=%s, map_hydrogens=%s",
+                    "found geometrically, but all were removed by additional filter "
+                    "rules. Returning an empty mapping. max_d=%s, map_hydrogens=%s",
                     pre_filter_mapping_size,
                     max_d,
                     map_hydrogens,
                 )
-            return pre_mapped_atoms
+                return pre_mapped_atoms
+
+        if len(pre_mapped_atoms) > 0:
+            mapping.update(pre_mapped_atoms)
+        logger.debug(f"reverse Masking Mapping: {mapping}")
 
         # Reduce mapping to maximally overlapping two connected sets
         logger.info("Find Maximal overlapping connected sets of mapped atoms")
