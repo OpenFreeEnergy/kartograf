@@ -711,7 +711,6 @@ class KartografAtomMapper(AtomMapper):
 
         # If additional filter rules removed all the mappings, warn the user
         if len(mapping) == 0 and len(pre_mapped_atoms) == 0:
-
             # Helper function to get the mol name safely
             def _mol_name(mol: Chem.Mol) -> str:
                 if mol.HasProp("ofe-name"):
