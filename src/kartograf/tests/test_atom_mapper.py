@@ -218,9 +218,9 @@ def test_no_mappings_found_warning(naphtalene_benzene_molecules, caplog) -> None
     )
     mols = [naphtalene_benzene_molecules[0].to_rdkit(), naphtalene_benzene_molecules[1].to_rdkit()]
 
-    for mol in mols:
-        if mol.HasProp("ofe-name"):
-            mol.ClearProp("ofe-name")
+    # Remove the ofe-name prop from one mol to make sure things work if it doesn't exist
+    if mols[0].HasProp("ofe-name"):
+        mols[0].ClearProp("ofe-name")
 
     with caplog.at_level(logging.WARNING):
         m.suggest_mapping_from_rdmols(
