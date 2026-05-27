@@ -713,7 +713,7 @@ class KartografAtomMapper(AtomMapper):
                 logger.warning(
                     "Atom mapping failed after filters: %d candidate atom pairs were "
                     "found geometrically, but all candidate mappings were removed by "
-                    "filters rules. Returning an empty mapping. max_d=%s, map_hydrogens=%s",
+                    "filter rules. Returning an empty mapping. max_d=%s, map_hydrogens=%s",
                     pre_filter_mapping_size,
                     max_d,
                     map_hydrogens,
