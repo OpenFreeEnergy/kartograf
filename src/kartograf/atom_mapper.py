@@ -577,7 +577,7 @@ class KartografAtomMapper(AtomMapper):
         Dict[int, int]
             filtered mapping
         """
-        #TODO: Rename this _apply_additional_filter_rules
+        # TODO: Rename this _apply_additional_filter_rules
         logger.debug(f"Before filters mapping is {mapping}")
         for filter_rule in self._filter_funcs:
             mapping = filter_rule(molA, molB, mapping)
