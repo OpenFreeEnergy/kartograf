@@ -213,10 +213,7 @@ def test_no_mappings_found_warning(naphtalene_benzene_molecules, caplog) -> None
     def gen_no_mapping(molA, molB, mapping):
         return {}
 
-    m = KartografAtomMapper(
-        additional_mapping_filter_functions=[gen_no_mapping],
-        atom_map_hydrogens=False
-    )
+    m = KartografAtomMapper(additional_mapping_filter_functions=[gen_no_mapping], atom_map_hydrogens=False)
     mols = [naphtalene_benzene_molecules[0].to_rdkit(), naphtalene_benzene_molecules[1].to_rdkit()]
 
     # Remove the ofe-name prop from one mol to make sure things work if it doesn't exist
