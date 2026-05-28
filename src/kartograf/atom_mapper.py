@@ -715,6 +715,8 @@ class KartografAtomMapper(AtomMapper):
             def _mol_name(mol: Chem.Mol) -> str:
                 if mol.HasProp("ofe-name"):
                     return mol.GetProp("ofe-name")
+                if mol.HasProp("_Name"):
+                    return mol.GetProp("_Name")
                 return ""
 
             logger.warning(

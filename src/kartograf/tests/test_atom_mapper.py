@@ -222,13 +222,37 @@ def test_no_mappings_found_warning(naphtalene_benzene_molecules, caplog) -> None
     if mols[0].HasProp("ofe-name"):
         mols[0].ClearProp("ofe-name")
 
+    # Set ofe-name to test if we report it in the warning
+    mols[1].SetProp("ofe-name", "Milo")
+
     with caplog.at_level(logging.WARNING):
         m.suggest_mapping_from_rdmols(
             mols[0],
             mols[1],
         )
-    assert "Atom mapping for" in caplog.text
+    assert (
+        "Atom mapping for molA (name='') to molB (name='Milo') failed after filters: 6 candidate atom pairs were found "
+        "geometrically, but all were removed by configured filter rules. Returning an empty mapping. max_d=0.95, "
+        "map_hydrogens=False"
+        in caplog.text
+    )
 
+    # Set _Name to test if we report it in the warning
+    # We first have to clear "ofe-name" since we check that one first
+    mols[1].ClearProp("ofe-name")
+    mols[1].SetProp("_Name", "Molly")
+
+    with caplog.at_level(logging.WARNING):
+        m.suggest_mapping_from_rdmols(
+            mols[0],
+            mols[1],
+        )
+    assert (
+        "Atom mapping for molA (name='') to molB (name='Molly') failed after filters: 6 candidate atom pairs were found "
+        "geometrically, but all were removed by configured filter rules. Returning an empty mapping. max_d=0.95, "
+        "map_hydrogens=False"
+        in caplog.text
+    )
 
 def test_filter_property() -> None:
     mapper = KartografAtomMapper(map_hydrogens_on_hydrogens_only=False)
