@@ -577,6 +577,7 @@ class KartografAtomMapper(AtomMapper):
         Dict[int, int]
             filtered mapping
         """
+        # TODO: Rename this _apply_additional_filter_rules
         logger.debug(f"Before filters mapping is {mapping}")
         for filter_rule in self._filter_funcs:
             mapping = filter_rule(molA, molB, mapping)
@@ -701,15 +702,33 @@ class KartografAtomMapper(AtomMapper):
 
         # filter mapping for rules:
         if self._filter_funcs is not None:
+            pre_filter_mapping_size = len(mapping)
             mapping = self._additional_filter_rules(molA, molB, mapping)
 
         if len(pre_mapped_atoms) > 0:
             mapping.update(pre_mapped_atoms)
         logger.debug(f"reverse Masking Mapping: {mapping}")
 
-        if len(mapping) == 0:
-            if len(pre_mapped_atoms) == 0:
-                logger.warning("no mapping could be found, after applying filters!")
+        # If additional filter rules removed all the mappings, warn the user
+        if len(mapping) == 0 and len(pre_mapped_atoms) == 0:
+            # Helper function to get the mol name safely
+            def _mol_name(mol: Chem.Mol) -> str:
+                if mol.HasProp("ofe-name"):
+                    return mol.GetProp("ofe-name")
+                if mol.HasProp("_Name"):
+                    return mol.GetProp("_Name")
+                return ""
+
+            logger.warning(
+                "Atom mapping for molA (name='%s') to molB (name='%s') failed after filters: %d candidate atom pairs "
+                "were found geometrically, but all were removed by configured filter rules. Returning an empty "
+                "mapping. max_d=%s, map_hydrogens=%s",
+                _mol_name(molA),
+                _mol_name(molB),
+                pre_filter_mapping_size,
+                max_d,
+                map_hydrogens,
+            )
             return pre_mapped_atoms
 
         # Reduce mapping to maximally overlapping two connected sets
