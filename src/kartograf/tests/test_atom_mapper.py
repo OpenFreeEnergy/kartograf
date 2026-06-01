@@ -1,6 +1,7 @@
 # This code is part of kartograf and is licensed under the MIT license.
 # For details, see https://github.com/OpenFreeEnergy/kartograf
 
+import logging
 from copy import deepcopy
 from importlib.resources import files
 
@@ -206,6 +207,48 @@ class TestSerialisation:
 
         test_args = {1: 2, 2: 1}
         assert m._filter_funcs[0](test_args) == m2._filter_funcs[0](test_args)
+
+
+def test_no_mappings_found_warning(naphtalene_benzene_molecules, caplog) -> None:
+    def gen_no_mapping(molA, molB, mapping):
+        return {}
+
+    m = KartografAtomMapper(additional_mapping_filter_functions=[gen_no_mapping], atom_map_hydrogens=False)
+    mols = [naphtalene_benzene_molecules[0].to_rdkit(), naphtalene_benzene_molecules[1].to_rdkit()]
+
+    # Remove the ofe-name prop from one mol to make sure things work if it doesn't exist
+    if mols[0].HasProp("ofe-name"):
+        mols[0].ClearProp("ofe-name")
+
+    # Set ofe-name to test if we report it in the warning
+    mols[1].SetProp("ofe-name", "Milo")
+
+    with caplog.at_level(logging.WARNING):
+        m.suggest_mapping_from_rdmols(
+            mols[0],
+            mols[1],
+        )
+    assert (
+        "Atom mapping for molA (name='') to molB (name='Milo') failed after filters: 6 candidate atom pairs were found "
+        "geometrically, but all were removed by configured filter rules. Returning an empty mapping. max_d=0.95, "
+        "map_hydrogens=False" in caplog.text
+    )
+
+    # Set _Name to test if we report it in the warning
+    # We first have to clear "ofe-name" since we check that one first
+    mols[1].ClearProp("ofe-name")
+    mols[1].SetProp("_Name", "Molly")
+
+    with caplog.at_level(logging.WARNING):
+        m.suggest_mapping_from_rdmols(
+            mols[0],
+            mols[1],
+        )
+    assert (
+        "Atom mapping for molA (name='') to molB (name='Molly') failed after filters: 6 candidate atom pairs were found "
+        "geometrically, but all were removed by configured filter rules. Returning an empty mapping. max_d=0.95, "
+        "map_hydrogens=False" in caplog.text
+    )
 
 
 def test_filter_property() -> None:
