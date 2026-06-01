@@ -40,7 +40,7 @@ jobs:
       - name: Get current date
         id: date
         run: echo "date=$(date +%Y-%m-%d)" >> "${GITHUB_OUTPUT}"
-      - uses: mamba-org/setup-micromamba@v2
+      - uses: mamba-org/setup-micromamba@v3
         with:
           environment-file: environment.yml
           environment-name: kartograf
@@ -65,6 +65,9 @@ jobs:
           micromamba info
           micromamba list
 
+      - name: "Print Version"
+        run: python -c "import kartograf; print(kartograf.__version__)"
+
       - name: "Run tests"
         run: |
           # add openfe-benchmarks
@@ -80,7 +83,7 @@ jobs:
 
       - name: codecov
         if: ${{ github.repository == 'OpenFreeEnergy/kartograf' && github.event_name != 'schedule'}}
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
@@ -93,7 +96,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
 
-    - uses: mamba-org/setup-micromamba@v2
+    - uses: mamba-org/setup-micromamba@v3
       with:
           environment-file: environment.yml
           environment-name: kartograf

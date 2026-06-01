@@ -30,9 +30,22 @@ author = "The OpenFE Development Team"
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
+    "nbsphinx",
+    "nbsphinx_link",
 ]
 
+intersphinx_mapping = {
+    "gufe": ("https://gufe.openfree.energy/en/latest/", None),
+    "rdkit": ("https://www.rdkit.org/docs", None),
+}
+
+autodoc_type_aliases = {
+    "SmallMoleculeComponent": "gufe.components.smallmoleculecomponent.SmallMoleculeComponent",
+}
+
+autodoc_typehints = "both"
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
@@ -42,6 +55,9 @@ templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 
+# ignore
+# WARNING: cannot cache unpickleable configuration value: 'nbsphinx_custom_formats' (because it contains a function, class, or module object) [config.cache]
+suppress_warnings = ["config.cache"]
 # autodoc_mock_imports = ['lomap', 'networkx', 'openff', 'openff.toolkit', 'rdkit', 'pytest',
 #                        'typing_extensions',
 #                        'click', 'plugcli']

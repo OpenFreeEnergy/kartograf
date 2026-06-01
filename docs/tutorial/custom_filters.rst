@@ -11,14 +11,15 @@ the filter rules and employ your own rules. The general signature of the filters
 In the function, the ``mapping`` should then be filtered by the implemented rule resulting in a returned
 ``filtered_mapping``:
 
-.. code-block::
+.. code-block:: python
 
-    def custom_filter(
-        molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
-    ) -> dict[int, int]:
+    from rdkit import Chem
+
+
+    def custom_filter(molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]) -> dict[int, int]:
         filtered_mapping = {}
 
-        #do something, but always return a dict with the filtered mapping!
+        # do something, but always return a dict with the filtered mapping!
 
         return filtered_mapping
 
@@ -27,19 +28,14 @@ like, for example, the following definition defines the filter for the element
 changes, by filtering for the atomic number of the RDKit molecules and
 comparing them. The return value of a filter is the filtered dictionary:
 
-.. code-block::
+.. code-block:: python
 
-    def filter_element_changes(
-        molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]
-    ) -> dict[int, int]:
+    def filter_element_changes(molA: Chem.Mol, molB: Chem.Mol, mapping: dict[int, int]) -> dict[int, int]:
         """Forces a mapping to exclude any alchemical element changes in the core"""
         filtered_mapping = {}
 
         for i, j in mapping.items():
-            if (
-                molA.GetAtomWithIdx(i).GetAtomicNum()
-                != molB.GetAtomWithIdx(j).GetAtomicNum()
-            ):
+            if molA.GetAtomWithIdx(i).GetAtomicNum() != molB.GetAtomWithIdx(j).GetAtomicNum():
                 continue
             filtered_mapping[i] = j
 
@@ -48,9 +44,10 @@ comparing them. The return value of a filter is the filtered dictionary:
 After defining this filter, you only need to plug it into the atom mapper
 like this:
 
-.. code-block::
+.. code-block:: python
 
     from kartograf import KartografAtomMapper
+
     # Build Kartograf Atom Mapper
     mapper = KartografAtomMapper(additional_mapping_filter_functions=[filter_element_changes])
 

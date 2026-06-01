@@ -23,16 +23,25 @@ repos:
       exclude: '\.(graphml)$'
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: "v2.11.1"
+  rev: "v2.21.1"
   hooks:
     - id: pyproject-fmt
       args: [--max-supported-python=3.14]
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.14.10
+  rev: v0.15.12
   hooks:
     # Run the linter.
     - id: ruff
       args: [--fix ]
     # Run the formatter.
     - id: ruff-format
+
+- repo: local
+  hooks:
+    - id: fmt-rst-codeblocks
+      name: Format Python code blocks in RST files
+      entry: python tools/fmt_rst_codeblocks.py
+      language: python
+      files: \.rst$
+      additional_dependencies: [ruff]

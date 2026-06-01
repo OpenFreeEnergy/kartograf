@@ -15,4 +15,11 @@ sphinx:
    fail_on_warning: true
 
 conda:
-  environment: environment.yml
+  environment: docs/environment.yml
+
+python:
+  # Install our python package before building the docs
+  # this is needed to pull in setuptools-scm for pkg metadata
+  install:
+    - method: pip
+      path: .

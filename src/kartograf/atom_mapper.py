@@ -16,6 +16,7 @@ from rdkit import Chem
 from scipy.optimize import linear_sum_assignment
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import connected_components
+from scipy.spatial.distance import cdist
 
 from .filters import (
     filter_atoms_h_only_h_mapped,
@@ -41,10 +42,6 @@ class mapping_algorithm(Enum):
 
 
 _mapping_alg_type = Callable[[NDArray, float], dict[int, int]]
-
-
-# Helper:
-vector_eucledean_dist = calculate_edge_weight = lambda x, y: np.sqrt(np.sum(np.square(y - x), axis=1))
 
 
 # Implementation of Mapper:
@@ -428,11 +425,7 @@ class KartografAtomMapper(AtomMapper):
             filtered mapping
 
         """
-        filtered_mapping = {}
-        for atom_a, atom_b in mapping.items():
-            if atom_a in set_a and atom_b in set_b:
-                filtered_mapping[atom_a] = atom_b
-        return filtered_mapping
+        return {atom_a: atom_b for atom_a, atom_b in mapping.items() if atom_a in set_a and atom_b in set_b}
 
     """
         Utils
@@ -442,10 +435,6 @@ class KartografAtomMapper(AtomMapper):
     def _get_full_distance_matrix(
         atomA_pos: NDArray,
         atomB_pos: NDArray,
-        metric: Callable[
-            [float | Iterable, float | Iterable],
-            float | Iterable,
-        ] = vector_eucledean_dist,
     ) -> np.array:
         """calculates a full distance matrix between the two given input
         position matrixes.
@@ -457,10 +446,6 @@ class KartografAtomMapper(AtomMapper):
             position matrix A
         atomB_pos : NDArray
             position matrix B
-        metric : Callable[[Union[float, Iterable], Union[float, Iterable]],
-        Union[float, Iterable]], optional
-            the applied metric to calculate the distance matrix. default
-            metric: eucledean distance.
 
         Returns
         -------
@@ -468,12 +453,7 @@ class KartografAtomMapper(AtomMapper):
             returns a distance matrix.
 
         """
-        distance_matrix = []
-        for atomPosA in atomA_pos:
-            atomPos_distances = metric(atomPosA, atomB_pos)
-            distance_matrix.append(atomPos_distances)
-        distance_matrix = np.array(distance_matrix)
-        return distance_matrix
+        return cdist(atomA_pos, atomB_pos)
 
     @staticmethod
     def _mask_atoms(
@@ -597,6 +577,7 @@ class KartografAtomMapper(AtomMapper):
         Dict[int, int]
             filtered mapping
         """
+        # TODO: Rename this _apply_additional_filter_rules
         logger.debug(f"Before filters mapping is {mapping}")
         for filter_rule in self._filter_funcs:
             mapping = filter_rule(molA, molB, mapping)
@@ -721,15 +702,33 @@ class KartografAtomMapper(AtomMapper):
 
         # filter mapping for rules:
         if self._filter_funcs is not None:
+            pre_filter_mapping_size = len(mapping)
             mapping = self._additional_filter_rules(molA, molB, mapping)
 
         if len(pre_mapped_atoms) > 0:
             mapping.update(pre_mapped_atoms)
         logger.debug(f"reverse Masking Mapping: {mapping}")
 
-        if len(mapping) == 0:
-            if len(pre_mapped_atoms) == 0:
-                logger.warning("no mapping could be found, after applying filters!")
+        # If additional filter rules removed all the mappings, warn the user
+        if len(mapping) == 0 and len(pre_mapped_atoms) == 0:
+            # Helper function to get the mol name safely
+            def _mol_name(mol: Chem.Mol) -> str:
+                if mol.HasProp("ofe-name"):
+                    return mol.GetProp("ofe-name")
+                if mol.HasProp("_Name"):
+                    return mol.GetProp("_Name")
+                return ""
+
+            logger.warning(
+                "Atom mapping for molA (name='%s') to molB (name='%s') failed after filters: %d candidate atom pairs "
+                "were found geometrically, but all were removed by configured filter rules. Returning an empty "
+                "mapping. max_d=%s, map_hydrogens=%s",
+                _mol_name(molA),
+                _mol_name(molB),
+                pre_filter_mapping_size,
+                max_d,
+                map_hydrogens,
+            )
             return pre_mapped_atoms
 
         # Reduce mapping to maximally overlapping two connected sets

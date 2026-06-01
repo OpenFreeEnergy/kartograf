@@ -21,7 +21,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
 ]
-dependencies = [  ]
+dependencies = []
 
-[tool.setuptools.packages.find]
-where = [ "." ]
+[tool.setuptools]
+packages.find.where = [ "." ]
