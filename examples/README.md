@@ -13,4 +13,4 @@ This is how I generated this file, I checked out this commit from openfe-benchma
 >>>
 ```
 
-I then tar'ed all the msgpack files into a gziped tarball. 
+I then tar'ed all the msgpack files into a gziped tarball.
