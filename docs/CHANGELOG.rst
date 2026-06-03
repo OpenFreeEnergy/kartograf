@@ -10,7 +10,7 @@ v2.0
 **Added:**
 
 * Added documentation for molecule alignment algorithms, including guidance on choosing between skeleton-based MCS alignment and shape-based Open3DAlign alignment (`PR #141 <https://github.com/OpenFreeEnergy/kartograf/issues/141>`_).
-* Added a ``kartograf.__version__`` version attribute (PR#132)
+* Added a ``kartograf.__version__`` version attribute (`PR #132 <https://github.com/OpenFreeEnergy/kartograf/pull/132>`_)
 
 **Changed:**
 
