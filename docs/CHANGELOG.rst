@@ -16,7 +16,7 @@ v2.0
 
 * We now use https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html#scipy.spatial.distance.cdist internally to calculate the distance matrix which improves performance.
 * **BREAKING CHANGE** The default for ``KartografAtomMapper``'s ``map_hydrogens_on_hydrogens_only`` option is now ``True``.
- Previously it was ``False``.
+  Previously it was ``False``.
 * **BREAKING CHANGE** We moved the visualization widget to ``gufe``.
   Instead of ``from kartograf.utils.mapping_visualization_widget import display_mappings_3d`` use ``from gufe.visualization.mapping_visualization import display_mappings_3d``
 
