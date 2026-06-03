@@ -133,7 +133,7 @@ def fused_ring_mols() -> tuple[SmallMoleculeComponent, SmallMoleculeComponent]:
     atom ordering."""
     d = resources.files("kartograf.tests.data")
     rd_mols = [Chem.MolFromMolFile(str(f), removeHs=False) for f in [d / "biphenyl.sdf", d / "biaryl-indene.sdf"]]
-    mol_a, mol_b = [SmallMoleculeComponent.from_rdkit(m) for m in rd_mols]
+    mol_a, mol_b = (SmallMoleculeComponent.from_rdkit(m) for m in rd_mols)
     mol_b_to_a = align_mol_shape(mol_b, ref_mol=mol_a)
     return mol_a, mol_b_to_a
 
