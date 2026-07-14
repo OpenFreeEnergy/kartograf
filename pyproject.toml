@@ -26,9 +26,9 @@ dependencies = []
 urls.Homepage = "https://github.com/OpenFreeEnergy/kartograf"
 
 [tool.setuptools]
+packages.find.where = [ "src" ]
 include-package-data = true
 package-data.kartograf = [ "tests/data/*.pdb", "tests/data/*.sdf" ]
-packages.find.where = [ "src" ]
 
 [tool.setuptools_scm]
 fallback_version = "0.0.0"

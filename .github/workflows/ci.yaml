@@ -36,7 +36,7 @@ jobs:
             python-version: "3.13"
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Get current date
         id: date
         run: echo "date=$(date +%Y-%m-%d)" >> "${GITHUB_OUTPUT}"
@@ -50,7 +50,6 @@ jobs:
           cache-downloads-key: downloads-${{ steps.date.outputs.date }}
           create-args: >-
             python=${{ matrix.python-version }}
-            openfe
 
       - name: "Install"
         run: pip install --no-deps -e .
@@ -70,8 +69,6 @@ jobs:
 
       - name: "Run tests"
         run: |
-          # add openfe-benchmarks
-          pip install --no-deps git+https://github.com/OpenFreeEnergy/openfe-benchmarks.git
           # run tests
           pytest -n auto -v --cov=kartograf --cov-report=xml
 
@@ -83,7 +80,7 @@ jobs:
 
       - name: codecov
         if: ${{ github.repository == 'OpenFreeEnergy/kartograf' && github.event_name != 'schedule'}}
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
@@ -94,7 +91,7 @@ jobs:
     timeout-minutes: 30
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
 
     - uses: mamba-org/setup-micromamba@v3
       with:

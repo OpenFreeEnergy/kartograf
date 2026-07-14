@@ -1,7 +1,0 @@
-channels:
-  - conda-forge
-dependencies:
-  - kartograf >=1
-  - pip
-  - pip:
-    - git+https://github.com/OpenFreeEnergy/openfe-benchmarks.git
