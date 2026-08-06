@@ -83,9 +83,34 @@ ini_options.addopts = "-p no:doctest --dist loadfile"
 
 [tool.pixi.workspace]
 channels = ["conda-forge"]
-platforms = ["osx-arm64"]
+platforms = ["linux-64","osx-arm64"]
 
 [tool.pixi.pypi-dependencies]
 kartograf = { path = ".", editable = true }
 
 [tool.pixi.tasks]
+
+[tool.pixi.environments]
+docs = ["docs"]
+
+[tool.pixi.feature.docs]
+channels = ["conda-forge"]
+
+[tool.pixi.feature.docs.dependencies]
+dill = "*"
+python = "*"
+pip = "*"
+gufe = ">=1.0"
+typing-extensions = "*"
+openff-units = "!=0.2.3"
+numpy = "~=2.0"
+scipy = "*"
+rdkit = "*"
+docutils = "==0.20"
+myst-parser = "*"
+pydata-sphinx-theme = "*"
+nbsphinx-link = "*"
+ipython_pygments_lexers = "*"
+
+[dependency-groups]
+docs = ["ofe-sphinx-theme @ git+https://github.com/OpenFreeEnergy/ofe-sphinx-theme@v0.2.1"]
