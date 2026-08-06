@@ -80,3 +80,12 @@ lint.isort.known-first-party = [ "kartograf" ]
 
 [tool.pytest]
 ini_options.addopts = "-p no:doctest --dist loadfile"
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["osx-arm64"]
+
+[tool.pixi.pypi-dependencies]
+kartograf = { path = ".", editable = true }
+
+[tool.pixi.tasks]
