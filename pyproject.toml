@@ -25,6 +25,9 @@ dynamic = [ "version" ]
 dependencies = []
 urls.Homepage = "https://github.com/OpenFreeEnergy/kartograf"
 
+[dependency-groups]
+docs = [ "ofe-sphinx-theme @ git+https://github.com/OpenFreeEnergy/ofe-sphinx-theme@v0.2.1" ]
+
 [tool.setuptools]
 packages.find.where = [ "src" ]
 include-package-data = true
@@ -32,6 +35,28 @@ package-data.kartograf = [ "tests/data/*.pdb", "tests/data/*.sdf" ]
 
 [tool.setuptools_scm]
 fallback_version = "0.0.0"
+
+[tool.pixi]
+workspace.channels = [ "conda-forge" ]
+workspace.platforms = [ "linux-64", "osx-arm64" ]
+pypi-dependencies.kartograf = { path = ".", editable = true }
+tasks = {}
+feature.docs.channels = [ "conda-forge" ]
+feature.docs.dependencies.dill = "*"
+feature.docs.dependencies.docutils = "==0.20"
+feature.docs.dependencies.gufe = ">=1.0"
+feature.docs.dependencies.ipython_pygments_lexers = "*"
+feature.docs.dependencies.myst-parser = "*"
+feature.docs.dependencies.nbsphinx-link = "*"
+feature.docs.dependencies.numpy = "~=2.0"
+feature.docs.dependencies.openff-units = "!=0.2.3"
+feature.docs.dependencies.pip = "*"
+feature.docs.dependencies.pydata-sphinx-theme = "*"
+feature.docs.dependencies.python = "*"
+feature.docs.dependencies.rdkit = "*"
+feature.docs.dependencies.scipy = "*"
+feature.docs.dependencies.typing-extensions = "*"
+environments.docs = [ "docs" ]
 
 [tool.ruff]
 target-version = "py311"
