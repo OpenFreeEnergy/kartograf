@@ -45,7 +45,7 @@ from kartograf import KartografAtomMapper, SmallMoleculeComponent
 smiles = ["c1ccccc1", "c1ccccc1(CO)"]
 rdmols = [Chem.MolFromSmiles(s) for s in smiles]
 rdmols = [Chem.AddHs(m, addCoords=True) for m in rdmols]
-[Chem.rdDistGeom.EmbedMolecule(m, useRandomCoords=False, randomSeed = 0) for m in rdmols]
+[Chem.rdDistGeom.EmbedMolecule(m, useRandomCoords=False, randomSeed=0) for m in rdmols]
 # Generate Data: END
 
 # Build Small Molecule Components
