@@ -23,13 +23,13 @@ repos:
       exclude: '\.(graphml)$'
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: "v2.26.0"
+  rev: "v2.29.3"
   hooks:
     - id: pyproject-fmt
       args: [--max-supported-python=3.14]
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.16.1
+  rev: v0.16.6
   hooks:
     # Run the linter.
     - id: ruff
